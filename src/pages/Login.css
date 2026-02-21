@@ -1,0 +1,205 @@
+/* ===== Login Page – Custom Animations & Effects ===== */
+
+/* Floating gradient blobs */
+@keyframes blob-float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(20px, 40px) scale(1.05);
+  }
+}
+
+@keyframes blob-float-reverse {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(-40px, 30px) scale(1.08);
+  }
+
+  50% {
+    transform: translate(30px, -30px) scale(0.92);
+  }
+
+  75% {
+    transform: translate(-10px, -50px) scale(1.03);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 12px rgba(139, 92, 246, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+  }
+}
+
+/* Utility classes */
+.login-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.login-blob-1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  top: -80px;
+  right: -80px;
+  animation: blob-float 8s ease-in-out infinite;
+}
+
+.login-blob-2 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #f97316, #ec4899);
+  bottom: -60px;
+  left: -60px;
+  animation: blob-float-reverse 10s ease-in-out infinite;
+}
+
+.login-blob-3 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  top: 40%;
+  left: 30%;
+  animation: blob-float 12s ease-in-out infinite;
+}
+
+.login-fade-in {
+  animation: fade-in-up 0.7s ease-out both;
+}
+
+.login-fade-in-delay-1 {
+  animation-delay: 0.15s;
+}
+
+.login-fade-in-delay-2 {
+  animation-delay: 0.3s;
+}
+
+.login-fade-in-delay-3 {
+  animation-delay: 0.45s;
+}
+
+.login-fade-in-delay-4 {
+  animation-delay: 0.6s;
+}
+
+/* Gradient button with shimmer */
+.login-btn-gradient {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899, #f97316);
+  background-size: 200% auto;
+  transition: all 0.3s ease;
+}
+
+.login-btn-gradient:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+.login-btn-gradient:active {
+  transform: translateY(0);
+}
+
+/* Glass card */
+.login-glass {
+  background: rgba(15, 15, 30, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Input focus glow */
+.login-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.login-input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+/* Social button */
+.login-social-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.login-social-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Hero panel gradient overlay */
+.login-hero-overlay {
+  background: linear-gradient(135deg,
+      rgba(15, 5, 40, 0.88) 0%,
+      rgba(60, 15, 80, 0.82) 40%,
+      rgba(109, 40, 217, 0.75) 100%);
+}
+
+/* Hero text shadow for readability */
+.login-hero-text {
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Divider line */
+.login-divider-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
