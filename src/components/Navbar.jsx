@@ -5,6 +5,7 @@ import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { removeUser } from '../redux/userSlice';
 import logo from '../assests/images/logo.png';
+import userIcon from '../assests/images/default-user-image.png';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -55,7 +56,7 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const firstName = user?.firstName || 'User';
-    const photoUrl = user?.photoUrl || 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp';
+    const photoUrl = user?.photoUrl || userIcon;
 
     return (
         <>
