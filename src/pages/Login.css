@@ -203,3 +203,37 @@
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
 }
+
+/* ===== Validation & Error Styles ===== */
+
+/* Input error state – red border & glow */
+.login-input-error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
+}
+
+/* Inline field error text */
+.login-field-error {
+  color: #f87171;
+  animation: fade-in-up 0.3s ease-out both;
+}
+
+/* API error toast */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-error-toast {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  color: #fca5a5;
+  animation: slide-down 0.35s ease-out both;
+}

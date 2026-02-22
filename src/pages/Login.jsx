@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css';
 import heroImg from '../assests/images/devsync_login_hero.png';
 import logo from '../assests/images/logo.png';
-import { useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser } from '../redux/userSlice';
@@ -10,8 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/commonData';
 
 const Login = () => {
-    const [email, setEmail] = useState("Akshay@123.com");
-    const [password, setPassword] = useState("Akshay@123");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState({});        // per-field errors
+    const [apiError, setApiError] = useState("");     // server / network error
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector(store => store.user);
@@ -25,25 +27,76 @@ const Login = () => {
                 dispatch(addUser(res.data));
                 navigate("/");
             })
-            .catch((err) => {
-
-            });
+            .catch(() => { });
     }, []);
 
+    // ── Validate fields ──
+    const validate = () => {
+        const newErrors = {};
+        const trimmedEmail = email.trim();
+
+        if (!trimmedEmail) {
+            newErrors.email = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+            newErrors.email = "Please enter a valid email address";
+        }
+
+        if (!password) {
+            newErrors.password = "Password is required";
+        } else if (password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // Clear per-field error when user starts typing
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        if (errors.email) setErrors(prev => ({ ...prev, email: "" }));
+        if (apiError) setApiError("");
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        if (errors.password) setErrors(prev => ({ ...prev, password: "" }));
+        if (apiError) setApiError("");
+    };
 
     const handleLogin = async () => {
+        if (!validate()) return;
+
+        setIsLoading(true);
+        setApiError("");
+
         try {
             await axios.post(BASE_URL + "/login", {
-                email,
+                email: email.trim(),
                 password
-            }, { withCredentials: true })
+            }, { withCredentials: true });
+
             const profileRes = await axios.get(BASE_URL + "/profile/view", { withCredentials: true });
             dispatch(addUser(profileRes.data));
             navigate("/");
         } catch (error) {
-            console.log(error);
+            const msg =
+                error?.response?.data?.message ||
+                error?.response?.data ||
+                (error?.response?.status === 401
+                    ? "Invalid email or password"
+                    : "Something went wrong. Please try again.");
+            setApiError(typeof msg === "string" ? msg : "Something went wrong. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
+
+    // Allow Enter key to submit
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") handleLogin();
+    };
+
     return (
         <div className="min-h-screen flex font-[Inter,sans-serif] text-white relative overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #0f0f1e 0%, #1a1035 50%, #0f0f1e 100%)' }}>
@@ -90,6 +143,16 @@ const Login = () => {
                         <p className="text-white/50 text-sm">Sign in to continue your dev journey</p>
                     </div>
 
+                    {/* ── API Error Toast ── */}
+                    {apiError && (
+                        <div className="login-error-toast mb-5 flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                            <span>{apiError}</span>
+                        </div>
+                    )}
+
                     <div className="space-y-5">
                         <div className="login-fade-in login-fade-in-delay-2 mb-5">
                             <label className="block text-sm font-medium text-white/60 mb-1.5">Email</label>
@@ -103,10 +166,12 @@ const Login = () => {
                                     type="email"
                                     placeholder="you@example.com"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="login-input w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/25"
+                                    onChange={handleEmailChange}
+                                    onKeyDown={handleKeyDown}
+                                    className={`login-input w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/25 ${errors.email ? 'login-input-error' : ''}`}
                                 />
                             </div>
+                            {errors.email && <p className="login-field-error mt-1.5 text-xs">{errors.email}</p>}
                         </div>
 
                         <div className="login-fade-in login-fade-in-delay-3">
@@ -121,10 +186,12 @@ const Login = () => {
                                     type="password"
                                     placeholder="••••••••"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="login-input w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/25"
+                                    onChange={handlePasswordChange}
+                                    onKeyDown={handleKeyDown}
+                                    className={`login-input w-full rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/25 ${errors.password ? 'login-input-error' : ''}`}
                                 />
                             </div>
+                            {errors.password && <p className="login-field-error mt-1.5 text-xs">{errors.password}</p>}
                         </div>
 
                         <div className="flex items-center justify-between text-sm login-fade-in login-fade-in-delay-3">
@@ -137,10 +204,19 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            className="login-btn-gradient login-fade-in login-fade-in-delay-4 w-full py-3 rounded-xl text-sm font-semibold text-white tracking-wide cursor-pointer"
+                            className={`login-btn-gradient login-fade-in login-fade-in-delay-4 w-full py-3 rounded-xl text-sm font-semibold text-white tracking-wide ${isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
                             onClick={handleLogin}
+                            disabled={isLoading}
                         >
-                            Sign In
+                            {isLoading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                    Signing in…
+                                </span>
+                            ) : 'Sign In'}
                         </button>
                     </div>
 
@@ -183,3 +259,4 @@ const Login = () => {
 };
 
 export default Login;
+
