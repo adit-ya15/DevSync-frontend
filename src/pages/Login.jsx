@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Login.css';
 import heroImg from '../assests/images/devsync_login_hero.png';
 import logo from '../assests/images/logo.png';
 import { useState } from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addUser } from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/commonData';
@@ -14,16 +14,31 @@ const Login = () => {
     const [password, setPassword] = useState("Akshay@123");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector(store => store.user);
+
+    useEffect(() => {
+        if (user) {
+            return navigate("/");
+        }
+        axios.get(BASE_URL + "/profile/view", { withCredentials: true })
+            .then((res) => {
+                dispatch(addUser(res.data));
+                navigate("/");
+            })
+            .catch((err) => {
+
+            });
+    }, []);
 
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post(BASE_URL + "/login", {
+            await axios.post(BASE_URL + "/login", {
                 email,
                 password
             }, { withCredentials: true })
-            console.log(res.data);
-            dispatch(addUser(res.data));
+            const profileRes = await axios.get(BASE_URL + "/profile/view", { withCredentials: true });
+            dispatch(addUser(profileRes.data));
             navigate("/");
         } catch (error) {
             console.log(error);
