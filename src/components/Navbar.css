@@ -1,21 +1,19 @@
-/* ===== Navbar – Glassmorphism & Animations ===== */
+/* ===== Navbar – Tinder Style ===== */
 
 .navbar-glass {
-    background: rgba(15, 15, 30, 0.72);
-    backdrop-filter: blur(18px) saturate(1.6);
-    -webkit-backdrop-filter: blur(18px) saturate(1.6);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    transition: background 0.35s ease, box-shadow 0.35s ease;
+    background: #111111;
+    border-bottom: 1px solid #222222;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-glass.navbar-scrolled {
-    background: rgba(10, 10, 24, 0.92);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    background: #0d0d0d;
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Logo text gradient */
+/* Logo text — Tinder gradient */
 .navbar-logo-text {
-    background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+    background: linear-gradient(135deg, #FD267A, #FF6036);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -24,8 +22,8 @@
 /* Nav links */
 .navbar-link {
     position: relative;
-    color: rgba(255, 255, 255, 0.6);
-    transition: color 0.25s ease;
+    color: #777;
+    transition: color 0.2s ease;
     font-weight: 500;
     letter-spacing: 0.01em;
 }
@@ -37,13 +35,13 @@
     left: 50%;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    background: linear-gradient(90deg, #FD267A, #FF6036);
     border-radius: 2px;
-    transition: width 0.3s ease, left 0.3s ease;
+    transition: width 0.25s ease, left 0.25s ease;
 }
 
 .navbar-link:hover {
-    color: rgba(255, 255, 255, 0.95);
+    color: #f0f0f0;
 }
 
 .navbar-link:hover::after {
@@ -52,7 +50,7 @@
 }
 
 .navbar-link.active {
-    color: #a78bfa;
+    color: #FD267A;
 }
 
 .navbar-link.active::after {
@@ -60,45 +58,31 @@
     left: 0;
 }
 
-/* Avatar ring pulse */
+/* Avatar ring — Tinder gradient */
 .navbar-avatar-ring {
     position: relative;
     border-radius: 50%;
     padding: 2px;
-    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, #FD267A, #FF6036);
 }
 
-.navbar-avatar-ring::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #8b5cf6, #ec4899);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-    filter: blur(6px);
-}
-
-.navbar-avatar-ring:hover::before {
-    opacity: 0.6;
+.navbar-avatar-ring:hover {
+    box-shadow: 0 0 12px rgba(253, 38, 122, 0.3);
 }
 
 /* Dropdown */
 .navbar-dropdown {
-    background: rgba(20, 16, 40, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.1);
-    animation: dropdown-appear 0.2s ease-out;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+    animation: dropdown-appear 0.15s ease-out;
     transform-origin: top right;
 }
 
 @keyframes dropdown-appear {
     from {
         opacity: 0;
-        transform: translateY(-8px) scale(0.96);
+        transform: translateY(-6px) scale(0.97);
     }
 
     to {
@@ -112,35 +96,35 @@
     align-items: center;
     gap: 10px;
     padding: 10px 14px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.7);
-    transition: all 0.2s ease;
+    color: #999;
+    transition: all 0.15s ease;
     cursor: pointer;
     text-decoration: none;
 }
 
 .navbar-dropdown-item:hover {
-    background: rgba(139, 92, 246, 0.12);
+    background: #222;
     color: #fff;
 }
 
 .navbar-dropdown-item.danger:hover {
-    background: rgba(239, 68, 68, 0.12);
+    background: #2a1515;
     color: #f87171;
 }
 
 .navbar-dropdown-divider {
     height: 1px;
     margin: 6px 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    background: #2a2a2a;
 }
 
 /* Welcome badge */
 .navbar-welcome-badge {
-    background: rgba(139, 92, 246, 0.12);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    color: #c4b5fd;
+    background: #1e1515;
+    border: 1px solid #3a2020;
+    color: #FD267A;
     font-size: 0.8rem;
     padding: 4px 12px;
     border-radius: 20px;
@@ -152,7 +136,7 @@
     max-width: 160px;
 }
 
-/* Mobile menu button */
+/* Mobile hamburger */
 .navbar-hamburger {
     display: none;
     flex-direction: column;
@@ -166,7 +150,7 @@
     display: block;
     width: 22px;
     height: 2px;
-    background: rgba(255, 255, 255, 0.7);
+    background: #888;
     border-radius: 2px;
     transition: all 0.3s ease;
 }
@@ -183,11 +167,11 @@
     transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Mobile sidebar overlay */
+/* Mobile overlay */
 .navbar-mobile-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 40;
     opacity: 0;
     pointer-events: none;
@@ -205,11 +189,10 @@
     right: -280px;
     width: 280px;
     height: 100%;
-    background: rgba(15, 12, 35, 0.98);
-    backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    background: #141414;
+    border-left: 1px solid #222;
     z-index: 50;
-    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 80px 24px 32px;
     display: flex;
     flex-direction: column;

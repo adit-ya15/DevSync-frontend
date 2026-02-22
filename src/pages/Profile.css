@@ -1,0 +1,482 @@
+/* ===== Profile Page – Tinder Style ===== */
+
+@keyframes profile-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes profile-slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes profile-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Page ── */
+.profile-page {
+    min-height: calc(100vh - 64px);
+    background: #111111;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 60px;
+}
+
+/* ── Card ── */
+.profile-card {
+    width: 100%;
+    max-width: 420px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    animation: profile-fade-in 0.4s ease-out;
+}
+
+/* ── Large Photo ── */
+.profile-photo-section {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    background: #1e1e1e;
+    overflow: hidden;
+}
+
+.profile-photo-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-photo-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    background: linear-gradient(to top, #1a1a1a 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Name + Age on photo */
+.profile-photo-info {
+    position: absolute;
+    bottom: 16px;
+    left: 20px;
+    z-index: 5;
+}
+
+.profile-photo-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.profile-photo-age {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Body ── */
+.profile-body {
+    padding: 16px 20px 24px;
+}
+
+.profile-section {
+    margin-bottom: 20px;
+}
+
+.profile-section:last-child {
+    margin-bottom: 0;
+}
+
+.profile-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.profile-about-text {
+    font-size: 0.9rem;
+    color: #bbb;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* Info rows */
+.profile-info-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #bbb;
+    margin-bottom: 6px;
+}
+
+.profile-info-row svg {
+    width: 16px;
+    height: 16px;
+    color: #FD267A;
+    flex-shrink: 0;
+}
+
+/* Skills */
+.profile-skills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.profile-skill-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: #222;
+    border: 1px solid #333;
+    color: #FD267A;
+    transition: all 0.2s ease;
+}
+
+.profile-skill-chip:hover {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+.profile-skill-chip.editable {
+    cursor: pointer;
+}
+
+.profile-skill-remove {
+    margin-left: 6px;
+    font-size: 0.7rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.profile-skill-chip.editable:hover .profile-skill-remove {
+    opacity: 1;
+    color: #f87171;
+}
+
+/* Divider */
+.profile-divider {
+    height: 1px;
+    background: #2a2a2a;
+    margin: 16px 0;
+}
+
+/* Edit button (full width at bottom) */
+.profile-edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid #2a2a2a;
+    color: #FD267A;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.profile-edit-btn:hover {
+    background: #1e1515;
+}
+
+.profile-edit-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ═══ EDIT MODE ═══ */
+.profile-edit-card {
+    width: 100%;
+    max-width: 420px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    border: 1px solid #2a2a2a;
+    overflow: hidden;
+    animation: profile-fade-in 0.3s ease-out;
+}
+
+.profile-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.profile-edit-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f5f5f5;
+}
+
+.profile-edit-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.profile-edit-close:hover {
+    color: #f87171;
+}
+
+.profile-edit-body {
+    padding: 20px;
+}
+
+/* Form fields */
+.profile-field {
+    margin-bottom: 18px;
+}
+
+.profile-field:last-child {
+    margin-bottom: 0;
+}
+
+.profile-field-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.profile-input {
+    width: 100%;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    color: #eee;
+    transition: border-color 0.2s ease;
+    outline: none;
+    font-family: inherit;
+}
+
+.profile-input:focus {
+    border-color: #FD267A;
+}
+
+.profile-input::placeholder {
+    color: #444;
+}
+
+.profile-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.profile-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FD267A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+
+.profile-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Skill add */
+.profile-skill-add-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.profile-skill-add-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: #222;
+    border: 1px solid #333;
+    color: #FD267A;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.profile-skill-add-btn:hover {
+    background: #2a2a2a;
+    border-color: #FD267A;
+}
+
+/* Photo preview */
+.profile-photo-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.profile-photo-preview img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #333;
+}
+
+.profile-photo-preview span {
+    font-size: 0.72rem;
+    color: #666;
+}
+
+/* Save / Cancel */
+.profile-edit-actions {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.profile-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.profile-btn-save {
+    background: linear-gradient(135deg, #FD267A, #FF6036);
+    color: #fff;
+}
+
+.profile-btn-save:hover {
+    opacity: 0.92;
+    box-shadow: 0 4px 16px rgba(253, 38, 122, 0.3);
+}
+
+.profile-btn-save:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.profile-btn-cancel {
+    background: #222;
+    border: 1px solid #333;
+    color: #999;
+}
+
+.profile-btn-cancel:hover {
+    border-color: #444;
+    color: #ddd;
+}
+
+/* Spinner */
+.profile-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: profile-spin 0.6s linear infinite;
+}
+
+/* Toast */
+.profile-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: profile-slide-down 0.3s ease-out both;
+    white-space: nowrap;
+}
+
+.profile-toast-success {
+    background: #0f2618;
+    border: 1px solid #166534;
+    color: #86efac;
+}
+
+.profile-toast-error {
+    background: #2a1515;
+    border: 1px solid #5c1d1d;
+    color: #fca5a5;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .profile-page {
+        padding: 16px 8px 40px;
+    }
+
+    .profile-photo-section {
+        height: 360px;
+    }
+
+    .profile-photo-name {
+        font-size: 1.45rem;
+    }
+
+    .profile-field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-toast {
+        left: 16px;
+        right: 16px;
+        transform: none;
+        white-space: normal;
+    }
+}

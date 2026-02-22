@@ -179,7 +179,8 @@ const Navbar = () => {
                             <Link
                                 key={to}
                                 to={to}
-                                className={`navbar-dropdown-item ${isActive(to) ? 'text-violet-400' : ''}`}
+                                className={`navbar-dropdown-item ${isActive(to) ? '' : ''}`}
+                                style={isActive(to) ? { color: '#FD267A' } : {}}
                                 onClick={() => setMobileOpen(false)}
                             >
                                 <span className="w-4 h-4">{icon}</span>
