@@ -1,3 +1,5 @@
+/* ===== Profile Page ===== */
+
 @keyframes profile-fade-in {
     from {
         opacity: 0;
@@ -38,160 +40,7 @@
     padding: 32px 16px 60px;
 }
 
-/* ── Card ── */
-.profile-card {
-    width: 100%;
-    max-width: 420px;
-    background: #1a1a1a;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #2a2a2a;
-    animation: profile-fade-in 0.4s ease-out;
-}
-
-/* ── Large Photo ── */
-.profile-photo-section {
-    position: relative;
-    width: 100%;
-    height: 420px;
-    background: #1e1e1e;
-    overflow: hidden;
-}
-
-.profile-photo-section img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.profile-photo-gradient {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 140px;
-    background: linear-gradient(to top, #1a1a1a 0%, transparent 100%);
-    pointer-events: none;
-}
-
-/* Name + Age on photo */
-.profile-photo-info {
-    position: absolute;
-    bottom: 16px;
-    left: 20px;
-    z-index: 5;
-}
-
-.profile-photo-name {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.2;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.profile-photo-age {
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-/* ── Body ── */
-.profile-body {
-    padding: 16px 20px 24px;
-}
-
-.profile-section {
-    margin-bottom: 20px;
-}
-
-.profile-section:last-child {
-    margin-bottom: 0;
-}
-
-.profile-section-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.profile-about-text {
-    font-size: 0.9rem;
-    color: #bbb;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-/* Info rows */
-.profile-info-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: #bbb;
-    margin-bottom: 6px;
-}
-
-.profile-info-row svg {
-    width: 16px;
-    height: 16px;
-    color: #FD267A;
-    flex-shrink: 0;
-}
-
-/* Skills */
-.profile-skills-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.profile-skill-chip {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    background: #222;
-    border: 1px solid #333;
-    color: #FD267A;
-    transition: all 0.2s ease;
-}
-
-.profile-skill-chip:hover {
-    background: #2a2a2a;
-    border-color: #444;
-}
-
-.profile-skill-chip.editable {
-    cursor: pointer;
-}
-
-.profile-skill-remove {
-    margin-left: 6px;
-    font-size: 0.7rem;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-}
-
-.profile-skill-chip.editable:hover .profile-skill-remove {
-    opacity: 1;
-    color: #f87171;
-}
-
-/* Divider */
-.profile-divider {
-    height: 1px;
-    background: #2a2a2a;
-    margin: 16px 0;
-}
-
-/* Edit button (full width at bottom) */
+/* ── Edit button (inside UserCard actions slot) ── */
 .profile-edit-btn {
     display: flex;
     align-items: center;
@@ -201,7 +50,6 @@
     padding: 14px;
     background: transparent;
     border: none;
-    border-top: 1px solid #2a2a2a;
     color: #FD267A;
     font-size: 0.88rem;
     font-weight: 600;
@@ -218,15 +66,60 @@
     height: 16px;
 }
 
-/* ═══ EDIT MODE ═══ */
+/* ═══ EDIT LAYOUT (side-by-side) ═══ */
+.profile-edit-layout {
+    display: flex;
+    gap: 28px;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.profile-preview-wrap {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 96px;
+}
+
+.profile-preview-wrap .user-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-preview-wrap .user-card-body {
+    flex: 1;
+}
+
+.profile-preview-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* ═══ EDIT CARD ═══ */
 .profile-edit-card {
     width: 100%;
     max-width: 420px;
+    margin-top: 23px;
     background: #1a1a1a;
     border-radius: 16px;
     border: 1px solid #2a2a2a;
     overflow: hidden;
     animation: profile-fade-in 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-edit-body {
+    flex: 1;
+    overflow-y: auto;
 }
 
 .profile-edit-header {
@@ -345,6 +238,40 @@
     border-color: #FD267A;
 }
 
+/* Skills in edit mode */
+.profile-skills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.profile-skill-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: #222;
+    border: 1px solid #333;
+    color: #FD267A;
+    transition: all 0.2s ease;
+}
+
+.profile-skill-chip.editable {
+    cursor: pointer;
+}
+
+.profile-skill-remove {
+    margin-left: 6px;
+    font-size: 0.7rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.profile-skill-chip.editable:hover .profile-skill-remove {
+    opacity: 1;
+    color: #f87171;
+}
+
 /* Photo preview */
 .profile-photo-preview {
     display: flex;
@@ -453,18 +380,21 @@
     color: #fca5a5;
 }
 
-/* Responsive */
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .profile-edit-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-preview-wrap {
+        position: static;
+    }
+}
+
 @media (max-width: 480px) {
     .profile-page {
         padding: 16px 8px 40px;
-    }
-
-    .profile-photo-section {
-        height: 360px;
-    }
-
-    .profile-photo-name {
-        font-size: 1.45rem;
     }
 
     .profile-field-row {

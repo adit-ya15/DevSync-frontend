@@ -1,0 +1,166 @@
+/* ===== Reusable UserCard – Tinder Style ===== */
+
+@keyframes user-card-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Card Shell ── */
+.user-card {
+    width: 100%;
+    max-width: 420px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    animation: user-card-fade-in 0.4s ease-out;
+}
+
+/* ── Photo Section ── */
+.user-card-photo {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    background: #1e1e1e;
+    overflow: hidden;
+}
+
+.user-card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.user-card-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    background: linear-gradient(to top, #1a1a1a 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Name + Age overlay */
+.user-card-identity {
+    position: absolute;
+    bottom: 16px;
+    left: 20px;
+    z-index: 5;
+}
+
+.user-card-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.user-card-age {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Body ── */
+.user-card-body {
+    padding: 16px 20px 24px;
+}
+
+.user-card-info-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #bbb;
+    margin-bottom: 6px;
+}
+
+.user-card-info-row svg {
+    width: 16px;
+    height: 16px;
+    color: #FD267A;
+    flex-shrink: 0;
+}
+
+/* Divider */
+.user-card-divider {
+    height: 1px;
+    background: #2a2a2a;
+    margin: 16px 0;
+}
+
+/* Sections */
+.user-card-section {
+    margin-bottom: 20px;
+}
+
+.user-card-section:last-child {
+    margin-bottom: 0;
+}
+
+.user-card-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.user-card-about {
+    font-size: 0.9rem;
+    color: #bbb;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* Skills */
+.user-card-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.user-card-skill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: #222;
+    border: 1px solid #333;
+    color: #FD267A;
+    transition: all 0.2s ease;
+}
+
+.user-card-skill:hover {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+/* ── Actions slot ── */
+.user-card-actions {
+    border-top: 1px solid #2a2a2a;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+    .user-card-photo {
+        height: 360px;
+    }
+
+    .user-card-name {
+        font-size: 1.45rem;
+    }
+}
