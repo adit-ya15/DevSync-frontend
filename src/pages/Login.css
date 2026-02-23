@@ -41,7 +41,7 @@
 /* ── Page ── */
 .login-page {
   min-height: 100vh;
-  background: #111111;
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,7 +89,7 @@
 
 .login-tagline {
   font-size: 0.92rem;
-  color: #777;
+  color: var(--text-faint);
   max-width: 280px;
   margin: 0 auto;
   line-height: 1.5;
@@ -99,8 +99,8 @@
 .login-card {
   width: 100%;
   max-width: 380px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 28px 24px;
   animation: login-fade-in 0.5s ease-out 0.1s both;
@@ -117,7 +117,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 6px;
 }
 
@@ -130,7 +130,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #555;
+  color: var(--text-muted);
   width: 18px;
   height: 18px;
   pointer-events: none;
@@ -138,12 +138,12 @@
 
 .login-input {
   width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 13px 14px 13px 44px;
   font-size: 0.9rem;
-  color: #eee;
+  color: var(--text-primary);
   transition: border-color 0.2s ease;
   outline: none;
   font-family: inherit;
@@ -154,7 +154,7 @@
 }
 
 .login-input::placeholder {
-  color: #444;
+  color: var(--text-muted);
 }
 
 .login-input-error {
@@ -181,7 +181,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #777;
+  color: var(--text-faint);
   cursor: pointer;
 }
 
@@ -247,14 +247,14 @@
 .login-divider-line {
   flex: 1;
   height: 1px;
-  background: #2a2a2a;
+  background: var(--border-color);
 }
 
 .login-divider-text {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #555;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -273,9 +273,9 @@
   gap: 8px;
   padding: 12px;
   border-radius: 12px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  color: #bbb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -283,9 +283,9 @@
 }
 
 .login-social-btn:hover {
-  background: #222;
-  border-color: #3a3a3a;
-  color: #fff;
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
 }
 
 .login-social-btn svg {
@@ -297,7 +297,7 @@
 .login-footer {
   text-align: center;
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-muted);
   animation: login-fade-in 0.5s ease-out 0.3s both;
 }
 
@@ -314,7 +314,7 @@
 
 /* ── Error toast ── */
 .login-error-toast {
-  background: #2a1515;
+  background: var(--danger-bg);
   border: 1px solid #5c1d1d;
   color: #fca5a5;
   animation: login-slide-down 0.25s ease-out both;

@@ -14,7 +14,7 @@
 
 .userprofile-page {
     min-height: calc(100vh - 64px);
-    background: #111111;
+    background: var(--bg-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,7 +32,7 @@
     margin: 0 auto 16px;
     background: none;
     border: none;
-    color: #888;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
