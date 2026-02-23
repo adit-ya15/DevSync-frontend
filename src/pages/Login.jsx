@@ -95,19 +95,15 @@ const Login = () => {
 
     return (
         <div className="login-page">
-            {/* Subtle top glow */}
             <div className="login-glow" />
 
-            {/* Logo + Tagline */}
             <div className="login-logo-area">
                 <img src={logo} alt="DevSync" className="login-logo-icon" />
                 <h1 className="login-brand-name">DevSync</h1>
                 <p className="login-tagline">Swipe, connect, and build amazing things with developers who complement your skills.</p>
             </div>
 
-            {/* Form */}
             <div className="login-card">
-                {/* API Error */}
                 {apiError && (
                     <div className="login-error-toast flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -117,7 +113,6 @@ const Login = () => {
                     </div>
                 )}
 
-                {/* Email */}
                 <div className="login-field">
                     <label className="login-field-label">Email</label>
                     <div className="login-input-wrap">
@@ -136,7 +131,6 @@ const Login = () => {
                     {errors.email && <p className="login-field-error">{errors.email}</p>}
                 </div>
 
-                {/* Password */}
                 <div className="login-field">
                     <label className="login-field-label">Password</label>
                     <div className="login-input-wrap">
@@ -155,7 +149,6 @@ const Login = () => {
                     {errors.password && <p className="login-field-error">{errors.password}</p>}
                 </div>
 
-                {/* Remember / Forgot */}
                 <div className="login-extras">
                     <label className="login-remember">
                         <input type="checkbox" />
@@ -164,7 +157,6 @@ const Login = () => {
                     <a href="#" className="login-forgot">Forgot?</a>
                 </div>
 
-                {/* Submit */}
                 <button
                     className="login-submit-btn"
                     onClick={handleLogin}
@@ -181,14 +173,12 @@ const Login = () => {
                     ) : 'Sign In'}
                 </button>
 
-                {/* Divider */}
                 <div className="login-divider">
                     <div className="login-divider-line" />
                     <span className="login-divider-text">or</span>
                     <div className="login-divider-line" />
                 </div>
 
-                {/* Social login */}
                 <div className="login-social-row">
                     <button className="login-social-btn">
                         <svg fill="currentColor" viewBox="0 0 24 24">
@@ -207,7 +197,6 @@ const Login = () => {
                     </button>
                 </div>
 
-                {/* Footer */}
                 <p className="login-footer">
                     Don't have an account? <a href="#">Sign up</a>
                 </p>

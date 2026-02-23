@@ -124,11 +124,9 @@ const Profile = () => {
     const displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Developer';
     const genderLabel = user.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : null;
 
-    /* ═══════════════ EDIT MODE ═══════════════ */
     if (isEditing) {
         return (
             <div className="profile-page">
-                {/* Toast */}
                 {toast && (
                     <div className={`profile-toast ${toast.type === 'success' ? 'profile-toast-success' : 'profile-toast-error'}`}>
                         {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
@@ -136,7 +134,6 @@ const Profile = () => {
                 )}
 
                 <div className="profile-edit-card">
-                    {/* Header */}
                     <div className="profile-edit-header">
                         <span className="profile-edit-title">Edit Profile</span>
                         <button className="profile-edit-close" onClick={handleCancel}>
@@ -144,9 +141,7 @@ const Profile = () => {
                         </button>
                     </div>
 
-                    {/* Form */}
                     <div className="profile-edit-body">
-                        {/* Photo URL */}
                         <div className="profile-field">
                             <label className="profile-field-label">Photo URL</label>
                             <input
@@ -168,7 +163,6 @@ const Profile = () => {
                             )}
                         </div>
 
-                        {/* Name */}
                         <div className="profile-field">
                             <div className="profile-field-row">
                                 <div>
@@ -194,7 +188,6 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        {/* Age & Gender */}
                         <div className="profile-field">
                             <div className="profile-field-row">
                                 <div>
@@ -227,7 +220,6 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        {/* About */}
                         <div className="profile-field">
                             <label className="profile-field-label">About</label>
                             <textarea
@@ -240,7 +232,6 @@ const Profile = () => {
                             />
                         </div>
 
-                        {/* Skills */}
                         <div className="profile-field">
                             <label className="profile-field-label">Skills</label>
                             <div className="profile-skills-wrap">
@@ -272,7 +263,7 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    {/* Actions */}
+
                     <div className="profile-edit-actions">
                         <button className="profile-btn profile-btn-cancel" onClick={handleCancel} disabled={saving}>
                             Cancel
@@ -287,10 +278,8 @@ const Profile = () => {
         );
     }
 
-    /* ═══════════════ VIEW MODE ═══════════════ */
     return (
         <div className="profile-page">
-            {/* Toast */}
             {toast && (
                 <div className={`profile-toast ${toast.type === 'success' ? 'profile-toast-success' : 'profile-toast-error'}`}>
                     {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
@@ -298,7 +287,6 @@ const Profile = () => {
             )}
 
             <div className="profile-card">
-                {/* Large Photo */}
                 <div className="profile-photo-section">
                     <img
                         src={displayPhoto}
@@ -314,9 +302,7 @@ const Profile = () => {
                     </div>
                 </div>
 
-                {/* Body */}
                 <div className="profile-body">
-                    {/* Info rows */}
                     {genderLabel && (
                         <div className="profile-info-row">
                             {genderIcon}
@@ -330,7 +316,6 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* About */}
                     {user.about && (
                         <>
                             <div className="profile-divider" />
@@ -341,7 +326,6 @@ const Profile = () => {
                         </>
                     )}
 
-                    {/* Skills */}
                     {user.skills && user.skills.length > 0 && (
                         <>
                             <div className="profile-divider" />
@@ -357,7 +341,6 @@ const Profile = () => {
                     )}
                 </div>
 
-                {/* Edit button at bottom */}
                 <button className="profile-edit-btn" onClick={() => setIsEditing(true)}>
                     {editIcon}
                     Edit Profile
@@ -367,7 +350,6 @@ const Profile = () => {
     );
 };
 
-/* ── Inline SVG Icons ── */
 const editIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
