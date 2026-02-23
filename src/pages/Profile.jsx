@@ -6,6 +6,7 @@ import { addUser } from '../redux/userSlice';
 import UserCard from '../components/UserCard';
 import './Profile.css';
 import './Feed.css';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
     const user = useSelector(store => store.user);
@@ -13,7 +14,6 @@ const Profile = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [toast, setToast] = useState(null);
     const [newSkill, setNewSkill] = useState('');
 
     const [form, setForm] = useState({
@@ -39,13 +39,6 @@ const Profile = () => {
             });
         }
     }, [user]);
-
-    useEffect(() => {
-        if (toast) {
-            const t = setTimeout(() => setToast(null), 3000);
-            return () => clearTimeout(t);
-        }
-    }, [toast]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -103,11 +96,11 @@ const Profile = () => {
                 withCredentials: true,
             });
             dispatch(addUser(profileRes.data));
-            setToast({ type: 'success', message: 'Profile updated!' });
+            toast.success('Profile updated!');
             setIsEditing(false);
         } catch (error) {
             const msg = error?.response?.data?.message || error?.response?.data || 'Failed to update profile';
-            setToast({ type: 'error', message: typeof msg === 'string' ? msg : 'Something went wrong' });
+            toast.error(typeof msg === 'string' ? msg : 'Something went wrong');
         } finally {
             setSaving(false);
         }
@@ -125,11 +118,6 @@ const Profile = () => {
     if (isEditing) {
         return (
             <div className="profile-page">
-                {toast && (
-                    <div className={`profile-toast ${toast.type === 'success' ? 'profile-toast-success' : 'profile-toast-error'}`}>
-                        {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
-                    </div>
-                )}
 
                 <div className="profile-edit-layout">
                     {/* Live preview — mirrors exactly what others see in feed */}

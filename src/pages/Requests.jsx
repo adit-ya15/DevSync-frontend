@@ -6,6 +6,7 @@ import { BASE_URL } from '../constants/commonData';
 import { addRequests, removeRequest } from '../redux/requestSlice';
 import defaultAvatar from '../assests/images/default-user-image.png';
 import './Requests.css';
+import toast from 'react-hot-toast';
 
 const Requests = () => {
     const requests = useSelector(store => store.requests);
@@ -22,6 +23,7 @@ const Requests = () => {
             dispatch(addRequests(res.data?.connectionRequests || []));
         } catch (error) {
             console.error('Requests fetch error:', error);
+            toast.error('Failed to load requests');
         } finally {
             setLoading(false);
         }
@@ -40,6 +42,7 @@ const Requests = () => {
                 { withCredentials: true }
             );
             // Animate out then remove
+            toast.success(status === 'accepted' ? 'Request accepted! 🎉' : 'Request rejected');
             setRemovingId(requestId);
             setTimeout(() => {
                 dispatch(removeRequest(requestId));
@@ -47,6 +50,7 @@ const Requests = () => {
             }, 350);
         } catch (error) {
             console.error('Review request error:', error);
+            toast.error('Failed to process request');
         }
     };
 

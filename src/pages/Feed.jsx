@@ -5,6 +5,7 @@ import { BASE_URL } from '../constants/commonData';
 import { addFeed, removeFeed } from '../redux/feedSlice';
 import UserCard from '../components/UserCard';
 import './Feed.css';
+import toast from 'react-hot-toast';
 
 const SWIPE_THRESHOLD = 120;
 const VELOCITY_THRESHOLD = 0.5;
@@ -36,6 +37,7 @@ const Feed = () => {
             dispatch(addFeed(res.data?.feed || res.data?.data || []));
         } catch (error) {
             console.error('Feed fetch error:', error);
+            toast.error('Failed to load feed');
         } finally {
             setLoading(false);
         }
@@ -61,6 +63,7 @@ const Feed = () => {
             );
         } catch (error) {
             console.error('Action error:', error);
+            toast.error('Action failed. Try again.');
         }
     }, []);
 

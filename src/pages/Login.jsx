@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addUser } from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/commonData';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -75,6 +76,7 @@ const Login = () => {
 
             const profileRes = await axios.get(BASE_URL + "/profile/view", { withCredentials: true });
             dispatch(addUser(profileRes.data));
+            toast.success('Welcome back!');
             navigate("/");
         } catch (error) {
             const msg =
@@ -83,7 +85,9 @@ const Login = () => {
                 (error?.response?.status === 401
                     ? "Invalid email or password"
                     : "Something went wrong. Please try again.");
-            setApiError(typeof msg === "string" ? msg : "Something went wrong. Please try again.");
+            const errorMsg = typeof msg === "string" ? msg : "Something went wrong. Please try again.";
+            setApiError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setIsLoading(false);
         }

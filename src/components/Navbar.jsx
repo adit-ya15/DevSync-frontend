@@ -7,6 +7,7 @@ import { removeUser } from '../redux/userSlice';
 import logo from '../assests/images/logo.png';
 import userIcon from '../assests/images/default-user-image.png';
 import './Navbar.css';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
     const user = useSelector(store => store.user);
@@ -41,9 +42,11 @@ const Navbar = () => {
         try {
             await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
             dispatch(removeUser());
+            toast.success('Signed out');
             navigate("/login");
         } catch (error) {
             console.log(error);
+            toast.error('Logout failed');
         }
     };
 
