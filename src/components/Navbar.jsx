@@ -4,6 +4,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { removeUser } from '../redux/userSlice';
+import { removeConnections } from '../redux/connectionSlice';
+import { removeFeed } from '../redux/feedSlice';
+import { removeRequests } from '../redux/requestSlice';
 import logo from '../assests/images/logo.png';
 import userIcon from '../assests/images/default-user-image.png';
 import './Navbar.css';
@@ -42,6 +45,9 @@ const Navbar = () => {
         try {
             await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
             dispatch(removeUser());
+            dispatch(removeConnections());
+            dispatch(removeFeed());
+            dispatch(removeRequests());
             toast.success('Signed out');
             navigate("/login");
         } catch (error) {
