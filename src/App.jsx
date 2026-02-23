@@ -8,6 +8,7 @@ import appStore from "./redux/appStore"
 import Feed from "./pages/Feed"
 import Connections from "./pages/connections"
 import UserProfile from "./pages/UserProfile"
+import Requests from "./pages/Requests"
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/user/:userId" element={<UserProfile />} />
+              <Route path="/requests" element={<Requests />} />
             </Route>
           </Routes>
         </BrowserRouter>
