@@ -70,15 +70,12 @@ const Connections = () => {
                     </span>
                 </div>
 
-                {connections.map((conn, idx) => {
-                    const user = conn.firstName ? conn : (conn.fromUserId || conn.toUserId || conn);
+                {connections.map((user, idx) => {
                     const displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Developer';
                     const photo = user.photoUrl || defaultAvatar;
                     const meta = user.about
-                        ? user.about
-                        : user.skills?.length
-                            ? user.skills.slice(0, 3).join(' · ')
-                            : 'Developer';
+                        || (user.gender && user.age ? `${user.gender}, ${user.age}` : '')
+                        || (user.skills?.length ? user.skills.slice(0, 3).join(' · ') : 'Developer');
 
                     return (
                         <React.Fragment key={user._id || idx}>

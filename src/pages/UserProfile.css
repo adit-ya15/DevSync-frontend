@@ -1,0 +1,56 @@
+/* ===== User Profile Page ===== */
+
+@keyframes userprofile-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.userprofile-page {
+    min-height: calc(100vh - 64px);
+    background: #111111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+    animation: userprofile-fade-in 0.4s ease-out;
+}
+
+.userprofile-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto 16px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 2px;
+    transition: color 0.2s ease;
+}
+
+.userprofile-back:hover {
+    color: #FD267A;
+}
+
+.userprofile-back svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 480px) {
+    .userprofile-page {
+        padding: 16px 8px 40px;
+    }
+}
