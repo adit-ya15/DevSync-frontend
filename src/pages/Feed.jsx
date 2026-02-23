@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
@@ -6,20 +6,27 @@ import { addFeed, removeFeed } from '../redux/feedSlice';
 import UserCard from '../components/UserCard';
 import './Feed.css';
 
-const SWIPE_THRESHOLD = 100; // px to trigger action
-const FLY_DURATION = 400;    // ms for fly-off animation
+const SWIPE_THRESHOLD = 120;
+const VELOCITY_THRESHOLD = 0.5;
+const FLY_DURATION = 350;
 
 const Feed = () => {
     const feed = useSelector(store => store.feed);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [swiping, setSwiping] = useState(false);
 
-    // Swipe state
-    const [dragX, setDragX] = useState(0);
-    const [dragging, setDragging] = useState(false);
-    const [flyDirection, setFlyDirection] = useState(null); // 'left' | 'right' | null
-    const startX = useRef(0);
+    // Refs for smooth DOM manipulation (no re-renders during drag)
     const cardRef = useRef(null);
+    const likeStampRef = useRef(null);
+    const nopeStampRef = useRef(null);
+    const isDragging = useRef(false);
+    const startPos = useRef({ x: 0, y: 0 });
+    const currentPos = useRef({ x: 0, y: 0 });
+    const velocity = useRef({ x: 0, y: 0 });
+    const lastPos = useRef({ x: 0, y: 0 });
+    const lastTime = useRef(0);
+    const rafId = useRef(null);
 
     const fetchFeed = async () => {
         if (feed) return;
@@ -34,9 +41,7 @@ const Feed = () => {
         }
     };
 
-    useEffect(() => {
-        fetchFeed();
-    }, []);
+    useEffect(() => { fetchFeed(); }, []);
 
     const advanceFeed = useCallback(() => {
         const newFeed = feed.slice(1);
@@ -47,10 +52,7 @@ const Feed = () => {
         }
     }, [feed, dispatch]);
 
-    const handleAction = useCallback(async (status, userId, direction) => {
-        // Fly the card off screen
-        setFlyDirection(direction);
-
+    const sendAction = useCallback(async (status, userId) => {
         try {
             await axios.post(
                 `${BASE_URL}/request/send/${status}/${userId}`,
@@ -60,87 +62,159 @@ const Feed = () => {
         } catch (error) {
             console.error('Action error:', error);
         }
+    }, []);
 
-        // Wait for fly animation, then advance
-        setTimeout(() => {
-            setFlyDirection(null);
-            setDragX(0);
-            advanceFeed();
-        }, FLY_DURATION);
-    }, [advanceFeed]);
+    // ── Apply transform directly to DOM (60fps) ──
+    const applyTransform = useCallback((x, y) => {
+        if (!cardRef.current) return;
+        const rotation = x * 0.1;
+        cardRef.current.style.transform =
+            `translate3d(${x}px, ${y}px, 0) rotate(${rotation}deg)`;
 
-    // ── Pointer handlers ──
-    const onPointerDown = (e) => {
-        if (flyDirection) return;
-        setDragging(true);
-        startX.current = e.clientX || e.touches?.[0]?.clientX || 0;
-        if (cardRef.current) cardRef.current.style.transition = 'none';
-    };
+        // Stamp opacity
+        const progress = Math.abs(x) / SWIPE_THRESHOLD;
+        if (likeStampRef.current) {
+            likeStampRef.current.style.opacity = x > 0 ? Math.min(progress, 1) : 0;
+        }
+        if (nopeStampRef.current) {
+            nopeStampRef.current.style.opacity = x < 0 ? Math.min(progress, 1) : 0;
+        }
+    }, []);
 
-    const onPointerMove = (e) => {
-        if (!dragging || flyDirection) return;
-        const clientX = e.clientX || e.touches?.[0]?.clientX || 0;
-        const dx = clientX - startX.current;
-        setDragX(dx);
-    };
+    // ── Fly card off screen ──
+    const flyOff = useCallback((direction) => {
+        if (!cardRef.current || swiping) return;
+        setSwiping(true);
 
-    const onPointerUp = () => {
-        if (!dragging || flyDirection) return;
-        setDragging(false);
-        if (cardRef.current) cardRef.current.style.transition = '';
+        const card = cardRef.current;
+        const flyX = direction === 'right' ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
+        const flyRotation = direction === 'right' ? 30 : -30;
+
+        card.style.transition = `transform ${FLY_DURATION}ms cubic-bezier(0.2, 0, 0.2, 1), opacity ${FLY_DURATION}ms ease`;
+        card.style.transform = `translate3d(${flyX}px, -50px, 0) rotate(${flyRotation}deg)`;
+        card.style.opacity = '0';
+
+        // Show the correct stamp
+        if (likeStampRef.current) likeStampRef.current.style.opacity = direction === 'right' ? '1' : '0';
+        if (nopeStampRef.current) nopeStampRef.current.style.opacity = direction === 'left' ? '1' : '0';
 
         const currentUser = feed?.[0];
-        if (!currentUser) return;
-
-        if (dragX > SWIPE_THRESHOLD) {
-            handleAction('interested', currentUser._id, 'right');
-        } else if (dragX < -SWIPE_THRESHOLD) {
-            handleAction('ignored', currentUser._id, 'left');
-        } else {
-            setDragX(0); // snap back
+        if (currentUser) {
+            sendAction(direction === 'right' ? 'interested' : 'ignored', currentUser._id);
         }
+
+        setTimeout(() => {
+            setSwiping(false);
+            advanceFeed();
+        }, FLY_DURATION);
+    }, [feed, advanceFeed, sendAction, swiping]);
+
+    // ── Spring back to center ──
+    const snapBack = useCallback(() => {
+        if (!cardRef.current) return;
+        const card = cardRef.current;
+        card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease';
+        card.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+        if (likeStampRef.current) {
+            likeStampRef.current.style.transition = 'opacity 0.3s ease';
+            likeStampRef.current.style.opacity = '0';
+        }
+        if (nopeStampRef.current) {
+            nopeStampRef.current.style.transition = 'opacity 0.3s ease';
+            nopeStampRef.current.style.opacity = '0';
+        }
+    }, []);
+
+    // ── Pointer handlers ──
+    const getEventPos = (e) => {
+        if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        return { x: e.clientX, y: e.clientY };
     };
 
-    // ── Touch handlers ──
-    const onTouchStart = (e) => {
-        if (flyDirection) return;
-        setDragging(true);
-        startX.current = e.touches[0].clientX;
-        if (cardRef.current) cardRef.current.style.transition = 'none';
-    };
+    const handleStart = useCallback((e) => {
+        if (swiping) return;
+        const pos = getEventPos(e);
+        isDragging.current = true;
+        startPos.current = pos;
+        currentPos.current = { x: 0, y: 0 };
+        lastPos.current = pos;
+        lastTime.current = Date.now();
+        velocity.current = { x: 0, y: 0 };
 
-    const onTouchMove = (e) => {
-        if (!dragging || flyDirection) return;
-        const dx = e.touches[0].clientX - startX.current;
-        setDragX(dx);
-    };
+        if (cardRef.current) {
+            cardRef.current.style.transition = 'none';
+        }
+        if (likeStampRef.current) likeStampRef.current.style.transition = 'none';
+        if (nopeStampRef.current) nopeStampRef.current.style.transition = 'none';
+    }, [swiping]);
 
-    const onTouchEnd = () => onPointerUp();
+    const handleMove = useCallback((e) => {
+        if (!isDragging.current || swiping) return;
+        e.preventDefault();
 
-    // ── Compute card transform ──
-    const rotation = dragging || flyDirection ? dragX * 0.08 : 0;
-    const likeOpacity = Math.min(Math.max(dragX / SWIPE_THRESHOLD, 0), 1);
-    const nopeOpacity = Math.min(Math.max(-dragX / SWIPE_THRESHOLD, 0), 1);
+        const pos = getEventPos(e);
+        const now = Date.now();
+        const dt = now - lastTime.current;
 
-    let cardStyle = {};
-    if (flyDirection === 'right') {
-        cardStyle = {
-            transform: `translateX(120vw) rotate(25deg)`,
-            transition: `transform ${FLY_DURATION}ms ease-out, opacity ${FLY_DURATION}ms ease-out`,
-            opacity: 0,
+        if (dt > 0) {
+            velocity.current = {
+                x: (pos.x - lastPos.current.x) / dt,
+                y: (pos.y - lastPos.current.y) / dt,
+            };
+        }
+
+        lastPos.current = pos;
+        lastTime.current = now;
+
+        currentPos.current = {
+            x: pos.x - startPos.current.x,
+            y: (pos.y - startPos.current.y) * 0.4, // dampen vertical
         };
-    } else if (flyDirection === 'left') {
-        cardStyle = {
-            transform: `translateX(-120vw) rotate(-25deg)`,
-            transition: `transform ${FLY_DURATION}ms ease-out, opacity ${FLY_DURATION}ms ease-out`,
-            opacity: 0,
+
+        // Use rAF for smooth frame updates
+        if (rafId.current) cancelAnimationFrame(rafId.current);
+        rafId.current = requestAnimationFrame(() => {
+            applyTransform(currentPos.current.x, currentPos.current.y);
+        });
+    }, [applyTransform, swiping]);
+
+    const handleEnd = useCallback(() => {
+        if (!isDragging.current || swiping) return;
+        isDragging.current = false;
+        if (rafId.current) cancelAnimationFrame(rafId.current);
+
+        const x = currentPos.current.x;
+        const vx = velocity.current.x;
+
+        // Check threshold OR velocity
+        if (x > SWIPE_THRESHOLD || vx > VELOCITY_THRESHOLD) {
+            flyOff('right');
+        } else if (x < -SWIPE_THRESHOLD || vx < -VELOCITY_THRESHOLD) {
+            flyOff('left');
+        } else {
+            snapBack();
+        }
+    }, [flyOff, snapBack, swiping]);
+
+    // ── Event listeners (passive: false for touch-action) ──
+    useEffect(() => {
+        const card = cardRef.current;
+        if (!card) return;
+
+        const onTouchMove = (e) => handleMove(e);
+
+        card.addEventListener('touchmove', onTouchMove, { passive: false });
+        return () => {
+            card.removeEventListener('touchmove', onTouchMove);
         };
-    } else {
-        cardStyle = {
-            transform: `translateX(${dragX}px) rotate(${rotation}deg)`,
-            transition: dragging ? 'none' : 'transform 0.3s ease, opacity 0.3s ease',
+    }, [handleMove, feed]);
+
+    // Cleanup rAF on unmount
+    useEffect(() => {
+        return () => {
+            if (rafId.current) cancelAnimationFrame(rafId.current);
         };
-    }
+    }, []);
 
     /* ── Loading state ── */
     if (loading) {
@@ -169,57 +243,56 @@ const Feed = () => {
     }
 
     const currentUser = feed[0];
+    const nextUser = feed[1] || null;
 
     return currentUser && (
         <div className="feed-page">
-            <div
-                className="feed-card-wrap"
-                key={currentUser._id}
-                ref={cardRef}
-                style={cardStyle}
-                onMouseDown={onPointerDown}
-                onMouseMove={onPointerMove}
-                onMouseUp={onPointerUp}
-                onMouseLeave={() => { if (dragging) onPointerUp(); }}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-            >
-                {/* Swipe stamp overlays */}
-                <div className="feed-stamp feed-stamp-like" style={{ opacity: likeOpacity }}>
-                    LIKE
-                </div>
-                <div className="feed-stamp feed-stamp-nope" style={{ opacity: nopeOpacity }}>
-                    NOPE
-                </div>
+            <div className="feed-deck">
+                {/* Next card (behind) */}
+                {nextUser && (
+                    <div className="feed-card-behind">
+                        <UserCard user={nextUser} />
+                    </div>
+                )}
 
-                <UserCard
-                    user={currentUser}
-                    actions={
-                        <div className="feed-actions">
-                            <button
-                                className="feed-action-btn feed-btn-pass"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAction('ignored', currentUser._id, 'left');
-                                }}
-                                title="Pass"
-                            >
-                                {passIcon}
-                            </button>
-                            <button
-                                className="feed-action-btn feed-btn-like"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAction('interested', currentUser._id, 'right');
-                                }}
-                                title="Interested"
-                            >
-                                {likeIcon}
-                            </button>
-                        </div>
-                    }
-                />
+                {/* Current card (draggable) */}
+                <div
+                    className="feed-card-wrap"
+                    key={currentUser._id}
+                    ref={cardRef}
+                    onMouseDown={handleStart}
+                    onMouseMove={handleMove}
+                    onMouseUp={handleEnd}
+                    onMouseLeave={() => { if (isDragging.current) handleEnd(); }}
+                    onTouchStart={handleStart}
+                    onTouchEnd={handleEnd}
+                >
+                    {/* Stamp overlays */}
+                    <div className="feed-stamp feed-stamp-like" ref={likeStampRef}>LIKE</div>
+                    <div className="feed-stamp feed-stamp-nope" ref={nopeStampRef}>NOPE</div>
+
+                    <UserCard
+                        user={currentUser}
+                        actions={
+                            <div className="feed-actions">
+                                <button
+                                    className="feed-action-btn feed-btn-pass"
+                                    onClick={(e) => { e.stopPropagation(); flyOff('left'); }}
+                                    title="Pass"
+                                >
+                                    {passIcon}
+                                </button>
+                                <button
+                                    className="feed-action-btn feed-btn-like"
+                                    onClick={(e) => { e.stopPropagation(); flyOff('right'); }}
+                                    title="Interested"
+                                >
+                                    {likeIcon}
+                                </button>
+                            </div>
+                        }
+                    />
+                </div>
             </div>
         </div>
     );

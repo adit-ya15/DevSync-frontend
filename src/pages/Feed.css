@@ -29,14 +29,37 @@
     overflow: hidden;
 }
 
-/* ── Swipeable card wrapper ── */
+/* ── Card deck (stacked) ── */
+.feed-deck {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Card behind (next user) */
+.feed-card-behind {
+    position: absolute;
+    top: 8px;
+    left: 4px;
+    right: 4px;
+    transform: scale(0.96);
+    opacity: 0.5;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+/* Current card (swipeable) */
 .feed-card-wrap {
     position: relative;
-    animation: feed-fade-in 0.35s ease-out;
-    user-select: none;
+    z-index: 10;
     cursor: grab;
+    user-select: none;
     -webkit-user-drag: none;
-    touch-action: pan-y;
+    touch-action: none;
+    will-change: transform;
+    animation: feed-fade-in 0.25s ease-out;
 }
 
 .feed-card-wrap:active {
@@ -46,34 +69,32 @@
 /* ── Swipe stamp overlays ── */
 .feed-stamp {
     position: absolute;
-    top: 40px;
+    top: 50px;
     z-index: 20;
-    padding: 8px 20px;
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
+    padding: 8px 18px;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
     border: 4px solid;
-    border-radius: 12px;
+    border-radius: 10px;
     pointer-events: none;
     opacity: 0;
-    transform: rotate(-15deg);
-    transition: opacity 0.1s ease;
 }
 
 .feed-stamp-like {
-    left: 20px;
+    left: 24px;
     color: #34d399;
     border-color: #34d399;
-    transform: rotate(-18deg);
-    text-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+    transform: rotate(-20deg);
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
 }
 
 .feed-stamp-nope {
-    right: 20px;
+    right: 24px;
     color: #f87171;
     border-color: #f87171;
-    transform: rotate(18deg);
-    text-shadow: 0 0 12px rgba(248, 113, 113, 0.3);
+    transform: rotate(20deg);
+    text-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
 }
 
 /* ── Action buttons row ── */
@@ -96,6 +117,8 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 30;
 }
 
 .feed-action-btn svg {
@@ -119,6 +142,10 @@
     box-shadow: 0 0 20px rgba(248, 113, 113, 0.15);
 }
 
+.feed-btn-pass:active {
+    transform: scale(0.92);
+}
+
 /* Interested / Like */
 .feed-btn-like {
     border-color: #34d399;
@@ -128,6 +155,10 @@
 .feed-btn-like:hover {
     background: rgba(52, 211, 153, 0.1);
     box-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+}
+
+.feed-btn-like:active {
+    transform: scale(0.92);
 }
 
 /* ── Empty state ── */
@@ -194,8 +225,8 @@
     }
 
     .feed-stamp {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         padding: 6px 14px;
-        top: 30px;
+        top: 35px;
     }
 }
