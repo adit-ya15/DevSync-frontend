@@ -70,7 +70,8 @@ const Feed = () => {
     // ── Apply transform directly to DOM (60fps) ──
     const applyTransform = useCallback((x, y) => {
         if (!cardRef.current) return;
-        const rotation = x * 0.1;
+        // Dampen rotation slightly for a smoother, more natural feel
+        const rotation = x * 0.05;
         cardRef.current.style.transform =
             `translate3d(${x}px, ${y}px, 0) rotate(${rotation}deg)`;
 
@@ -93,7 +94,8 @@ const Feed = () => {
         const flyX = direction === 'right' ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
         const flyRotation = direction === 'right' ? 30 : -30;
 
-        card.style.transition = `transform ${FLY_DURATION}ms cubic-bezier(0.2, 0, 0.2, 1), opacity ${FLY_DURATION}ms ease`;
+        // Uses a smoother bezier curve specifically tailored for flying off screen
+        card.style.transition = `transform ${FLY_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1), opacity ${FLY_DURATION}ms ease`;
         card.style.transform = `translate3d(${flyX}px, -50px, 0) rotate(${flyRotation}deg)`;
         card.style.opacity = '0';
 
@@ -116,21 +118,22 @@ const Feed = () => {
     const snapBack = useCallback(() => {
         if (!cardRef.current) return;
         const card = cardRef.current;
-        card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease';
+        // Bouncier, smoother spring-back effect
+        card.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease';
         card.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
         if (likeStampRef.current) {
-            likeStampRef.current.style.transition = 'opacity 0.3s ease';
+            likeStampRef.current.style.transition = 'opacity 0.4s ease';
             likeStampRef.current.style.opacity = '0';
         }
         if (nopeStampRef.current) {
-            nopeStampRef.current.style.transition = 'opacity 0.3s ease';
+            nopeStampRef.current.style.transition = 'opacity 0.4s ease';
             nopeStampRef.current.style.opacity = '0';
         }
     }, []);
 
     // ── Pointer handlers ──
     const getEventPos = (e) => {
-        if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
         return { x: e.clientX, y: e.clientY };
     };
 
@@ -145,7 +148,8 @@ const Feed = () => {
         velocity.current = { x: 0, y: 0 };
 
         if (cardRef.current) {
-            cardRef.current.style.transition = 'none';
+            cardRef.current.style.transition = 'none'; // Instant tracking while user drags
+            cardRef.current.style.cursor = 'grabbing';
         }
         if (likeStampRef.current) likeStampRef.current.style.transition = 'none';
         if (nopeStampRef.current) nopeStampRef.current.style.transition = 'none';
@@ -153,7 +157,7 @@ const Feed = () => {
 
     const handleMove = useCallback((e) => {
         if (!isDragging.current || swiping) return;
-        e.preventDefault();
+        e.preventDefault(); // Stop scrolling while swiping
 
         const pos = getEventPos(e);
         const now = Date.now();
@@ -171,7 +175,8 @@ const Feed = () => {
 
         currentPos.current = {
             x: pos.x - startPos.current.x,
-            y: (pos.y - startPos.current.y) * 0.4, // dampen vertical
+            // Further dampen vertical movement to make swiping feel strictly horizontal
+            y: (pos.y - startPos.current.y) * 0.25,
         };
 
         // Use rAF for smooth frame updates

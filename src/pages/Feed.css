@@ -50,7 +50,6 @@
     transition: transform 0.35s ease, opacity 0.35s ease;
 }
 
-/* Current card (swipeable) */
 .feed-card-wrap {
     position: relative;
     z-index: 10;
@@ -59,6 +58,8 @@
     -webkit-user-drag: none;
     touch-action: none;
     will-change: transform;
+    transform-origin: 50% 100%;
+    /* Pivot slightly lower for natural drag rotation */
     animation: feed-fade-in 0.25s ease-out;
 }
 
