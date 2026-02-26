@@ -9,11 +9,14 @@ import { BASE_URL } from '../constants/commonData';
 import toast from 'react-hot-toast';
 
 const Login = () => {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector(store => store.user);
@@ -34,6 +37,11 @@ const Login = () => {
         const newErrors = {};
         const trimmedEmail = email.trim();
 
+        if (!isLogin) {
+            if (!firstName.trim()) newErrors.firstName = "First name is required";
+            if (!lastName.trim()) newErrors.lastName = "Last name is required";
+        }
+
         if (!trimmedEmail) {
             newErrors.email = "Email is required";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
@@ -48,6 +56,18 @@ const Login = () => {
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    const handleFirstNameChange = (e) => {
+        setFirstName(e.target.value);
+        if (errors.firstName) setErrors(prev => ({ ...prev, firstName: "" }));
+        if (apiError) setApiError("");
+    };
+
+    const handleLastNameChange = (e) => {
+        setLastName(e.target.value);
+        if (errors.lastName) setErrors(prev => ({ ...prev, lastName: "" }));
+        if (apiError) setApiError("");
     };
 
     const handleEmailChange = (e) => {
@@ -93,8 +113,44 @@ const Login = () => {
         }
     };
 
+    const handleSignUp = async () => {
+        if (!validate()) return;
+
+        setIsLoading(true);
+        setApiError("");
+
+        try {
+            await axios.post(BASE_URL + "/signup", {
+                email: email.trim(),
+                password,
+                firstName,
+                lastName
+            }, { withCredentials: true });
+
+            const profileRes = await axios.get(BASE_URL + "/profile/view", { withCredentials: true });
+            dispatch(addUser(profileRes.data));
+            toast.success('Welcome!');
+            navigate("/profile");
+        } catch (error) {
+            const msg =
+                error?.response?.data?.message ||
+                error?.response?.data ||
+                (error?.response?.status === 401
+                    ? "Invalid email or password"
+                    : "Something went wrong. Please try again.");
+            const errorMsg = typeof msg === "string" ? msg : "Something went wrong. Please try again.";
+            setApiError(errorMsg);
+            toast.error(errorMsg);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") handleLogin();
+        if (e.key === "Enter") {
+            if (isLogin) handleLogin();
+            else handleSignUp();
+        }
     };
 
     return (
@@ -117,6 +173,40 @@ const Login = () => {
                     </div>
                 )}
 
+                {!isLogin && <div className="login-field">
+                    <label className="login-field-label">First Name</label>
+                    <div className="login-input-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="login-input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="First Name"
+                            value={firstName}
+                            onChange={handleFirstNameChange}
+                            onKeyDown={handleKeyDown}
+                            className={`login-input ${errors.firstName ? 'login-input-error' : ''}`}
+                        />
+                    </div>
+                    {errors.firstName && <p className="login-field-error">{errors.firstName}</p>}
+                </div>}
+                {!isLogin && <div className="login-field">
+                    <label className="login-field-label">Last Name</label>
+                    <div className="login-input-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="login-input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="Last Name"
+                            value={lastName}
+                            onChange={handleLastNameChange}
+                            onKeyDown={handleKeyDown}
+                            className={`login-input ${errors.lastName ? 'login-input-error' : ''}`}
+                        />
+                    </div>
+                    {errors.lastName && <p className="login-field-error">{errors.lastName}</p>}
+                </div>}
                 <div className="login-field">
                     <label className="login-field-label">Email</label>
                     <div className="login-input-wrap">
@@ -153,17 +243,19 @@ const Login = () => {
                     {errors.password && <p className="login-field-error">{errors.password}</p>}
                 </div>
 
-                <div className="login-extras">
-                    <label className="login-remember">
-                        <input type="checkbox" />
-                        Remember me
-                    </label>
-                    <a href="#" className="login-forgot">Forgot?</a>
-                </div>
+                {isLogin && (
+                    <div className="login-extras">
+                        <label className="login-remember">
+                            <input type="checkbox" />
+                            Remember me
+                        </label>
+                        <a href="#" className="login-forgot">Forgot?</a>
+                    </div>
+                )}
 
                 <button
                     className="login-submit-btn"
-                    onClick={handleLogin}
+                    onClick={isLogin ? handleLogin : handleSignUp}
                     disabled={isLoading}
                 >
                     {isLoading ? (
@@ -172,9 +264,9 @@ const Login = () => {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            Signing in…
+                            {isLogin ? 'Signing in…' : 'Signing up…'}
                         </span>
-                    ) : 'Sign In'}
+                    ) : (isLogin ? 'Sign In' : 'Sign Up')}
                 </button>
 
                 <div className="login-divider">
@@ -202,7 +294,7 @@ const Login = () => {
                 </div>
 
                 <p className="login-footer">
-                    Don't have an account? <a href="#">Sign up</a>
+                    {isLogin ? "Don't have an account?" : "Already have an account?"} <span className="login-footer-link" onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Sign up" : "Sign in"}</span>
                 </p>
             </div>
         </div>

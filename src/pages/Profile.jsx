@@ -287,12 +287,6 @@ const Profile = () => {
     /* ── View Mode ── */
     return (
         <div className="profile-page">
-            {toast && (
-                <div className={`profile-toast ${toast.type === 'success' ? 'profile-toast-success' : 'profile-toast-error'}`}>
-                    {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
-                </div>
-            )}
-
             <UserCard
                 user={user}
                 showEmail

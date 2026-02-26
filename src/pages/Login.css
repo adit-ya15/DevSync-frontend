@@ -301,14 +301,14 @@
   animation: login-fade-in 0.5s ease-out 0.3s both;
 }
 
-.login-footer a {
+.login-footer span {
   color: #FD267A;
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.2s;
 }
 
-.login-footer a:hover {
+.login-footer span:hover {
   opacity: 0.8;
 }
 
