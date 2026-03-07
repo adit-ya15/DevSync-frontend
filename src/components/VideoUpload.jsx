@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BASE_URL } from '../constants/commonData';
 
 const VideoUpload = () => {
     const [videoFile, setVideoFile] = useState(null);
@@ -18,7 +19,7 @@ const VideoUpload = () => {
         formData.append('caption', caption);
 
         try {
-            const response = await fetch('/upload', {
+            const response = await fetch(`${BASE_URL}/videos/upload`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include',
