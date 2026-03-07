@@ -8,6 +8,9 @@ const VideoFeed = () => {
     const dispatch = useDispatch();
     const videos = useSelector((store) => store.reels);
     const [loading, setLoading] = useState(true);
+    const [activeCommentsVideoId, setActiveCommentsVideoId] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [loadingComments, setLoadingComments] = useState(false);
     const videoRefs = useRef([]);
 
     useEffect(() => {
@@ -63,10 +66,44 @@ const VideoFeed = () => {
                 body: JSON.stringify({ videoId, text }),
                 credentials: 'include',
             });
-            await response.json();
-            // In a real app we'd dispatch an update to add the comment to the reel state here
+            const newComment = await response.json();
+
+            // If we are currently viewing comments for this video, append it
+            if (activeCommentsVideoId === videoId) {
+                // To display it nicely in real-time, we mock the populated user data
+                // In a full app, the backend should return the populated comment, or we fetch user from Redux
+                setComments(prev => [{ ...newComment, userId: { firstName: 'You', photoUrl: '' } }, ...prev]);
+            }
+
+            // Update comments count in Redux
+            const currentVideo = videos.find(v => v._id === videoId);
+            if (currentVideo) {
+                // Assuming we have an action to update comment count (can be handled by re-fetching or a new reducer action)
+                // For now, we rely on the backend count on next fetch, or we could add a specific updateReelCommentCount action.
+            }
         } catch (error) {
             console.error('Comment error:', error);
+        }
+    };
+
+    const toggleComments = async (videoId) => {
+        if (activeCommentsVideoId === videoId) {
+            setActiveCommentsVideoId(null);
+            return;
+        }
+
+        setActiveCommentsVideoId(videoId);
+        setLoadingComments(true);
+        try {
+            const res = await fetch(`${BASE_URL}/comments/${videoId}`, {
+                credentials: 'include'
+            });
+            const data = await res.json();
+            setComments(data);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        } finally {
+            setLoadingComments(false);
         }
     };
 
@@ -151,7 +188,7 @@ const VideoFeed = () => {
                     <div className="video-overlay pointer-events-none">
                         <div className="video-info pointer-events-auto w-full pr-12">
                             <p className="video-caption">{video.caption || 'No caption'}</p>
-                            <div className="comment-input-container w-full">
+                            <div className="comment-input-container w-full" onClick={() => !activeCommentsVideoId && toggleComments(video._id)}>
                                 <input
                                     type="text"
                                     placeholder="Add comment..."
@@ -169,13 +206,55 @@ const VideoFeed = () => {
                                 {video.liked ? heartFilledIcon : heartOutlineIcon}
                                 <span>{video.likesCount || 0}</span>
                             </button>
-                            <button className="action-btn">
+                            <button className="action-btn" onClick={() => toggleComments(video._id)}>
                                 {commentIcon}
-                                <span>{video.comments?.length || 0}</span>
+                                <span>{video.commentsCount || 0}</span>
                             </button>
                             <button className="action-btn">
                                 {shareIcon}
                             </button>
+                        </div>
+                    </div>
+
+                    {/* Comments Drawer */}
+                    <div className={`comments-drawer pointer-events-auto ${activeCommentsVideoId === video._id ? 'open' : ''}`}>
+                        <div className="comments-header">
+                            <h3>Comments</h3>
+                            <button className="close-comments-btn" onClick={() => setActiveCommentsVideoId(null)}>✕</button>
+                        </div>
+                        <div className="comments-list">
+                            {loadingComments ? (
+                                <p className="comments-loading">Loading comments...</p>
+                            ) : comments.length === 0 ? (
+                                <p className="comments-empty">No comments yet. Be the first to comment!</p>
+                            ) : (
+                                comments.map(c => (
+                                    <div key={c._id} className="comment-item">
+                                        <img
+                                            src={c.userId?.photoUrl || 'https://via.placeholder.com/40'}
+                                            alt={c.userId?.firstName}
+                                            className="comment-avatar"
+                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/40'; }}
+                                        />
+                                        <div className="comment-content">
+                                            <span className="comment-author">{c.userId?.firstName} {c.userId?.lastName}</span>
+                                            <p className="comment-text">{c.text}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                        <div className="comment-input-container drawer-input">
+                            <input
+                                type="text"
+                                placeholder="Add a comment..."
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleComment(video._id, e.target.value);
+                                        e.target.value = '';
+                                    }
+                                }}
+                            />
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addConnections } from '../redux/connectionSlice';
-import defaultAvatar from '../assests/images/default-user-image.png';
+import UserCard from '../components/UserCard';
 import './Connections.css';
 
 const Connections = () => {
@@ -70,49 +70,21 @@ const Connections = () => {
                     </span>
                 </div>
 
-                {connections.map((user, idx) => {
-                    const displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Developer';
-                    const photo = user.photoUrl || defaultAvatar;
-                    const meta = user.about
-                        || (user.gender && user.age ? `${user.gender}, ${user.age}` : '')
-                        || (user.skills?.length ? user.skills.slice(0, 3).join(' · ') : 'Developer');
-
-                    return (
-                        <React.Fragment key={user._id || idx}>
-                            <div
-                                className="connection-row"
-                                style={{ animationDelay: `${idx * 0.04}s` }}
-                                onClick={() => handleViewProfile(user)}
-                            >
-                                <div className="connection-avatar-ring">
-                                    <img
-                                        className="connection-avatar"
-                                        src={photo}
-                                        alt={displayName}
-                                        onError={(e) => { e.target.src = defaultAvatar; }}
-                                    />
-                                </div>
-                                <div className="connection-info">
-                                    <p className="connection-name">
-                                        {displayName}{user.age ? `, ${user.age}` : ''}
-                                    </p>
-                                    <p className="connection-meta">{meta}</p>
-                                </div>
-                                {chevronIcon}
-                            </div>
-                            {idx < connections.length - 1 && <div className="connection-divider" />}
-                        </React.Fragment>
-                    );
-                })}
+                <div className="connections-grid">
+                    {connections.map((user, idx) => (
+                        <div
+                            key={user._id || idx}
+                            className="connection-card-wrap"
+                            style={{ animationDelay: `${idx * 0.04}s` }}
+                            onClick={() => handleViewProfile(user)}
+                        >
+                            <UserCard user={user} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
 };
-
-const chevronIcon = (
-    <svg className="connection-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-);
 
 export default Connections;

@@ -19,30 +19,40 @@ const Profile = () => {
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
-        photoUrl: '',
         age: '',
         gender: '',
         about: '',
         skills: [],
     });
 
+    const [profileImageFile, setProfileImageFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState('');
+
     useEffect(() => {
         if (user) {
             setForm({
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
-                photoUrl: user.photoUrl || '',
                 age: user.age || '',
                 gender: user.gender || '',
                 about: user.about || '',
                 skills: user.skills || [],
             });
+            setPhotoPreview(user.photoUrl || '');
         }
     }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setProfileImageFile(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
     };
 
     const handleAddSkill = () => {
@@ -69,28 +79,40 @@ const Profile = () => {
 
     const handleCancel = () => {
         setIsEditing(false);
+        setProfileImageFile(null);
         if (user) {
             setForm({
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
-                photoUrl: user.photoUrl || '',
                 age: user.age || '',
                 gender: user.gender || '',
                 about: user.about || '',
                 skills: user.skills || [],
             });
+            setPhotoPreview(user.photoUrl || '');
         }
     };
 
     const handleSave = async () => {
         setSaving(true);
         try {
-            const payload = {
-                ...form,
-                age: form.age ? Number(form.age) : undefined,
-            };
-            await axios.patch(BASE_URL + '/profile/edit', payload, {
+            const formData = new FormData();
+            formData.append('firstName', form.firstName);
+            formData.append('lastName', form.lastName);
+            if (form.age) formData.append('age', form.age);
+            if (form.gender) formData.append('gender', form.gender);
+            if (form.about) formData.append('about', form.about);
+            if (form.skills.length > 0) formData.append('skills', JSON.stringify(form.skills));
+
+            if (profileImageFile) {
+                formData.append('profileImage', profileImageFile);
+            }
+
+            await axios.patch(BASE_URL + '/profile/edit', formData, {
                 withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
             const profileRes = await axios.get(BASE_URL + '/profile/view', {
                 withCredentials: true,
@@ -124,7 +146,7 @@ const Profile = () => {
                     <div className="profile-preview-wrap">
                         <p className="profile-preview-label">How others see you</p>
                         <UserCard
-                            user={form}
+                            user={{ ...form, photoUrl: photoPreview }}
                             actions={
                                 <div className="feed-actions">
                                     <button className="feed-action-btn feed-btn-pass" disabled title="Pass">
@@ -149,22 +171,22 @@ const Profile = () => {
 
                         <div className="profile-edit-body">
                             <div className="profile-field">
-                                <label className="profile-field-label">Photo URL</label>
+                                <label className="profile-field-label">Profile Image</label>
                                 <input
+                                    type="file"
                                     className="profile-input"
-                                    name="photoUrl"
-                                    value={form.photoUrl}
-                                    onChange={handleChange}
-                                    placeholder="https://example.com/photo.jpg"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
                                 />
-                                {form.photoUrl && (
-                                    <div className="profile-photo-preview">
+                                {photoPreview && (
+                                    <div className="profile-photo-preview mt-3">
                                         <img
-                                            src={form.photoUrl}
+                                            src={photoPreview}
                                             alt="Preview"
                                             onError={(e) => { e.target.style.display = 'none'; }}
+                                            className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-pink)]"
                                         />
-                                        <span>Preview</span>
+                                        <span className="ml-3 text-sm text-[var(--text-secondary)]">Preview</span>
                                     </div>
                                 )}
                             </div>

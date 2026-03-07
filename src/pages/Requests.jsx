@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addRequests, removeRequest } from '../redux/requestSlice';
-import defaultAvatar from '../assests/images/default-user-image.png';
+import UserCard from '../components/UserCard';
 import './Requests.css';
 import toast from 'react-hot-toast';
 
@@ -94,57 +94,41 @@ const Requests = () => {
                     </span>
                 </div>
 
-                {requests.map((req, idx) => {
-                    const user = req.fromUserId || req;
-                    const displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Developer';
-                    const photo = user.photoUrl || defaultAvatar;
-                    const meta = user.about
-                        || (user.skills?.length ? user.skills.slice(0, 3).join(' · ') : '')
-                        || (user.gender && user.age ? `${user.gender}, ${user.age}` : '')
-                        || 'Developer';
-
-                    return (
-                        <React.Fragment key={req._id || idx}>
+                <div className="requests-grid">
+                    {requests.map((req, idx) => {
+                        const user = req.fromUserId || req;
+                        return (
                             <div
-                                className={`request-row ${removingId === req._id ? 'removing' : ''}`}
+                                key={req._id || idx}
+                                className={`request-card-wrap ${removingId === req._id ? 'removing' : ''}`}
                                 style={{ animationDelay: `${idx * 0.04}s` }}
                                 onClick={() => handleViewProfile(user)}
                             >
-                                <div className="request-avatar-ring">
-                                    <img
-                                        className="request-avatar"
-                                        src={photo}
-                                        alt={displayName}
-                                        onError={(e) => { e.target.src = defaultAvatar; }}
-                                    />
-                                </div>
-                                <div className="request-info">
-                                    <p className="request-name">
-                                        {displayName}{user.age ? `, ${user.age}` : ''}
-                                    </p>
-                                    <p className="request-meta">{meta}</p>
-                                </div>
-                                <div className="request-actions">
-                                    <button
-                                        className="request-btn request-btn-reject"
-                                        title="Reject"
-                                        onClick={(e) => handleReview('rejected', req._id, e)}
-                                    >
-                                        {rejectIcon}
-                                    </button>
-                                    <button
-                                        className="request-btn request-btn-accept"
-                                        title="Accept"
-                                        onClick={(e) => handleReview('accepted', req._id, e)}
-                                    >
-                                        {acceptIcon}
-                                    </button>
-                                </div>
+                                <UserCard
+                                    user={user}
+                                    actions={
+                                        <div className="feed-actions">
+                                            <button
+                                                className="feed-action-btn feed-btn-pass"
+                                                title="Reject"
+                                                onClick={(e) => handleReview('rejected', req._id, e)}
+                                            >
+                                                {rejectIcon}
+                                            </button>
+                                            <button
+                                                className="feed-action-btn feed-btn-like"
+                                                title="Accept"
+                                                onClick={(e) => handleReview('accepted', req._id, e)}
+                                            >
+                                                {acceptIcon}
+                                            </button>
+                                        </div>
+                                    }
+                                />
                             </div>
-                            {idx < requests.length - 1 && <div className="request-divider" />}
-                        </React.Fragment>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );

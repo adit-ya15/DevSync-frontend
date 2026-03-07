@@ -1,0 +1,193 @@
+/* ===== Policy & Static Pages styling ===== */
+
+/* ── Page Container ── */
+.policy-page {
+    min-height: calc(100vh - 64px);
+    background: var(--bg-primary, #000);
+    padding: 40px 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.policy-container {
+    max-width: 800px;
+    width: 100%;
+    background: var(--bg-card, #111);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color, #333);
+}
+
+/* ── Header ── */
+.policy-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-pink, #FD267A);
+    margin-bottom: 8px;
+}
+
+.policy-date {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color, #333);
+}
+
+/* ── Content Typography ── */
+.policy-content {
+    color: var(--text-primary, #f5f5f5);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.policy-content section {
+    margin-bottom: 32px;
+}
+
+.policy-content h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+    margin-bottom: 12px;
+}
+
+.policy-content p {
+    margin-bottom: 12px;
+    color: var(--text-secondary, #ccc);
+}
+
+.policy-content ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 16px;
+    color: var(--text-secondary, #ccc);
+}
+
+.policy-content li {
+    margin-bottom: 8px;
+}
+
+.policy-content a {
+    color: var(--color-pink, #FD267A);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.policy-content a:hover {
+    color: var(--color-orange, #FF6036);
+    text-decoration: underline;
+}
+
+.devsync-link {
+    color: var(--color-pink, #FD267A);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.devsync-link:hover {
+    color: var(--color-orange, #FF6036);
+    text-decoration: underline;
+}
+
+/* ── Contact Pages Specific ── */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.contact-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.contact-form-card {
+    background: var(--bg-elevated, #222);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color, #333);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.form-input,
+.form-textarea {
+    background: var(--bg-input, #333);
+    border: 1px solid var(--border-color, #444);
+    border-radius: 8px;
+    color: var(--text-primary, #fff);
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    border-color: var(--color-pink, #FD267A);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, var(--color-pink, #FD267A), var(--color-orange, #FF6036));
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 600px) {
+    .policy-container {
+        padding: 24px 20px;
+    }
+
+    .policy-title {
+        font-size: 1.6rem;
+    }
+
+    .policy-content h2 {
+        font-size: 1.2rem;
+    }
+}
