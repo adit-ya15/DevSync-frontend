@@ -1,0 +1,107 @@
+.video-upload-container {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background-color: var(--bg-default);
+}
+
+.video-upload-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.video-upload-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.file-input-wrapper {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-input-wrapper:hover {
+    border-color: #FD267A;
+}
+
+.file-input-wrapper input[type="file"] {
+    display: none;
+}
+
+.file-input-label {
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.file-input-icon {
+    width: 48px;
+    height: 48px;
+    color: #FD267A;
+}
+
+.selected-file {
+    color: var(--text-primary);
+    font-weight: 500;
+    word-break: break-all;
+    text-align: center;
+}
+
+.video-caption-input {
+    width: 100%;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    color: var(--text-primary);
+    min-height: 120px;
+    resize: vertical;
+    margin-bottom: 24px;
+    font-family: inherit;
+}
+
+.video-caption-input:focus {
+    outline: none;
+    border-color: #FD267A;
+}
+
+.upload-submit-btn {
+    width: 100%;
+    background-color: #FD267A;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.upload-submit-btn:hover:not(:disabled) {
+    background-color: #e01b65;
+}
+
+.upload-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

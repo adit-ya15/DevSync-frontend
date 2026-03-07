@@ -7,6 +7,7 @@ import { removeUser } from '../redux/userSlice';
 import { removeConnections } from '../redux/connectionSlice';
 import { removeFeed } from '../redux/feedSlice';
 import { removeRequests } from '../redux/requestSlice';
+import { removeReels } from '../redux/reelsSlice';
 import logo from '../assests/images/logo.png';
 import userIcon from '../assests/images/default-user-image.png';
 import './Navbar.css';
@@ -61,6 +62,7 @@ const Navbar = () => {
             dispatch(removeConnections());
             dispatch(removeFeed());
             dispatch(removeRequests());
+            dispatch(removeReels());
             toast.success('Signed out');
             navigate("/login");
         } catch (error) {
@@ -73,6 +75,8 @@ const Navbar = () => {
         { to: '/', label: 'Feed', icon: feedIcon },
         { to: '/connections', label: 'Connections', icon: connectionsIcon },
         { to: '/requests', label: 'Requests', icon: requestsIcon },
+        { to: '/feed', label: 'Reels', icon: reelsIcon },
+        { to: '/upload', label: 'Upload', icon: uploadIcon },
     ];
 
     const isActive = (path) => location.pathname === path;
@@ -262,6 +266,18 @@ const connectionsIcon = (
 const requestsIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+    </svg>
+);
+
+const reelsIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+    </svg>
+);
+
+const uploadIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
     </svg>
 );
 
