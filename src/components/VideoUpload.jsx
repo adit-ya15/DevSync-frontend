@@ -18,7 +18,7 @@ const VideoUpload = () => {
         formData.append('caption', caption);
 
         try {
-            const response = await fetch('/api/videos/upload', {
+            const response = await fetch('/api/upload', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include',
