@@ -28,26 +28,14 @@ const ContactUs = () => {
                         <p className="mb-6 text-[var(--text-secondary)]">Have questions about DevSync? We are here to help. Reach out to us through any of the following channels or use the contact form.</p>
 
                         <div className="space-y-6">
-                            <div className="contact-info-item">
-                                <span className="contact-icon">📍</span>
-                                <div>
-                                    <h3 className="font-semibold text-[var(--text-primary)]">Registered Address</h3>
-                                    <p className="text-[var(--text-secondary)] text-sm mt-1 leading-relaxed">
-                                        DevSync Technologies Inc.<br />
-                                        123 Developer Lane, Suite 404<br />
-                                        Tech City, TX 75001<br />
-                                        United States
-                                    </p>
-                                </div>
-                            </div>
 
                             <div className="contact-info-item">
                                 <span className="contact-icon">✉️</span>
                                 <div>
                                     <h3 className="font-semibold text-[var(--text-primary)]">Email</h3>
                                     <p className="text-[var(--text-secondary)] text-sm mt-1 leading-relaxed">
-                                        <a href="mailto:support@devsync.com" className="devsync-link">support@devsync.com</a><br />
-                                        <a href="mailto:billing@devsync.com" className="devsync-link">billing@devsync.com</a>
+                                        <a href="mailto:support@devsyncapp.in" className="devsync-link">support@devsyncapp.in</a><br />
+                                        <a href="mailto:contact@devsyncapp.in" className="devsync-link">contact@devsyncapp.in</a>
                                     </p>
                                 </div>
                             </div>
@@ -57,8 +45,8 @@ const ContactUs = () => {
                                 <div>
                                     <h3 className="font-semibold text-[var(--text-primary)]">Phone</h3>
                                     <p className="text-[var(--text-secondary)] text-sm mt-1 leading-relaxed">
-                                        <a href="tel:+15551234567" className="devsync-link">+1 (555) 123-4567</a><br />
-                                        <span className="text-[var(--text-faint)] text-xs">(Mon-Fri, 9am - 5pm EST)</span>
+                                        <a href="tel:+916393027647" className="devsync-link">+91 6393027647</a><br />
+                                        <span className="text-[var(--text-faint)] text-xs">(Mon-Fri, 9am - 5pm IST)</span>
                                     </p>
                                 </div>
                             </div>
