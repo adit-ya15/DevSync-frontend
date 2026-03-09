@@ -17,6 +17,11 @@ import ContactUs from "./pages/ContactUs"
 import VideoUpload from "./components/VideoUpload"
 import VideoFeed from "./components/VideoFeed"
 import Premium from "./pages/Premium"
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
+import EmailVerified from "./pages/EmailVerified"
+import VerificationFailed from "./pages/VerificationFailed"
+import SignupSuccess from "./pages/SignupSuccess"
 
 
 function App() {
@@ -27,6 +32,12 @@ function App() {
         <BrowserRouter basename="/">
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/email-verified" element={<EmailVerified />} />
+            <Route path="/verification-failed" element={<VerificationFailed />} />
+            <Route path="/verification-error" element={<VerificationFailed />} />
+            <Route path="/signup-success" element={<SignupSuccess />} />
             <Route path="/" element={<Body />}>
               <Route path="/" element={<Feed />} />
               <Route path="/profile" element={<Profile />} />

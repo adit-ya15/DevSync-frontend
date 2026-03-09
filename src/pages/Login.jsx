@@ -151,10 +151,8 @@ const Login = () => {
                 lastName
             }, { withCredentials: true });
 
-            const profileRes = await axios.get(BASE_URL + "/profile/view", { withCredentials: true });
-            dispatch(addUser(profileRes.data));
-            toast.success('Welcome!');
-            navigate("/profile");
+            toast.success('Account created! Please verify your email.');
+            navigate("/signup-success");
         } catch (error) {
             const msg =
                 error?.response?.data?.message ||
@@ -273,7 +271,13 @@ const Login = () => {
                             <input type="checkbox" />
                             Remember me
                         </label>
-                        <a href="#" className="login-forgot">Forgot?</a>
+                        <button 
+                            type="button"
+                            onClick={() => navigate("/forgot-password")}
+                            className="login-forgot"
+                        >
+                            Forgot?
+                        </button>
                     </div>
                 )}
 
