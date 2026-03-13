@@ -22,6 +22,7 @@ import ResetPassword from "./pages/ResetPassword"
 import EmailVerified from "./pages/EmailVerified"
 import VerificationFailed from "./pages/VerificationFailed"
 import SignupSuccess from "./pages/SignupSuccess"
+import Chat from "./pages/Chat"
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
               <Route path="/upload" element={<VideoUpload />} />
               <Route path="/feed" element={<VideoFeed />} />
               <Route path="/premium" element={<Premium />} />
+              <Route path="/chat" element={<Chat />} />
             </Route>
           </Routes>
         </BrowserRouter>
