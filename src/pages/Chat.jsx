@@ -7,8 +7,9 @@ import { createSocketConnection } from '../utils/socket';
 const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector(store => store.user);
+  if(!user) return;
   const userId = user?._id;
-  const targetUser = user.filter((u) => u._id === targetUserId);
+  const targetUser = user?.filter((u) => u._id === targetUserId);
   const [newMessage,setNewMessage] = useState([]);
   
   useEffect(() => {
