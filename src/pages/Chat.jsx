@@ -7,9 +7,6 @@ import { createSocketConnection } from "../utils/socket";
 const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector((store) => store.user);
-
-  if (!user) return null;
-
   const userId = user?._id;
 
   const [messages, setMessages] = useState([]);
@@ -41,6 +38,9 @@ const Chat = () => {
       socket.disconnect();
     };
   }, [userId, targetUserId, user.firstName]);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   const sendMessage = () => {
     if (!text.trim()) return;
