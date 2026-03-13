@@ -22,7 +22,22 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [theme, setTheme] = useState(() => localStorage.getItem('devSync-theme') || 'dark');
+    const safeStorageGet = (key) => {
+        try {
+            return localStorage.getItem(key);
+        } catch {
+            return null;
+        }
+    };
+    const safeStorageSet = (key, value) => {
+        try {
+            localStorage.setItem(key, value);
+        } catch {
+            // ignore
+        }
+    };
+
+    const [theme, setTheme] = useState(() => safeStorageGet('devSync-theme') || 'dark');
     const dropdownRef = useRef(null);
 
     // Apply theme on mount and when it changes
@@ -32,7 +47,7 @@ const Navbar = () => {
         } else {
             document.documentElement.removeAttribute('data-theme');
         }
-        localStorage.setItem('devSync-theme', theme);
+        safeStorageSet('devSync-theme', theme);
     }, [theme]);
 
     const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');

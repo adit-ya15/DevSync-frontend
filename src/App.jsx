@@ -53,6 +53,7 @@ function App() {
               <Route path="/feed" element={<VideoFeed />} />
               <Route path="/premium" element={<Premium />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/chat/:targetUserId" element={<Chat />} />
             </Route>
           </Routes>
         </BrowserRouter>

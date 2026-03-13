@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addConnections } from '../redux/connectionSlice';
@@ -78,7 +78,18 @@ const Connections = () => {
                             style={{ animationDelay: `${idx * 0.04}s` }}
                             onClick={() => handleViewProfile(user)}
                         >
-                            <UserListItem user={user} />
+                            <UserListItem
+                                user={user}
+                                actions={(
+                                    <Link
+                                        to={`/chat/${user._id}`}
+                                        className="user-list-btn"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        Chat
+                                    </Link>
+                                )}
+                            />
                         </div>
                     ))}
                 </div>
