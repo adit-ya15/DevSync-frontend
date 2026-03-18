@@ -1,190 +1,357 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./Chat.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { createSocketConnection } from "../utils/socket";
-import axios from "axios";
-import { BASE_URL } from "../constants/commonData";
+import toast from "react-hot-toast";
+import chatAPI from "../utils/chatAPI";
 
 const Chat = () => {
-  const { chatId } = useParams();
+  const { targetUserId } = useParams();
+  const navigate = useNavigate();
   const user = useSelector((store) => store.user);
-  const token = user?.token;
+  const currentUserId = user?._id;
 
+  const [chats, setChats] = useState([]);
+  const [activeChatId, setActiveChatId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingUser, setTypingUser] = useState(null);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+  const [isLoadingChats, setIsLoadingChats] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [pageError, setPageError] = useState("");
 
-  const socketRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
-  const bottomRef = useRef(null);
+  const activeChat = useMemo(
+    () => chats.find((chat) => chat._id === activeChatId) || null,
+    [chats, activeChatId]
+  );
 
-  // 🔥 Fetch messages
-  useEffect(() => {
-    if (!chatId || !token) return;
+  const getOtherParticipant = (chat) => {
+    const participants = chat?.participants || [];
+    return (
+      participants.find((participant) => participant?._id !== currentUserId) ||
+      participants[0] ||
+      null
+    );
+  };
 
-    const fetchMessages = async () => {
-      const res = await axios.get(`${BASE_URL}/messages/${chatId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  const getMessageText = (chat) => {
+    if (!chat?.lastMessage) return "No messages yet";
+    if (chat.lastMessage.isDeleted) return "Message deleted";
+    return chat.lastMessage.text || "No messages yet";
+  };
 
-      setMessages(res.data.reverse());
-    };
+  const loadMessages = useCallback(async (chatId) => {
+    if (!chatId) return;
 
-    fetchMessages();
-  }, [chatId, token]);
+    setIsLoadingMessages(true);
+    setPageError("");
+    try {
+      const fetchedMessages = await chatAPI.getMessages(chatId, 1, 100);
+      const ordered = [...fetchedMessages].reverse();
+      setMessages(ordered);
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || "Unable to load messages.";
+      setPageError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  }, []);
 
-  // 🔥 Socket setup
-  useEffect(() => {
-    if (!chatId || !token) return;
+  const ensureActiveChat = useCallback(async (fetchedChats) => {
+    if (!currentUserId) return;
 
-    const socket = createSocketConnection(token);
-    socketRef.current = socket;
-
-    socket.emit("joinChat", chatId);
-
-    // ✅ mark seen AFTER socket ready
-    socket.emit("markSeen", { chatId });
-
-    socket.on("messageReceived", (message) => {
-      setMessages((prev) => [...prev, message]);
-
-      // mark seen when new message comes
-      socket.emit("markSeen", { chatId });
-    });
-
-    socket.on("typing", ({ userId }) => {
-      if (userId !== user._id) {
-        setTypingUser(userId);
-      }
-    });
-
-    socket.on("stopTyping", () => {
-      setTypingUser(null);
-    });
-
-    socket.on("messagesSeen", ({ userId }) => {
-      setMessages((prev) =>
-        prev.map((msg) => {
-          if (!msg.readBy?.includes(userId)) {
-            return {
-              ...msg,
-              readBy: [...(msg.readBy || []), userId],
-            };
-          }
-          return msg;
-        })
+    if (targetUserId) {
+      const existing = fetchedChats.find((chat) =>
+        (chat?.participants || []).some(
+          (participant) => participant?._id === targetUserId
+        )
       );
-    });
 
-    return () => {
-      socket.off("messageReceived");
-      socket.off("typing");
-      socket.off("stopTyping");
-      socket.off("messagesSeen");
-      socket.disconnect();
-    };
-  }, [chatId, token, user?._id]);
+      if (existing) {
+        setActiveChatId(existing._id);
+        return;
+      }
 
-  // 🔥 Auto scroll
+      const createdChat = await chatAPI.createChat([currentUserId, targetUserId]);
+      setChats((prev) => [createdChat, ...prev]);
+      setActiveChatId(createdChat._id);
+      navigate(`/chat/${targetUserId}`, { replace: true });
+      return;
+    }
+
+    if (fetchedChats.length > 0) {
+      setActiveChatId((prev) => prev || fetchedChats[0]._id);
+    }
+  }, [currentUserId, navigate, targetUserId]);
+
+  const loadChats = useCallback(async () => {
+    setIsLoadingChats(true);
+    setPageError("");
+    try {
+      const fetchedChats = await chatAPI.getChats();
+      setChats(fetchedChats);
+      await ensureActiveChat(fetchedChats);
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || "Unable to load chats.";
+      setPageError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoadingChats(false);
+    }
+  }, [ensureActiveChat]);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!currentUserId) return;
+    loadChats();
+  }, [currentUserId, targetUserId, loadChats]);
+
+  useEffect(() => {
+    if (!activeChatId) return;
+    loadMessages(activeChatId);
+  }, [activeChatId, loadMessages]);
 
   if (!user) return <div>Loading...</div>;
 
-  // 🔥 Send message
-  const sendMessage = () => {
-    if (!text.trim()) return;
-
-    socketRef.current.emit("sendMessage", { chatId, text });
-
-    setText("");
-    setIsTyping(false);
-    socketRef.current.emit("stopTyping", chatId);
+  const updateChatPreview = (chatId, message) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat._id === chatId ? { ...chat, lastMessage: message } : chat
+      )
+    );
   };
 
-  // 🔥 Typing handler (FIXED)
-  const handleTyping = (e) => {
-    setText(e.target.value);
+  const sendMessage = async () => {
+    const trimmed = text.trim();
+    if (!trimmed || !activeChatId) return;
 
-    if (!isTyping) {
-      socketRef.current.emit("typing", chatId);
-      setIsTyping(true);
+    setIsSending(true);
+    try {
+      const sentMessage = await chatAPI.sendMessage(activeChatId, trimmed);
+      setMessages((prev) => [...prev, sentMessage]);
+      updateChatPreview(activeChatId, sentMessage);
+      setText("");
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || "Unable to send message.";
+      toast.error(errorMessage);
+    } finally {
+      setIsSending(false);
     }
-
-    clearTimeout(typingTimeoutRef.current);
-
-    typingTimeoutRef.current = setTimeout(() => {
-      socketRef.current.emit("stopTyping", chatId);
-      setIsTyping(false);
-    }, 1500);
   };
 
-  const isSeen = (msg) => msg.readBy?.length > 1;
+  const startEditMessage = (message) => {
+    if (!message?._id) return;
+    setEditingMessageId(message._id);
+    setEditingText(message.text || "");
+  };
+
+  const cancelEditMessage = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  const saveEditedMessage = async () => {
+    const trimmed = editingText.trim();
+    if (!editingMessageId || !trimmed) return;
+
+    try {
+      const updatedMessage = await chatAPI.editMessage(editingMessageId, trimmed);
+      setMessages((prev) =>
+        prev.map((message) =>
+          message._id === updatedMessage._id ? updatedMessage : message
+        )
+      );
+      updateChatPreview(activeChatId, updatedMessage);
+      cancelEditMessage();
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || "Unable to edit message.";
+      toast.error(errorMessage);
+    }
+  };
+
+  const deleteMessage = async (messageId) => {
+    if (!messageId) return;
+
+    try {
+      const deletedMessage = await chatAPI.deleteMessage(messageId);
+      setMessages((prev) =>
+        prev.map((message) =>
+          message._id === deletedMessage._id ? deletedMessage : message
+        )
+      );
+      if (activeChat?.lastMessage?._id === messageId) {
+        updateChatPreview(activeChatId, deletedMessage);
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || "Unable to delete message.";
+      toast.error(errorMessage);
+    }
+  };
+
+  const getDisplayName = (chat) => {
+    const other = getOtherParticipant(chat);
+    if (!other) return "Unknown user";
+    return `${other.firstName || ""} ${other.lastName || ""}`.trim();
+  };
 
   return (
     <div className="chat-page">
-      <div className="chat-shell single">
-        <section className="chat-thread">
+      <div className="chat-shell">
+        <aside className="chat-sidebar">
+          <div className="chat-sidebar-top">
+            <div>
+              <div className="chat-title">Chats</div>
+              <div className="chat-subtitle">Your conversations</div>
+            </div>
+          </div>
 
+          <div className="chat-conversations">
+            {isLoadingChats && <div className="chat-empty">Loading chats...</div>}
+
+            {!isLoadingChats && chats.length === 0 && (
+              <div className="chat-empty">No chats available.</div>
+            )}
+
+            {!isLoadingChats &&
+              chats.map((chat) => {
+                const peer = getOtherParticipant(chat);
+                const displayName = getDisplayName(chat);
+
+                return (
+                  <button
+                    key={chat._id}
+                    className={`chat-convo ${
+                      activeChatId === chat._id ? "active" : ""
+                    }`}
+                    onClick={() => setActiveChatId(chat._id)}
+                  >
+                    <div className="chat-avatar-wrap">
+                      <img
+                        className="chat-avatar"
+                        src={peer?.photoUrl || "https://i.pravatar.cc/150?img=12"}
+                        alt={displayName}
+                      />
+                    </div>
+
+                    <div className="chat-convo-meta">
+                      <div className="chat-convo-row">
+                        <div className="chat-convo-name">{displayName}</div>
+                      </div>
+                      <div className="chat-convo-snippet">{getMessageText(chat)}</div>
+                    </div>
+                  </button>
+                );
+              })}
+          </div>
+        </aside>
+
+        <section className="chat-thread">
           <header className="chat-thread-header">
             <div className="chat-peer-meta">
-              <div className="chat-peer-name">Chat</div>
-              <div className="chat-peer-status">Chat ID: {chatId}</div>
+              <div className="chat-peer-name">
+                {activeChat ? getDisplayName(activeChat) : "Select a chat"}
+              </div>
+              <div className="chat-peer-status">
+                {activeChat ? `Chat ID: ${activeChat._id}` : "No active chat"}
+              </div>
             </div>
           </header>
 
           <div className="chat-thread-body">
+            {pageError && <div className="chat-error">{pageError}</div>}
 
-            {messages.map((m) => (
-              <div
-                key={m._id}
-                className={`chat-msg ${m.senderId === user._id ? "me" : "them"
-                  }`}
-              >
-                <div className={`chat-bubble ${m.senderId === user._id ? "me" : "them"
-                  }`}>
-                  <div className="chat-text">
-                    {m.isDeleted ? "Message deleted" : m.text}
-                  </div>
-
-                  <div className="chat-meta">
-                    <span className="chat-time">
-                      {new Date(m.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-
-                    {m.isEdited && <span> (edited)</span>}
-
-                    {/* ✅ Seen status */}
-                    {m.senderId === user._id && (
-                      <span className="seen-status">
-                        {isSeen(m) ? " ✔✔ Seen" : " ✔ Sent"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* 🔥 Typing indicator */}
-            {typingUser && (
-              <div className="typing-indicator">Typing...</div>
+            {isLoadingMessages && activeChat && (
+              <div className="chat-empty">Loading messages...</div>
             )}
 
-            <div ref={bottomRef} />
+            {!isLoadingMessages && !activeChat && (
+              <div className="chat-empty">Choose a chat to start messaging.</div>
+            )}
+
+            {!isLoadingMessages && activeChat && messages.length === 0 && (
+              <div className="chat-empty">No messages yet. Say hello.</div>
+            )}
+
+            {!isLoadingMessages &&
+              messages.map((m) => {
+                const isMine = m.senderId === currentUserId || m.senderId?._id === currentUserId;
+                const isEditing = editingMessageId === m._id;
+
+                return (
+                  <div key={m._id} className={`chat-msg ${isMine ? "me" : "them"}`}>
+                    <div className={`chat-bubble ${isMine ? "me" : "them"}`}>
+                      {isEditing ? (
+                        <div className="chat-edit-wrap">
+                          <textarea
+                            className="chat-edit-input"
+                            value={editingText}
+                            onChange={(e) => setEditingText(e.target.value)}
+                          />
+                          <div className="chat-msg-actions">
+                            <button className="chat-mini-btn" onClick={saveEditedMessage}>
+                              Save
+                            </button>
+                            <button
+                              className="chat-mini-btn muted"
+                              onClick={cancelEditMessage}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="chat-text">
+                          {m.isDeleted ? "Message deleted" : m.text}
+                        </div>
+                      )}
+
+                      <div className="chat-meta">
+                        <span className="chat-time">
+                          {new Date(m.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+
+                        {m.isEdited && <span>(edited)</span>}
+
+                        {isMine && !m.isDeleted && !isEditing && (
+                          <>
+                            <button
+                              className="chat-text-btn"
+                              onClick={() => startEditMessage(m)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="chat-text-btn danger"
+                              onClick={() => deleteMessage(m._id)}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
 
           <footer className="chat-composer">
             <textarea
               className="chat-input"
-              placeholder="Type a message…"
+              placeholder={activeChat ? "Type a message..." : "Select a chat first"}
               value={text}
-              onChange={handleTyping} // ✅ FIXED
+              onChange={(e) => setText(e.target.value)}
+              disabled={!activeChat || isSending}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -193,11 +360,14 @@ const Chat = () => {
               }}
             />
 
-            <button className="chat-send-btn" onClick={sendMessage}>
-              Send
+            <button
+              className="chat-send-btn"
+              onClick={sendMessage}
+              disabled={!activeChat || isSending}
+            >
+              {isSending ? "Sending..." : "Send"}
             </button>
           </footer>
-
         </section>
       </div>
     </div>

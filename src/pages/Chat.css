@@ -370,6 +370,16 @@
   font-size: 0.9rem;
 }
 
+.chat-error {
+  margin-bottom: 12px;
+  border: 1px solid #f4a3a3;
+  background: #ffe8e8;
+  color: #962424;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.86rem;
+}
+
 .chat-day-divider {
   display: flex;
   justify-content: center;
@@ -430,6 +440,57 @@
   margin-top: 6px;
   font-size: 0.72rem;
   opacity: 0.85;
+}
+
+.chat-msg-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chat-mini-btn,
+.chat-text-btn {
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-mini-btn {
+  padding: 4px 9px;
+}
+
+.chat-mini-btn.muted {
+  opacity: 0.8;
+}
+
+.chat-text-btn {
+  padding: 2px 7px;
+}
+
+.chat-text-btn.danger {
+  color: #ffbaba;
+  border-color: rgba(255, 186, 186, 0.55);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.chat-edit-wrap {
+  width: 100%;
+}
+
+.chat-edit-input {
+  width: 100%;
+  min-height: 68px;
+  resize: vertical;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 8px 10px;
 }
 
 .chat-time {
@@ -562,6 +623,12 @@
 
 .chat-send-btn:active {
   transform: scale(0.99);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: grayscale(0.15);
 }
 
 .chat-send-icon svg {
