@@ -1,167 +1,152 @@
-/* ===== Reusable UserCard – Tinder Style ===== */
+/* ===== Tinder-Style User Card ===== */
 
-@keyframes user-card-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ── Card Shell ── */
 .user-card {
-    width: 100%;
-    max-width: 420px;
-    background: var(--bg-card);
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    animation: user-card-fade-in 0.4s ease-out;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  color: var(--text-pure);
 }
 
-/* ── Photo Section ── */
+/* ── Full-Bleed Photo (Tinder style) ── */
 .user-card-photo {
-    position: relative;
-    width: 100%;
-    height: 420px;
-    background: var(--bg-elevated);
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  background: var(--bg-surface-elevated);
 }
 
 .user-card-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
+/* Gradient overlay at bottom of photo */
 .user-card-gradient {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 140px;
-    background: var(--gradient-card-bottom);
-    pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(
+    to top,
+    rgba(3, 3, 5, 0.95) 0%,
+    rgba(3, 3, 5, 0.7) 40%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
-/* Name + Age overlay */
+/* Name & age overlaid on photo */
 .user-card-identity {
-    position: absolute;
-    bottom: 16px;
-    left: 20px;
-    z-index: 5;
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
 }
 
 .user-card-name {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.2;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.5px;
 }
 
 .user-card-age {
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  font-size: 1.3rem;
+  opacity: 0.85;
 }
 
-/* ── Body ── */
+/* ── Card Body ── */
 .user-card-body {
-    padding: 16px 20px 24px;
+  padding: 18px 22px 12px;
+  background: var(--bg-surface);
 }
 
 .user-card-info-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
 }
 
 .user-card-info-row svg {
-    width: 16px;
-    height: 16px;
-    color: #FD267A;
-    flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
-/* Divider */
 .user-card-divider {
-    height: 1px;
-    background: var(--border-color);
-    margin: 16px 0;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 10px 0;
 }
 
-/* Sections */
 .user-card-section {
-    margin-bottom: 20px;
-}
-
-.user-card-section:last-child {
-    margin-bottom: 0;
+  padding: 4px 0;
 }
 
 .user-card-section-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin-bottom: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin: 0 0 8px;
 }
 
 .user-card-about {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    white-space: pre-wrap;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* Skills */
 .user-card-skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .user-card-skill {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    background: var(--bg-skill);
-    border: 1px solid var(--border-skill);
-    color: #FD267A;
-    transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  transition: all 0.2s ease;
 }
 
 .user-card-skill:hover {
-    background: var(--bg-hover);
-    border-color: var(--border-hover);
+  background: rgba(99, 102, 241, 0.25);
+  transform: translateY(-1px);
 }
 
-/* ── Actions slot ── */
+/* ── Actions (Like/Pass buttons) ── */
 .user-card-actions {
-    border-top: 1px solid var(--border-color);
-}
-
-/* ── Responsive ── */
-@media (max-width: 480px) {
-    .user-card-photo {
-        height: 360px;
-    }
-
-    .user-card-name {
-        font-size: 1.45rem;
-    }
+  padding: 14px 22px 20px;
+  background: var(--bg-surface);
 }

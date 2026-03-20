@@ -1,114 +1,227 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: dark --default;
+}
 
-/* ===== Theme System ===== */
+/* ===== Premium Design System – Deep Space ===== */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 :root {
-  /* Accent colors (same in both themes) */
-  --tinder-gradient: linear-gradient(135deg, #FD267A, #FF6036);
-  --tinder-pink: #FD267A;
-  --tinder-orange: #FF6036;
-  --color-green: #34d399;
-  --color-red: #f87171;
+  /* Core Colors */
+  --bg-base: #030305;
+  --bg-surface: #0a0a0e;
+  --bg-surface-elevated: #12121a;
+  --bg-surface-glass: rgba(18, 18, 26, 0.65);
 
-  /* Surfaces */
-  --bg-primary: #111111;
-  --bg-secondary: #0d0d0d;
-  --bg-card: #1a1a1a;
-  --bg-input: #141414;
-  --bg-elevated: #1e1e1e;
-  --bg-hover: #222222;
-  --bg-skill: #222;
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  /* Gradients */
+  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --brand-glow: rgba(168, 85, 247, 0.4);
+
+  /* Accents */
+  --accent-cyan: #06b6d4;
+  --accent-indigo: #6366f1;
+  --accent-pink: #ec4899;
+
+  /* Feedback */
+  --success-soft: #10b981;
+  --error-soft: #f43f5e;
+  --warning-soft: #f59e0b;
 
   /* Borders */
-  --border-color: #2a2a2a;
-  --border-hover: #3a3a3a;
-  --border-subtle: #222222;
-  --border-skill: #333;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-glow: rgba(99, 102, 241, 0.3);
 
   /* Text */
-  --text-primary: #f5f5f5;
-  --text-secondary: #b0b0b0;
-  --text-muted: #666666;
-  --text-faint: #777;
-  --text-link-hover: #f0f0f0;
-
-  /* Scrollbar */
-  --scrollbar-thumb: #333;
-  --scrollbar-hover: #444;
+  --text-pure: #ffffff;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 
   /* Shadows */
-  --shadow-dropdown: 0 10px 32px rgba(0, 0, 0, 0.5);
-  --shadow-scrolled: 0 1px 12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--brand-glow);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
 
-  /* Special */
-  --gradient-card-bottom: linear-gradient(to top, #1a1a1a 0%, transparent 100%);
-  --badge-bg: #1e1515;
-  --badge-border: #3a2020;
-  --danger-bg: #2a1515;
+  /* Animation */
+  --fluid-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Light Theme ── */
+/* ── Light Theme (when user toggles) ── */
 [data-theme="light"] {
-  --bg-primary: #f5f5f7;
-  --bg-secondary: #eaeaed;
-  --bg-card: #ffffff;
-  --bg-input: #f0f0f3;
-  --bg-elevated: #f8f8fa;
-  --bg-hover: #e8e8ec;
-  --bg-skill: #f0f0f3;
-  --bg-overlay: rgba(0, 0, 0, 0.3);
+  --bg-base: #f8f9fc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f2f6;
+  --bg-surface-glass: rgba(255, 255, 255, 0.75);
 
-  --border-color: #dcdce0;
-  --border-hover: #c0c0c5;
-  --border-subtle: #e0e0e4;
-  --border-skill: #d0d0d5;
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --border-glow: rgba(99, 102, 241, 0.25);
 
-  --text-primary: #1a1a1a;
-  --text-secondary: #555;
-  --text-muted: #888;
-  --text-faint: #999;
-  --text-link-hover: #111;
+  --text-pure: #111827;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
 
-  --scrollbar-thumb: #ccc;
-  --scrollbar-hover: #aaa;
-
-  --shadow-dropdown: 0 10px 32px rgba(0, 0, 0, 0.12);
-  --shadow-scrolled: 0 1px 12px rgba(0, 0, 0, 0.08);
-
-  --gradient-card-bottom: linear-gradient(to top, #ffffff 0%, transparent 100%);
-  --badge-bg: #fff0f3;
-  --badge-border: #fdd;
-  --danger-bg: #fff0f0;
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-float: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
 }
 
-* {
-  box-sizing: border-box;
+/* ── Force DaisyUI Dark Override ── */
+html, html[data-theme="dark"] {
+  --b1: 3 3 5;
+  --b2: 10 10 14;
+  --b3: 18 18 26;
+  --bc: 226 232 240;
+  --n: 18 18 26;
+  --nc: 226 232 240;
+  --p: 99 102 241;
+  --pc: 255 255 255;
+  --s: 168 85 247;
+  --sc: 255 255 255;
+  --a: 236 72 153;
+  --ac: 255 255 255;
+  color-scheme: dark;
 }
+
+[data-theme="light"] {
+  --b1: 248 249 252;
+  --b2: 241 242 246;
+  --b3: 234 235 240;
+  --bc: 30 41 59;
+  --n: 241 242 246;
+  --nc: 30 41 59;
+  --p: 99 102 241;
+  --pc: 255 255 255;
+  --s: 168 85 247;
+  --sc: 255 255 255;
+  --a: 236 72 153;
+  --ac: 255 255 255;
+  color-scheme: light;
+}
+
+/* ── Base ── */
+* { box-sizing: border-box; scroll-behavior: smooth; }
 
 body {
-  background: var(--bg-primary);
+  background-color: var(--bg-base);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background 0.3s ease, color 0.3s ease;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+::selection {
+  background: var(--brand-glow);
+  color: var(--text-pure);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 4px;
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--bg-surface-elevated); border-radius: 10px; border: 2px solid var(--bg-base); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Glassmorphism ── */
+.glass-panel {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--shadow-glass);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-hover);
+/* ── Premium Buttons ── */
+.btn-premium {
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s var(--fluid-spring);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-gradient);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  color: var(--text-pure);
+  border-color: transparent;
+  box-shadow: 0 10px 20px -10px rgba(168, 85, 247, 0.5);
+}
+
+.btn-premium:hover::before { opacity: 1; }
+
+/* ── Text Gradients ── */
+.text-gradient {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 var(--brand-glow); }
+  70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.6s var(--ease-smooth) forwards; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.hover-glow:hover { animation: pulseGlow 1.5s infinite; }
+
+/* ── Tech Pills ── */
+.tech-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.tech-pill:hover {
+  background: rgba(99, 102, 241, 0.2);
+  transform: scale(1.05);
 }

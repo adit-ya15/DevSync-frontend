@@ -1,101 +1,114 @@
+/* Premium UserListItem CSS */
+
 .user-list-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  transition: all 0.3s var(--fluid-spring);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-list-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--brand-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .user-list-item:hover {
-    background: var(--bg-default);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: var(--bg-surface-glass);
+  transform: translateX(4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-strong);
+}
+
+.user-list-item:hover::before {
+  opacity: 1;
 }
 
 .user-list-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex: 1;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
 }
 
 .user-list-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--border-color);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--bg-surface);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.user-list-item:hover .user-list-avatar {
+  transform: scale(1.05) rotate(2deg);
+  border-color: var(--accent-indigo);
 }
 
 .user-list-details {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding-right: 1rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .user-list-name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-pure);
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Outfit', sans-serif;
 }
 
 .user-list-bio {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    margin-top: 0.1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-list-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 16px;
 }
 
-/* Quick default button styles if actions aren't passed */
+/* Action Buttons inside UserListItem */
 .user-list-btn {
-    background: linear-gradient(135deg, #FD267A 0%, #FF6036 100%);
-    color: white;
-    border: none;
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-indigo);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-list-btn:hover {
-    opacity: 0.9;
-}
-
-@media (max-width: 480px) {
-    .user-list-item {
-        padding: 0.75rem;
-    }
-
-    .user-list-avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    .user-list-name {
-        font-size: 0.95rem;
-    }
+  background: var(--brand-gradient);
+  color: var(--text-pure);
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--brand-glow);
 }

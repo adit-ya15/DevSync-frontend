@@ -1,233 +1,205 @@
-/* ===== Feed Page ===== */
+/* ===== Tinder-Style Feed ===== */
 
-@keyframes feed-fade-in {
-    from {
-        opacity: 0;
-        transform: scale(0.96);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+@keyframes feed-card-enter {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-@keyframes feed-spin {
-    to {
-        transform: rotate(360deg);
-    }
+@keyframes feed-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.95); }
 }
 
 .feed-page {
-    min-height: calc(100vh - 64px);
-    background: var(--bg-primary);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 32px 16px 60px;
-    overflow: hidden;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
 }
 
-/* ── Card deck (stacked) ── */
+/* ── Card Deck ── */
 .feed-deck {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
+  position: relative;
+  width: 400px;
+  max-width: 90vw;
+  perspective: 1000px;
 }
 
-/* Card behind (next user) */
+/* Card behind (next) — scaled down */
 .feed-card-behind {
-    position: absolute;
-    top: 8px;
-    left: 4px;
-    right: 4px;
-    transform: scale(0.96);
-    opacity: 0.5;
-    filter: blur(1px);
-    pointer-events: none;
-    z-index: 1;
-    transition: transform 0.35s ease, opacity 0.35s ease;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.5;
+  filter: blur(1px);
+  z-index: 1;
 }
 
+/* Active card wrapper */
 .feed-card-wrap {
-    position: relative;
-    z-index: 10;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none;
-    will-change: transform;
-    transform-origin: 50% 100%;
-    /* Pivot slightly lower for natural drag rotation */
-    animation: feed-fade-in 0.25s ease-out;
+  position: relative;
+  z-index: 10;
+  cursor: grab;
+  will-change: transform;
+  animation: feed-card-enter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .feed-card-wrap:active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
-/* ── Swipe stamp overlays ── */
+/* ── LIKE / NOPE stamps ── */
 .feed-stamp {
-    position: absolute;
-    top: 50px;
-    z-index: 20;
-    padding: 8px 18px;
-    font-size: 2.2rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    border: 4px solid;
-    border-radius: 10px;
-    pointer-events: none;
-    opacity: 0;
+  position: absolute;
+  top: 30px;
+  z-index: 100;
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  padding: 8px 24px;
+  border-radius: 12px;
+  border-width: 4px;
+  border-style: solid;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(-15deg);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .feed-stamp-like {
-    left: 24px;
-    color: var(--color-green);
-    border-color: var(--color-green);
-    transform: rotate(-20deg);
-    text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+  left: 20px;
+  color: #10b981;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  transform: rotate(-15deg);
 }
 
 .feed-stamp-nope {
-    right: 24px;
-    color: var(--color-red);
-    border-color: var(--color-red);
-    transform: rotate(20deg);
-    text-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+  right: 20px;
+  color: #f43f5e;
+  border-color: #f43f5e;
+  background: rgba(244, 63, 94, 0.15);
+  transform: rotate(15deg);
 }
 
-/* ── Action buttons row ── */
+/* ── Action Buttons (Tinder-style circles) ── */
 .feed-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 18px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 8px 0;
 }
 
 .feed-action-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    z-index: 30;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .feed-action-btn svg {
-    width: 26px;
-    height: 26px;
-    transition: transform 0.2s ease;
+  width: 30px;
+  height: 30px;
 }
 
-.feed-action-btn:hover svg {
-    transform: scale(1.15);
-}
-
-/* Pass / Ignore */
 .feed-btn-pass {
-    border-color: var(--color-red);
-    color: var(--color-red);
+  background: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+  border: 2px solid rgba(244, 63, 94, 0.3);
 }
 
 .feed-btn-pass:hover {
-    background: rgba(248, 113, 113, 0.1);
-    box-shadow: 0 0 20px rgba(248, 113, 113, 0.15);
+  background: rgba(244, 63, 94, 0.25);
+  transform: scale(1.15);
+  box-shadow: 0 0 25px rgba(244, 63, 94, 0.3);
+  border-color: #f43f5e;
 }
 
-.feed-btn-pass:active {
-    transform: scale(0.92);
-}
-
-/* Interested / Like */
 .feed-btn-like {
-    border-color: var(--color-green);
-    color: var(--color-green);
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 2px solid rgba(16, 185, 129, 0.3);
 }
 
 .feed-btn-like:hover {
-    background: rgba(52, 211, 153, 0.1);
-    box-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+  background: rgba(16, 185, 129, 0.25);
+  transform: scale(1.15);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+  border-color: #10b981;
 }
 
-.feed-btn-like:active {
-    transform: scale(0.92);
-}
-
-/* ── Empty state ── */
-.feed-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 80px 20px;
-    text-align: center;
-    animation: feed-fade-in 0.4s ease-out;
-}
-
-.feed-empty-icon {
-    font-size: 3.5rem;
-    opacity: 0.6;
-}
-
-.feed-empty-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.feed-empty-text {
-    font-size: 0.9rem;
-    color: var(--text-faint);
-    max-width: 280px;
-    line-height: 1.6;
+.feed-action-btn:active {
+  transform: scale(0.9);
 }
 
 /* ── Loading ── */
 .feed-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 }
 
 .feed-spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--border-color);
-    border-top-color: #FD267A;
-    border-radius: 50%;
-    animation: feed-spin 0.6s linear infinite;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-strong);
+  border-top-color: var(--accent-indigo);
+  border-radius: 50%;
+  animation: feed-spin 0.7s linear infinite;
+}
+
+@keyframes feed-spin { to { transform: rotate(360deg); } }
+
+/* ── Empty state ── */
+.feed-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px 30px;
+  text-align: center;
+}
+
+.feed-empty-icon {
+  font-size: 3.5rem;
+  opacity: 0.7;
+}
+
+.feed-empty-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-pure);
+  margin: 0;
+}
+
+.feed-empty-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.5;
 }
 
 /* ── Responsive ── */
 @media (max-width: 480px) {
-    .feed-page {
-        padding: 16px 8px 40px;
-    }
-
-    .feed-action-btn {
-        width: 54px;
-        height: 54px;
-    }
-
-    .feed-action-btn svg {
-        width: 22px;
-        height: 22px;
-    }
-
-    .feed-stamp {
-        font-size: 1.6rem;
-        padding: 6px 14px;
-        top: 35px;
-    }
+  .feed-deck { width: 100%; }
+  .user-card-photo { height: 360px; }
+  .feed-action-btn { width: 56px; height: 56px; }
+  .feed-action-btn svg { width: 24px; height: 24px; }
+  .feed-stamp { font-size: 1.8rem; }
 }

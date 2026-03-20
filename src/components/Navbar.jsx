@@ -104,8 +104,9 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className={`navbar-glass fixed top-0 left-0 right-0 z-50 ${scrolled ? 'navbar-scrolled' : ''}`}>
-                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <div className="fixed top-0 left-0 w-full flex justify-center z-50 px-4 pt-4 pointer-events-none">
+                <nav className={`navbar-glass w-full max-w-7xl rounded-2xl pointer-events-auto ${scrolled ? 'navbar-scrolled' : ''}`}>
+                    <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
 
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2.5 shrink-0">
@@ -202,10 +203,11 @@ const Navbar = () => {
                         )}
                     </div>
                 </div>
-            </nav>
+                </nav>
+            </div>
 
             {/* Spacer so content doesn't hide behind fixed navbar */}
-            <div className="h-16" />
+            <div className="h-24" />
 
             {/* Mobile drawer */}
             {user && (

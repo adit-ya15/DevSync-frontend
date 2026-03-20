@@ -1,54 +1,49 @@
-@keyframes userprofile-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
+/* ===== User Profile Page – Deep Space ===== */
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes userprofile-fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .userprofile-page {
-    min-height: calc(100vh - 64px);
-    background: var(--bg-primary);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 16px 60px;
-    animation: userprofile-fade-in 0.4s ease-out;
+  min-height: calc(100vh - 80px);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 80px;
+  animation: userprofile-fade-in 0.5s var(--ease-smooth);
 }
 
 .userprofile-back {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    align-self: flex-start;
-    max-width: 420px;
-    width: 100%;
-    margin: 0 auto 16px;
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 6px 2px;
-    transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto 20px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 4px;
+  transition: all 0.2s ease;
+  font-family: 'Outfit', sans-serif;
 }
 
 .userprofile-back:hover {
-    color: #FD267A;
+  color: var(--accent-indigo);
+  transform: translateX(-4px);
 }
 
 .userprofile-back svg {
-    width: 18px;
-    height: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 480px) {
-    .userprofile-page {
-        padding: 16px 8px 40px;
-    }
+  .userprofile-page { padding: 20px 12px 60px; }
 }
