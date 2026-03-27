@@ -5,8 +5,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import chatAPI from "../utils/chatAPI";
 import { createSocketConnection } from "../utils/socket";
-
-const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&name=";
+import defaultAvatar from '../assests/images/default-user-image.png';
 
 const formatTime = (dateStr) => {
   if (!dateStr) return "";
@@ -401,12 +400,12 @@ const Chat = () => {
             {filteredChats.map((chat) => {
               const other = chat.participants.find((p) => p._id !== currentUserId);
               const isActive = activeChatId === chat._id;
-              const avatarUrl = other?.photoUrl || `${DEFAULT_AVATAR}${other?.firstName || 'U'}`;
+              const avatarUrl = other?.photoUrl || defaultAvatar;
 
               return (
                 <button key={chat._id} className={`chat-convo ${isActive ? "active" : ""}`} onClick={() => setActiveChatId(chat._id)}>
                   <div className="chat-convo-avatar">
-                    <img src={avatarUrl} alt="" className="chat-avatar" onError={(e) => { e.target.src = `${DEFAULT_AVATAR}${other?.firstName || 'U'}`; }} />
+                    <img src={avatarUrl} alt="" className="chat-avatar" onError={(e) => { e.target.src = defaultAvatar; }} />
                     <span className="chat-online-dot" />
                   </div>
                   <div className="chat-convo-info">
@@ -435,7 +434,7 @@ const Chat = () => {
               {/* Header */}
               <div className="chat-thread-header">
                 <div className="chat-peer-info">
-                  <img src={peer?.photoUrl || `${DEFAULT_AVATAR}${peer?.firstName}`} alt="" className="chat-peer-avatar" onError={(e) => { e.target.src = `${DEFAULT_AVATAR}${peer?.firstName}`; }} />
+                  <img src={peer?.photoUrl || defaultAvatar} alt="" className="chat-peer-avatar" onError={(e) => { e.target.src = defaultAvatar; }} />
                   <div>
                     <h3 className="chat-peer-name">{peer.firstName} {peer.lastName}</h3>
                     <span className="chat-peer-status">
@@ -462,13 +461,13 @@ const Chat = () => {
                   const m = item.message;
                   const isMine = m.senderId === currentUserId || m.senderId?._id === currentUserId;
                   const senderAvatar = isMine
-                    ? (user?.photoUrl || `${DEFAULT_AVATAR}${user?.firstName}`)
-                    : (peer?.photoUrl || `${DEFAULT_AVATAR}${peer?.firstName}`);
+                    ? (user?.photoUrl || defaultAvatar)
+                    : (peer?.photoUrl || defaultAvatar);
 
                   return (
                     <div key={item.key} className={`chat-msg ${isMine ? "me" : "them"}`}>
                       {!isMine && (
-                        <img src={senderAvatar} alt="" className="chat-msg-avatar" onError={(e) => { e.target.src = `${DEFAULT_AVATAR}${peer?.firstName}`; }} />
+                        <img src={senderAvatar} alt="" className="chat-msg-avatar" onError={(e) => { e.target.src = defaultAvatar; }} />
                       )}
 
                       <div className="chat-msg-content">
