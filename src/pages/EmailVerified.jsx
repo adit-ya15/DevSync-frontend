@@ -15,37 +15,40 @@ const EmailVerified = () => {
     }, [navigate]);
 
     return (
-        <div className="login-page">
-            <div className="login-glow" />
+        <div className="landing-page">
+            <div className="landing-bg-circle circle-blue" />
+            <div className="landing-bg-circle circle-pink" />
+            <div className="landing-bg-circle circle-yellow" />
 
-            <div className="login-logo-area">
-                <img src={logo} alt="DevSync" className="login-logo-icon" />
-                <h1 className="login-brand-name">DevSync</h1>
-                <p className="login-tagline">Your email has been verified successfully!</p>
-            </div>
+            <nav className="landing-navbar-container">
+                <div className="landing-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
+                    <img src={logo} alt="DevSync logo" />
+                    <span>DevSync</span>
+                </div>
+            </nav>
 
-            <div className="login-card">
-                <div className="text-center">
-                    <div className="mb-6 flex justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-20 h-20 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <main className="landing-hero" style={{ justifyContent: 'center', paddingTop: '0' }}>
+                <div className="auth-modal" style={{ animation: 'modalSlideUp 0.4s ease-out', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '80px', height: '80px', color: '#10b981' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h2 className="login-title mb-3">Email Verified!</h2>
-                    <p className="login-subtitle mb-8">
+                    
+                    <h2 className="auth-title" style={{ marginBottom: '0.5rem' }}>Email Verified!</h2>
+                    <p className="auth-subtitle" style={{ marginBottom: '2rem', color: '#374151', fontWeight: '500' }}>
                         Your email has been verified successfully. You can now log in to your account.
                     </p>
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="login-btn w-full"
-                    >
+
+                    <button className="auth-submit-btn" onClick={() => navigate("/login")} style={{ width: '100%', marginBottom: '1rem' }}>
                         Go to Login
                     </button>
-                    <p className="text-gray-400 text-sm mt-4 animate-pulse">
+
+                    <p className="auth-subtitle" style={{ fontSize: '0.85rem', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
                         Redirecting in 3 seconds...
                     </p>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

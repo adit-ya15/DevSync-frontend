@@ -68,80 +68,81 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="login-page">
-            <div className="login-glow" />
+        <div className="landing-page">
+            <div className="landing-bg-circle circle-blue" />
+            <div className="landing-bg-circle circle-pink" />
+            <div className="landing-bg-circle circle-yellow" />
 
-            <div className="login-logo-area">
-                <img src={logo} alt="DevSync" className="login-logo-icon" />
-                <h1 className="login-brand-name">DevSync</h1>
-                <p className="login-tagline">Reset your password to regain access to your account.</p>
-            </div>
+            <nav className="landing-navbar-container">
+                <div className="landing-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
+                    <img src={logo} alt="DevSync logo" />
+                    <span>DevSync</span>
+                </div>
+            </nav>
 
-            <div className="login-card">
-                {apiError && (
-                    <div className="login-error-toast flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                        </svg>
-                        <span>{apiError}</span>
-                    </div>
-                )}
+            <main className="landing-hero" style={{ justifyContent: 'center', paddingTop: '0' }}>
+                <div className="auth-modal" style={{ animation: 'modalSlideUp 0.4s ease-out', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <header className="auth-header">
+                        <h2 className="auth-title">Forgot Password?</h2>
+                    </header>
 
-                {emailSent ? (
-                    <div className="text-center">
-                        <div className="mb-6 flex justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    {apiError && (
+                        <div className="auth-error-toast" role="alert">
+                            <span>{apiError}</span>
                         </div>
-                        <h2 className="login-title mb-2">Check Your Email</h2>
-                        <p className="login-subtitle mb-6">
-                            If an account exists with this email, you'll receive a password reset link shortly.
-                        </p>
-                        <button
-                            onClick={() => navigate("/login")}
-                            className="login-btn w-full"
-                        >
-                            Back to Login
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <h2 className="login-title">Forgot Password?</h2>
-                        <p className="login-subtitle mb-6">
-                            Enter your email address and we'll send you a link to reset your password.
-                        </p>
+                    )}
 
-                        <div className="login-field">
-                            <label className="login-label">Email Address</label>
-                            <input
-                                type="email"
-                                placeholder="your@email.com"
-                                className={`login-input ${errors.email ? 'login-input-error' : ''}`}
-                                value={email}
-                                onChange={handleEmailChange}
-                                onKeyDown={handleKeyDown}
-                            />
-                            {errors.email && <span className="login-error">{errors.email}</span>}
+                    {emailSent ? (
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '64px', height: '64px', color: '#10b981' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h2 className="auth-title" style={{ marginBottom: '0.5rem' }}>Check Your Email</h2>
+                            <p className="auth-subtitle" style={{ marginBottom: '1.5rem' }}>
+                                If an account exists with this email, you'll receive a password reset link shortly.
+                            </p>
+                            <button className="auth-submit-btn" style={{ width: '100%' }} onClick={() => navigate("/login")}>
+                                Back to Login
+                            </button>
                         </div>
+                    ) : (
+                        <div className="auth-form-fields">
+                            <p className="auth-subtitle" style={{ textAlign: 'center', marginTop: '-1rem', marginBottom: '0.5rem' }}>
+                                Enter your email address and we'll send you a link to reset your password.
+                            </p>
 
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="login-btn w-full"
-                        >
-                            {isLoading ? "Sending..." : "Send Reset Link"}
-                        </button>
+                            <div className="auth-field">
+                                <label>Email Address</label>
+                                <input
+                                    type="email"
+                                    placeholder="your@email.com"
+                                    className={errors.email ? 'input-error' : ''}
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    onKeyDown={handleKeyDown}
+                                />
+                                {errors.email && <span className="field-error">{errors.email}</span>}
+                            </div>
 
-                        <button
-                            onClick={() => navigate("/login")}
-                            className="login-btn-secondary w-full mt-3"
-                        >
-                            Back to Login
-                        </button>
-                    </>
-                )}
-            </div>
+                            <button className="auth-submit-btn" onClick={handleSubmit} disabled={isLoading} style={{ width: '100%', marginTop: '0.5rem' }}>
+                                {isLoading && <span className="auth-spinner"></span>}
+                                {isLoading ? "Sending..." : "Send Reset Link"}
+                            </button>
+
+                            <button 
+                                onClick={() => navigate("/login")}
+                                style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', fontWeight: '500', transition: 'color 0.2s', width: '100%' }}
+                                onMouseEnter={(e) => e.target.style.color = '#111827'}
+                                onMouseLeave={(e) => e.target.style.color = '#6b7280'}
+                            >
+                                Back to Login
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </main>
         </div>
     );
 };

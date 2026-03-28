@@ -104,105 +104,111 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="login-page">
-            <div className="login-glow" />
+        <div className="landing-page">
+            <div className="landing-bg-circle circle-blue" />
+            <div className="landing-bg-circle circle-pink" />
+            <div className="landing-bg-circle circle-yellow" />
 
-            <div className="login-logo-area">
-                <img src={logo} alt="DevSync" className="login-logo-icon" />
-                <h1 className="login-brand-name">DevSync</h1>
-                <p className="login-tagline">Create a new password for your account.</p>
-            </div>
+            <nav className="landing-navbar-container">
+                <div className="landing-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
+                    <img src={logo} alt="DevSync logo" />
+                    <span>DevSync</span>
+                </div>
+            </nav>
 
-            <div className="login-card">
-                {apiError && (
-                    <div className="login-error-toast flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                        </svg>
-                        <span>{apiError}</span>
-                    </div>
-                )}
+            <main className="landing-hero" style={{ justifyContent: 'center', paddingTop: '0' }}>
+                <div className="auth-modal" style={{ animation: 'modalSlideUp 0.4s ease-out', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <header className="auth-header">
+                        <h2 className="auth-title">Reset Password</h2>
+                    </header>
 
-                {passwordReset ? (
-                    <div className="text-center">
-                        <div className="mb-6 flex justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    {apiError && (
+                        <div className="auth-error-toast" role="alert">
+                            <span>{apiError}</span>
                         </div>
-                        <h2 className="login-title mb-2">Password Reset Success!</h2>
-                        <p className="login-subtitle mb-6">
-                            Your password has been successfully reset. Redirecting to login...
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        <h2 className="login-title">Reset Your Password</h2>
-                        <p className="login-subtitle mb-6">
-                            Enter your new password below.
-                        </p>
+                    )}
 
-                        <div className="login-field">
-                            <label className="login-label">New Password</label>
-                            <div className="login-password-wrapper">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Enter new password"
-                                    className={`login-input ${errors.password ? 'login-input-error' : ''}`}
-                                    value={password}
-                                    onChange={handlePasswordChange}
-                                    onKeyDown={handleKeyDown}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="login-password-toggle"
-                                >
-                                    {showPassword ? '🙈' : '👁️'}
-                                </button>
+                    {passwordReset ? (
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '64px', height: '64px', color: '#10b981' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
-                            {errors.password && <span className="login-error">{errors.password}</span>}
+                            <h2 className="auth-title" style={{ marginBottom: '0.5rem' }}>Reset Success</h2>
+                            <p className="auth-subtitle" style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+                                Your password has been successfully reset. Redirecting to login...
+                            </p>
                         </div>
+                    ) : (
+                        <div className="auth-form-fields">
+                            <p className="auth-subtitle" style={{ textAlign: 'center', marginTop: '-1rem', marginBottom: '0.5rem' }}>
+                                Enter a new password for your account.
+                            </p>
 
-                        <div className="login-field">
-                            <label className="login-label">Confirm Password</label>
-                            <div className="login-password-wrapper">
-                                <input
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    placeholder="Confirm your password"
-                                    className={`login-input ${errors.confirmPassword ? 'login-input-error' : ''}`}
-                                    value={confirmPassword}
-                                    onChange={handleConfirmPasswordChange}
-                                    onKeyDown={handleKeyDown}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="login-password-toggle"
-                                >
-                                    {showConfirmPassword ? '🙈' : '👁️'}
-                                </button>
+                            <div className="auth-field">
+                                <label>New Password</label>
+                                <div style={{ position: 'relative' }}>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Enter new password"
+                                        className={errors.password ? 'input-error' : ''}
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                        onKeyDown={handleKeyDown}
+                                        style={{ width: '100%' }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
+                                    >
+                                        {showPassword ? '🙈' : '👁️'}
+                                    </button>
+                                </div>
+                                {errors.password && <span className="field-error">{errors.password}</span>}
                             </div>
-                            {errors.confirmPassword && <span className="login-error">{errors.confirmPassword}</span>}
+
+                            <div className="auth-field">
+                                <label>Confirm Password</label>
+                                <div style={{ position: 'relative' }}>
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        placeholder="Confirm your password"
+                                        className={errors.confirmPassword ? 'input-error' : ''}
+                                        value={confirmPassword}
+                                        onChange={handleConfirmPasswordChange}
+                                        onKeyDown={handleKeyDown}
+                                        style={{ width: '100%' }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
+                                    >
+                                        {showConfirmPassword ? '🙈' : '👁️'}
+                                    </button>
+                                </div>
+                                {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
+                            </div>
+
+                            <button className="auth-submit-btn" onClick={handleSubmit} disabled={isLoading} style={{ width: '100%', marginTop: '0.5rem' }}>
+                                {isLoading && <span className="auth-spinner"></span>}
+                                {isLoading ? "Resetting..." : "Reset Password"}
+                            </button>
+
+                            <button 
+                                onClick={() => navigate("/login")}
+                                style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', fontWeight: '500', transition: 'color 0.2s', width: '100%' }}
+                                onMouseEnter={(e) => e.target.style.color = '#111827'}
+                                onMouseLeave={(e) => e.target.style.color = '#6b7280'}
+                            >
+                                Back to Login
+                            </button>
                         </div>
-
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="login-btn w-full"
-                        >
-                            {isLoading ? "Resetting..." : "Reset Password"}
-                        </button>
-
-                        <button
-                            onClick={() => navigate("/login")}
-                            className="login-btn-secondary w-full mt-3"
-                        >
-                            Back to Login
-                        </button>
-                    </>
-                )}
-            </div>
+                    )}
+                </div>
+            </main>
         </div>
     );
 };

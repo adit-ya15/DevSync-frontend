@@ -25,6 +25,7 @@ import EmailVerified from "./pages/EmailVerified"
 import VerificationFailed from "./pages/VerificationFailed"
 import SignupSuccess from "./pages/SignupSuccess"
 import Chat from "./pages/Chat"
+import ThemeProvider from "./components/ThemeProvider"
 
 
 function App() {
@@ -32,8 +33,9 @@ function App() {
   return (
     <>
       <Provider store={appStore}>
-        <BrowserRouter basename="/">
-          <Routes>
+        <ThemeProvider>
+          <BrowserRouter basename="/">
+            <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
             <Route path="/community" element={<Community />} />
@@ -59,8 +61,9 @@ function App() {
               <Route path="/chat" element={<Chat />} />
               <Route path="/chat/:targetUserId" element={<Chat />} />
             </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
         <Toaster
           position="top-center"
           toastOptions={{

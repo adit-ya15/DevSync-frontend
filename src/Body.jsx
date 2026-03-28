@@ -41,7 +41,7 @@ const Body = () => {
 
     return (
         <div 
-            className="landing-page light-theme flex flex-col min-h-screen relative"
+            className="landing-page flex flex-col min-h-screen relative"
             onMouseMove={handleMouseMove}
             style={{ 
                 '--mx': `${mousePos.x}px`, 

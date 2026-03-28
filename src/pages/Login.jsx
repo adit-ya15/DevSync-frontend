@@ -154,7 +154,7 @@ const Login = () => {
 
     return (
         <div 
-            className="landing-page light-theme"
+            className="landing-page"
             onMouseMove={handleMouseMove}
             style={{ '--mx': `${mousePos.x}px`, '--my': `${mousePos.y}px` }}
         >

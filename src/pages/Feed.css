@@ -99,7 +99,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 5px solid #ffffff;
+  border: 5px solid var(--dashboard-glass-border);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1), inset 0 0 15px rgba(255,255,255,0.8);
@@ -145,7 +145,7 @@
 .feed-spinner {
   width: 60px;
   height: 60px;
-  border: 6px solid #f3f4f6;
+  border: 6px solid var(--dashboard-surface-alt);
   border-top-color: #8b5cf6;
   border-radius: 50%;
   animation: feed-spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
@@ -189,7 +189,7 @@
 .feed-empty-text {
   font-size: 1.15rem;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--dashboard-text-faint);
   line-height: 1.6;
 }
 

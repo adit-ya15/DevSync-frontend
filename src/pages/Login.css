@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
 
 /* Reset and Base Styles */
-.landing-page.light-theme {
+.landing-page.light-theme, .landing-page.dark-theme {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
     position: relative;
-    background-color: #ffffff;
+    background-color: var(--lp-bg);
     font-family: 'Outfit', sans-serif;
-    color: #1a1a1a;
+    color: var(--lp-text);
 }
 
 /* Ambient Floating Background Circles */
@@ -17,14 +17,14 @@
     border-radius: 50%;
     filter: blur(100px);
     z-index: 1;
-    opacity: 0.6;
+    opacity: var(--lp-circle-opacity);
     animation: slowDrift 20s infinite alternate ease-in-out;
 }
 
 .circle-blue {
     width: 600px;
     height: 600px;
-    background: #c3e2ff;
+    background: var(--c-blue);
     top: -100px;
     left: -100px;
 }
@@ -32,7 +32,7 @@
 .circle-pink {
     width: 500px;
     height: 500px;
-    background: #f8c7f9;
+    background: var(--c-pink);
     bottom: -50px;
     right: -50px;
     animation-delay: -5s;
@@ -41,7 +41,7 @@
 .circle-yellow {
     width: 400px;
     height: 400px;
-    background: #fcf1b8;
+    background: var(--c-yellow);
     top: 30%;
     left: 40%;
     animation-delay: -10s;
@@ -76,13 +76,13 @@
 /* Glassmorphic Nav Pill */
 .landing-nav-pill {
     display: flex;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--nav-pill-bg);
     backdrop-filter: blur(16px);
     border-radius: 50px;
     padding: 0.35rem;
     gap: 0.2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--nav-pill-border);
 }
 
 .pill-item {
@@ -95,16 +95,16 @@
     border-radius: 40px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #4b5563;
+    color: var(--lp-text-muted);
 }
 
 .pill-item:hover {
-    color: #1a1a1a;
+    color: var(--lp-text);
 }
 
 .pill-item.active {
-    background: #eaf1fa;
-    color: #1a1a1a;
+    background: var(--nav-pill-active-bg);
+    color: var(--nav-pill-active-text);
     font-weight: 600;
 }
 
@@ -136,7 +136,7 @@
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 2.5rem;
-    color: #111827;
+    color: var(--hero-title);
     letter-spacing: -0.03em;
 }
 
@@ -281,7 +281,7 @@
 .auth-modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--dashboard-glass-border-translucent);
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
@@ -296,12 +296,13 @@
 }
 
 .auth-modal {
-    background: #ffffff;
+    background: var(--modal-bg);
     width: 100%;
     max-width: 420px;
     border-radius: 24px;
     padding: 2.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    box-shadow: var(--modal-shadow);
+    border: 1px solid var(--modal-border);
     position: relative;
     animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -318,14 +319,14 @@
     background: none;
     border: none;
     font-size: 1.8rem;
-    color: #9ca3af;
+    color: var(--lp-text-muted);
     cursor: pointer;
     line-height: 1;
     transition: color 0.2s;
 }
 
 .auth-close-btn:hover {
-    color: #111827;
+    color: var(--lp-text);
 }
 
 .auth-header {
@@ -336,12 +337,12 @@
 .auth-title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--hero-title);
     margin-bottom: 0.25rem;
 }
 
 .auth-subtitle {
-    color: #6b7280;
+    color: var(--lp-text-muted);
     font-size: 0.95rem;
 }
 
@@ -366,23 +367,23 @@
 .auth-field label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--lp-text);
 }
 
 .auth-field input {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 10px;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
-    color: #111827;
+    color: var(--input-text);
     transition: all 0.2s;
     outline: none;
     font-family: inherit;
 }
 
 .auth-field input:focus {
-    background: #ffffff;
+    background: var(--dashboard-glass-border);
     border-color: #8b5cf6;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
@@ -408,22 +409,22 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: #4b5563;
+    color: var(--lp-text-muted);
     cursor: pointer;
 }
 
 .auth-forgot {
     background: none;
     border: none;
-    color: #8b5cf6;
+    color: var(--brand-color);
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
 }
 
 .auth-submit-btn {
-    background: #111827;
-    color: white;
+    background: var(--auth-btn-bg);
+    color: var(--auth-btn-text);
     border: none;
     border-radius: 10px;
     padding: 0.85rem;
@@ -440,7 +441,7 @@
 }
 
 .auth-submit-btn:hover {
-    background: #1f2937;
+    background: var(--auth-btn-hover);
 }
 
 .auth-submit-btn:disabled {
@@ -471,14 +472,14 @@
     position: absolute;
     top: 50%; left: 0; right: 0;
     height: 1px;
-    background: #e5e7eb;
+    background: var(--divider-bg);
 }
 
 .auth-divider-text {
     position: relative;
-    background: #ffffff;
+    background: var(--modal-bg);
     padding: 0 0.75rem;
-    color: #9ca3af;
+    color: var(--lp-text-muted);
     font-size: 0.85rem;
     font-weight: 500;
 }
@@ -490,7 +491,7 @@
 }
 
 .auth-social-btn.github {
-    background: #24292f;
+    background: var(--github-btn-bg);
     color: white;
     border: none;
     border-radius: 4px; /* Matches Google login shape approx */
@@ -507,20 +508,20 @@
 }
 
 .auth-social-btn.github:hover {
-    background: #1c2024;
+    background: var(--github-btn-hover);
 }
 
 .auth-footer {
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.9rem;
-    color: #4b5563;
+    color: var(--lp-text-muted);
 }
 
 .auth-toggle-mode {
     background: none;
     border: none;
-    color: #8b5cf6;
+    color: var(--brand-color);
     font-weight: 600;
     cursor: pointer;
     margin-left: 0.3rem;

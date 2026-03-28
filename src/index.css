@@ -59,7 +59,84 @@
 
   --shadow-glass: 0 4px 20px rgba(0, 0, 0, 0.05);
   --shadow-float: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+
+  /* Landing Page Variables - Light */
+  --lp-bg: #ffffff;
+  --lp-text: #1a1a1a;
+  --lp-text-muted: #4b5563;
+  --lp-circle-opacity: 0.6;
+  --c-blue: #c3e2ff;
+  --c-pink: #f8c7f9;
+  --c-yellow: #fcf1b8;
+  --nav-pill-bg: rgba(255, 255, 255, 0.7);
+  --nav-pill-border: rgba(255, 255, 255, 0.8);
+  --nav-pill-active-bg: #eaf1fa;
+  --nav-pill-active-text: #1a1a1a;
+  --hero-title: #111827;
+  --modal-bg: #ffffff;
+  --modal-border: rgba(0,0,0,0.05);
+  --modal-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+  --input-bg: #f9fafb;
+  --input-border: #e5e7eb;
+  --input-text: #111827;
+  --auth-btn-bg: #111827;
+  --auth-btn-text: #ffffff;
+  --auth-btn-hover: #1f2937;
+  --auth-btn-hover: #1f2937;
+  --divider-bg: #e5e7eb;
+  --github-btn-bg: #24292f;
+  --github-btn-hover: #1c2024;
+
+  /* Dashboard Core Variables */
+  --dashboard-glass-bg: rgba(255, 255, 255, 0.85);
+  --dashboard-glass-border: #ffffff;
+  --dashboard-glass-border-translucent: rgba(255, 255, 255, 0.4);
+  --dashboard-text-main: #111827;
+  --dashboard-text-faint: #6b7280;
+  --dashboard-surface: #f9fafb;
+  --dashboard-surface-alt: #f3f4f6;
+  --dashboard-border: #e5e7eb;
 }
+
+/* Landing Page Variables - Dark */
+.dark-theme, [data-theme="dark"] {
+  --lp-bg: #030712;
+  --lp-text: #f8fafc;
+  --lp-text-muted: #9ca3af;
+  --lp-circle-opacity: 0.4;
+  --c-blue: #1e3a8a;
+  --c-pink: #701a75;
+  --c-yellow: #831843;
+  --nav-pill-bg: rgba(17, 24, 39, 0.7);
+  --nav-pill-border: rgba(255, 255, 255, 0.1);
+  --nav-pill-active-bg: rgba(255, 255, 255, 0.15);
+  --nav-pill-active-text: #ffffff;
+  --hero-title: #ffffff;
+  --modal-bg: rgba(17, 24, 39, 0.8);
+  --modal-border: rgba(255, 255, 255, 0.1);
+  --modal-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --input-border: rgba(255, 255, 255, 0.15);
+  --input-text: #ffffff;
+  --auth-btn-bg: #3b82f6;
+  --auth-btn-text: #ffffff;
+  --auth-btn-hover: #2563eb;
+  --auth-btn-hover: #2563eb;
+  --divider-bg: rgba(255, 255, 255, 0.15);
+  --github-btn-bg: rgba(255, 255, 255, 0.1);
+  --github-btn-hover: rgba(255, 255, 255, 0.2);
+
+  /* Dashboard Core Variables - Dark */
+  --dashboard-glass-bg: rgba(15, 23, 42, 0.7);
+  --dashboard-glass-border: rgba(255, 255, 255, 0.12);
+  --dashboard-glass-border-translucent: rgba(255, 255, 255, 0.05);
+  --dashboard-text-main: #f8fafc;
+  --dashboard-text-faint: #9ca3af;
+  --dashboard-surface: rgba(0, 0, 0, 0.3);
+  --dashboard-surface-alt: rgba(255, 255, 255, 0.05);
+  --dashboard-border: rgba(255, 255, 255, 0.1);
+}
+
 
 /* ── Force DaisyUI Dark Override ── */
 html, html[data-theme="dark"] {

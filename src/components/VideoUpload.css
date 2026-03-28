@@ -35,10 +35,10 @@
 
 /* ── Main Upload Card ── */
 .video-upload-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--dashboard-glass-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 4px solid #ffffff;
+  border: 4px solid var(--dashboard-glass-border);
   border-radius: 32px;
   padding: 0;
   width: 100%;
@@ -61,7 +61,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 1.85rem;
   font-weight: 800;
-  color: #111827;
+  color: var(--dashboard-text-main);
   margin: 0 0 6px;
   letter-spacing: -0.5px;
   display: flex;
@@ -87,7 +87,7 @@
 }
 
 .video-upload-subtitle {
-  color: #6b7280;
+  color: var(--dashboard-text-faint);
   font-size: 0.95rem;
   font-weight: 500;
   margin: 0;
@@ -177,7 +177,7 @@
 
 .file-input-label {
   cursor: pointer;
-  color: #6b7280;
+  color: var(--dashboard-text-faint);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -189,7 +189,7 @@
 
 .file-input-hint {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--dashboard-text-faint);
   font-weight: 400;
 }
 
@@ -226,7 +226,7 @@
 }
 
 .selected-file {
-  color: #111827;
+  color: var(--dashboard-text-main);
   font-weight: 700;
   word-break: break-all;
   text-align: left;
@@ -258,17 +258,17 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: #9ca3af;
+  color: var(--dashboard-text-faint);
   margin-bottom: 10px;
 }
 
 .video-caption-input {
   width: 100%;
-  background: #f9fafb;
-  border: 2px solid #e5e7eb;
+  background: var(--dashboard-surface);
+  border: 2px solid var(--dashboard-border);
   border-radius: 16px;
   padding: 16px 18px;
-  color: #111827;
+  color: var(--dashboard-text-main);
   min-height: 110px;
   resize: vertical;
   font-family: inherit;
@@ -279,11 +279,11 @@
 }
 
 .video-caption-input::placeholder {
-  color: #9ca3af;
+  color: var(--dashboard-text-faint);
 }
 
 .video-caption-input:focus {
-  background: #ffffff;
+  background: var(--dashboard-glass-border);
   border-color: #8b5cf6;
   box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
 }
@@ -291,7 +291,7 @@
 .caption-char-count {
   text-align: right;
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--dashboard-text-faint);
   margin-top: 6px;
   font-weight: 500;
 }
@@ -307,7 +307,7 @@
 /* ── Upload Button ── */
 .upload-submit-btn {
   width: 100%;
-  background: #111827;
+  background: var(--dashboard-text-main);
   color: white;
   border: none;
   border-radius: 16px;
@@ -327,7 +327,7 @@
 .upload-submit-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 12px 30px rgba(17, 24, 39, 0.25);
-  background: #1f2937;
+  background: var(--auth-btn-hover);
 }
 
 .upload-submit-btn:active:not(:disabled) {
@@ -349,7 +349,7 @@
 .upload-progress-bar {
   width: 100%;
   height: 4px;
-  background: #e5e7eb;
+  background: var(--dashboard-border);
   border-radius: 4px;
   margin-top: 16px;
   overflow: hidden;

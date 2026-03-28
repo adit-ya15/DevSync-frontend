@@ -5,10 +5,10 @@
   max-width: 400px;
   border-radius: 36px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.85); /* Glassmorphic base */
+  background: var(--dashboard-glass-bg); /* Glassmorphic base */
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 4px solid #ffffff; /* Thick white border for 3D effect */
+  border: 4px solid var(--dashboard-glass-border); /* Thick white border for 3D effect */
   box-shadow: 
     0 25px 60px rgba(0, 0, 0, 0.12),
     0 10px 20px rgba(0, 0, 0, 0.05),
@@ -24,7 +24,7 @@
   width: 100%;
   height: 420px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--dashboard-surface-alt);
   border-radius: 32px 32px 0 0; /* Smooth inner border to match outer 36px minus 4px */
 }
 
@@ -64,7 +64,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 2.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--auth-btn-text);
   margin: 0;
   display: flex;
   align-items: baseline;
@@ -90,7 +90,7 @@
   align-items: center;
   gap: 12px;
   padding: 6px 0;
-  color: #4b5563;
+  color: var(--dashboard-text-faint);
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -119,7 +119,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #9ca3af;
+  color: var(--dashboard-text-faint);
   margin: 0 0 10px;
 }
 
@@ -144,7 +144,7 @@
   font-weight: 700;
   padding: 6px 14px;
   border-radius: 20px;
-  background: #ffffff;
+  background: var(--dashboard-glass-border);
   color: #3b82f6;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
   border: 1px solid rgba(59, 130, 246, 0.1);

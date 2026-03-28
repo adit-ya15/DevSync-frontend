@@ -4,6 +4,7 @@ import feedReducer from "./feedSlice";
 import connectionReducer from "./connectionSlice";
 import requestReducer from "./requestSlice";
 import reelsReducer from "./reelsSlice";
+import themeReducer from "./themeSlice";
 
 const appStore = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const appStore = configureStore({
         feed: feedReducer,
         connections: connectionReducer,
         requests: requestReducer,
-        reels: reelsReducer
+        reels: reelsReducer,
+        theme: themeReducer
     }
 })
 
