@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { projectAPI } from '../utils/projectAPI';
 import { setActiveProject } from '../redux/projectSlice';
 import defaultAvatar from '../assests/images/default-user-image.png';
+import TaskBoard from '../components/TaskBoard';
 import './ProjectDetail.css';
 
 const ProjectDetail = () => {
@@ -16,10 +17,10 @@ const ProjectDetail = () => {
   const project = useSelector(store => store.projects.activeProject);
   
   const [loading, setLoading] = useState(true);
-  const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [applyRole, setApplyRole] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
   const [applying, setApplying] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -78,7 +79,7 @@ const ProjectDetail = () => {
   }
 
   const isOwner = user && project.owner && user._id === project.owner._id;
-  const isMember = user && project.members?.some(m => m._id === user._id);
+  const isMember = user && project.members?.some(m => m.user?._id === user._id);
 
   return (
     <div className="pd-page">
@@ -118,32 +119,59 @@ const ProjectDetail = () => {
           
           {/* Main Column */}
           <div className="pd-main-col">
-            <div className="pd-card">
-              <h3 className="pd-section-title">About the Project</h3>
-              <p className="pd-description">{project.description}</p>
-              
-              {project.repoUrl && (
-                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="pd-repo-link">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.627-5.373-12-12-12z" />
-                  </svg>
-                  Repository Link
-                </a>
-              )}
-            </div>
-
-            <div className="pd-card">
-              <h3 className="pd-section-title">Tech Stack</h3>
-              <div className="pd-tech-warp">
-                {project.techStack?.length > 0 ? (
-                  project.techStack.map((tech, i) => (
-                    <span key={i} className="pd-tech-pill">{tech}</span>
-                  ))
-                ) : (
-                  <span className="pd-empty-text">No technologies specified.</span>
-                )}
+            
+            {/* Tabs for Project Members */}
+            {(isOwner || isMember) && (
+              <div className="pd-tabs" style={{display:'flex', gap:'12px', marginBottom:'20px'}}>
+                <button 
+                  className={`cp-btn ${activeTab === 'details' ? 'cp-btn-save' : 'cp-btn-cancel'}`}
+                  onClick={() => setActiveTab('details')}
+                  style={{padding:'8px 16px', flex: 0}}
+                >
+                  Project Details
+                </button>
+                <button 
+                  className={`cp-btn ${activeTab === 'tasks' ? 'cp-btn-save' : 'cp-btn-cancel'}`}
+                  onClick={() => setActiveTab('tasks')}
+                  style={{padding:'8px 16px', flex: 0}}
+                >
+                  Task Board (Kanban)
+                </button>
               </div>
-            </div>
+            )}
+
+            {activeTab === 'details' ? (
+              <>
+                <div className="pd-card">
+                  <h3 className="pd-section-title">About the Project</h3>
+                  <p className="pd-description">{project.description}</p>
+                  
+                  {project.repoUrl && (
+                    <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="pd-repo-link">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.627-5.373-12-12-12z" />
+                      </svg>
+                      Repository Link
+                    </a>
+                  )}
+                </div>
+
+                <div className="pd-card">
+                  <h3 className="pd-section-title">Tech Stack</h3>
+                  <div className="pd-tech-warp">
+                    {project.techStack?.length > 0 ? (
+                      project.techStack.map((tech, i) => (
+                        <span key={i} className="pd-tech-pill">{tech}</span>
+                      ))
+                    ) : (
+                      <span className="pd-empty-text">No technologies specified.</span>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <TaskBoard projectId={project._id} members={project.members} />
+            )}
           </div>
 
           {/* Sidebar Column */}
@@ -204,11 +232,12 @@ const ProjectDetail = () => {
                 
                 {/* Other members */}
                 {project.members?.map(member => {
-                  if (member._id === project.owner?._id) return null;
+                  const mUser = member.user;
+                  if (!mUser || mUser._id === project.owner?._id) return null;
                   return (
-                    <div key={member._id} className="pd-member-item" onClick={() => navigate(`/profile/${member._id}`)}>
-                      <img src={member.photoUrl || defaultAvatar} alt="member" />
-                      <span>{member.firstName}</span>
+                    <div key={mUser._id} className="pd-member-item" onClick={() => navigate(`/profile/${mUser._id}`)}>
+                      <img src={mUser.photoUrl || defaultAvatar} alt="member" />
+                      <span>{mUser.firstName}</span>
                     </div>
                   );
                 })}

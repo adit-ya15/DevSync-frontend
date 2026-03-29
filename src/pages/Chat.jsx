@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import "./Chat.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import chatAPI from "../utils/chatAPI";
@@ -45,6 +45,10 @@ const Chat = () => {
   const [isPeerTyping, setIsPeerTyping] = useState(false);
   const [lastSeenMessageId, setLastSeenMessageId] = useState(null);
   const [showMembersPanel, setShowMembersPanel] = useState(false);
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const targetProjectId = queryParams.get("project");
 
   const socketRef = useRef(null);
   const activeChatIdRef = useRef(activeChatId);
@@ -148,7 +152,10 @@ const Chat = () => {
     try {
       const data = await chatAPI.getChats();
       setChats(data);
-      if (targetUserId) {
+      if (targetProjectId) {
+        const existingProjectChat = data.find((chat) => chat.projectId === targetProjectId);
+        if (existingProjectChat) setActiveChatId(existingProjectChat._id);
+      } else if (targetUserId) {
         const existing = data.find((chat) => chat.participants.some((p) => p._id === targetUserId));
         if (existing) {
           setActiveChatId(existing._id);
@@ -162,7 +169,7 @@ const Chat = () => {
         setActiveChatId(data[0]._id);
       }
     } catch { toast.error("Failed to load chats"); }
-  }, [currentUserId, navigate, targetUserId]);
+  }, [currentUserId, navigate, targetUserId, targetProjectId]);
 
   useEffect(() => { if (currentUserId) loadChats(); }, [currentUserId, loadChats]);
 
@@ -558,30 +565,20 @@ const Chat = () => {
                                     <ReactMarkdown
                                       remarkPlugins={[remarkGfm]}
                                       components={{
-                                        code({ node, inline, className, children, ...props }) {
+                                        code({ node, className, children, ...props }) {
                                           const match = /language-(\w+)/.exec(className || '');
                                           const codeString = String(children).replace(/\n$/, '');
-                                          if (!inline && match) {
+                                          const isBlock = match || codeString.includes('\n');
+
+                                          if (isBlock) {
+                                            const lang = match ? match[1] : 'code';
                                             return (
                                               <div className="chat-code-block-wrap">
                                                 <div className="chat-code-header">
-                                                  <span className="chat-code-lang">{match[1]}</span>
+                                                  <span className="chat-code-lang">{lang}</span>
                                                   <button className="chat-code-copy" onClick={() => { navigator.clipboard.writeText(codeString); toast.success('Copied!'); }}>Copy</button>
                                                 </div>
-                                                <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div" customStyle={{ margin: 0, borderRadius: '0 0 12px 12px', fontSize: '0.85rem' }} {...props}>
-                                                  {codeString}
-                                                </SyntaxHighlighter>
-                                              </div>
-                                            );
-                                          }
-                                          if (!inline) {
-                                            return (
-                                              <div className="chat-code-block-wrap">
-                                                <div className="chat-code-header">
-                                                  <span className="chat-code-lang">code</span>
-                                                  <button className="chat-code-copy" onClick={() => { navigator.clipboard.writeText(codeString); toast.success('Copied!'); }}>Copy</button>
-                                                </div>
-                                                <SyntaxHighlighter style={oneDark} PreTag="div" customStyle={{ margin: 0, borderRadius: '0 0 12px 12px', fontSize: '0.85rem' }} {...props}>
+                                                <SyntaxHighlighter style={oneDark} language={match ? match[1] : 'javascript'} PreTag="div" customStyle={{ margin: 0, borderRadius: '0 0 12px 12px', fontSize: '0.85rem' }} {...props}>
                                                   {codeString}
                                                 </SyntaxHighlighter>
                                               </div>

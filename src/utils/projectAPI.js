@@ -34,18 +34,18 @@ export const projectAPI = {
 
   // Create new project
   async createProject(projectData) {
-    const res = await axios.post(`${BASE_URL}/projects`, projectData, {
+    const res = await axios.post(`${BASE_URL}/project`, projectData, {
       withCredentials: true,
     });
-    return normalizeObjectResponse(res, "project");
+    return res.data;
   },
 
   // Update project
   async updateProject(projectId, updateData) {
-    const res = await axios.put(`${BASE_URL}/projects/${projectId}`, updateData, {
+    const res = await axios.patch(`${BASE_URL}/projects/${projectId}`, updateData, {
       withCredentials: true,
     });
-    return normalizeObjectResponse(res, "project");
+    return res.data;
   },
 
   // Delete project
@@ -59,7 +59,7 @@ export const projectAPI = {
   // Apply to join a project
   async applyToProject(projectId, role, message) {
     const res = await axios.post(
-      `${BASE_URL}/projects/${projectId}/apply`,
+      `${BASE_URL}/projects/${projectId}/join`,
       { role, message },
       { withCredentials: true }
     );
@@ -68,10 +68,10 @@ export const projectAPI = {
 
   // Project admin: accept/reject application
   async handleApplication(projectId, applicationId, status) {
-    // status should be 'accepted' or 'rejected'
+    // status should be 'accept' or 'reject'
     const res = await axios.post(
-      `${BASE_URL}/projects/${projectId}/applications/${applicationId}`,
-      { status },
+      `${BASE_URL}/projects/${projectId}/request/${applicationId}/respond`,
+      { action: status },
       { withCredentials: true }
     );
     return res.data;
