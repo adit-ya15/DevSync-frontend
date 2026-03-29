@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addUser } from '../redux/userSlice';
 import './Profile.css';
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';\n\nconst intentLabels = {\n    cofounder: '🚀 Looking for Co-Founder',\n    freelance: '💼 Open to Freelance/Hire',\n    opensource: '🤝 Open Source Collaborator',\n    mentor: '📚 Seeking Mentor/Mentee',\n    networking: '🧑‍💻 Just Networking',\n};
 
 const Profile = () => {
     const user = useSelector(store => store.user);
@@ -15,7 +15,7 @@ const Profile = () => {
     const [newSkill, setNewSkill] = useState('');
 
     const [form, setForm] = useState({
-        firstName: '', lastName: '', age: '', gender: '', about: '', skills: [],
+        firstName: '', lastName: '', age: '', gender: '', about: '', skills: [], intent: '',
     });
 
     const [profileImageFile, setProfileImageFile] = useState(null);
@@ -37,6 +37,7 @@ const Profile = () => {
                 firstName: user.firstName || '', lastName: user.lastName || '',
                 age: user.age || '', gender: user.gender || '',
                 about: user.about || '', skills: user.skills || [],
+                intent: user.intent || '',
             });
             setPhotoPreview(user.photoUrl || '');
         }
@@ -98,7 +99,7 @@ const Profile = () => {
         setIsEditing(false);
         setProfileImageFile(null);
         if (user) {
-            setForm({ firstName: user.firstName || '', lastName: user.lastName || '', age: user.age || '', gender: user.gender || '', about: user.about || '', skills: user.skills || [] });
+            setForm({ firstName: user.firstName || '', lastName: user.lastName || '', age: user.age || '', gender: user.gender || '', about: user.about || '', skills: user.skills || [], intent: user.intent || '' });
             setPhotoPreview(user.photoUrl || '');
         }
     };
@@ -113,6 +114,7 @@ const Profile = () => {
             if (form.gender) formData.append('gender', form.gender);
             if (form.about) formData.append('about', form.about);
             if (form.skills.length > 0) formData.append('skills', JSON.stringify(form.skills));
+            if (form.intent) formData.append('intent', form.intent);
             if (profileImageFile) formData.append('profileImage', profileImageFile);
 
             await axios.patch(BASE_URL + '/profile/edit', formData, { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } });
@@ -188,6 +190,14 @@ const Profile = () => {
                                 </span>
                             )}
                         </div>
+
+                        {user.intent && (
+                            <div className="profile-intent-badge-wrap">
+                                <span className={`profile-intent-badge intent-${user.intent}`}>
+                                    {intentLabels[user.intent] || user.intent}
+                                </span>
+                            </div>
+                        )}
 
                         {user.skills?.length > 0 && (
                             <div className="profile-skills-wrap">
@@ -337,6 +347,22 @@ const Profile = () => {
                     <div className="profile-field">
                         <label className="profile-field-label">About</label>
                         <textarea className="profile-input profile-textarea" name="about" value={form.about} onChange={handleChange} placeholder="Tell the world about yourself..." rows={3} />
+                    </div>
+
+                    <div className="profile-field">
+                        <label className="profile-field-label">What are you looking for?</label>
+                        <div className="profile-intent-selector">
+                            {Object.entries(intentLabels).map(([key, label]) => (
+                                <button
+                                    key={key}
+                                    type="button"
+                                    className={`profile-intent-option ${form.intent === key ? 'active' : ''}`}
+                                    onClick={() => setForm(prev => ({ ...prev, intent: key }))}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="profile-field">

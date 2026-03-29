@@ -720,3 +720,126 @@
   .chat-messages { padding: 20px; }
   .chat-composer { padding: 16px 20px; }
 }
+
+/* ══════════════════════════════════════════
+   Markdown Chat Rendering
+   ══════════════════════════════════════════ */
+
+.chat-markdown {
+  line-height: 1.6;
+}
+
+.chat-markdown p {
+  margin: 0 0 8px 0;
+}
+.chat-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.chat-markdown strong { font-weight: 700; }
+.chat-markdown em { font-style: italic; }
+
+.chat-markdown ul, .chat-markdown ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.chat-markdown li {
+  margin: 2px 0;
+}
+
+.chat-markdown blockquote {
+  border-left: 3px solid rgba(139, 92, 246, 0.5);
+  margin: 8px 0;
+  padding: 4px 12px;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+.chat-markdown hr {
+  border: none;
+  border-top: 1px solid var(--dashboard-glass-border-translucent);
+  margin: 8px 0;
+}
+
+.chat-markdown table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  width: 100%;
+  font-size: 0.85rem;
+}
+.chat-markdown th, .chat-markdown td {
+  border: 1px solid var(--dashboard-glass-border-translucent);
+  padding: 6px 10px;
+  text-align: left;
+}
+.chat-markdown th {
+  background: rgba(255,255,255,0.05);
+  font-weight: 700;
+}
+
+/* Inline code */
+.chat-inline-code {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c084fc;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* Code block wrapper */
+.chat-code-block-wrap {
+  margin: 8px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--dashboard-glass-border-translucent);
+}
+
+.chat-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 14px;
+  background: #1e1e2e;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.chat-code-lang {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #a78bfa;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.chat-code-copy {
+  background: rgba(255,255,255,0.08);
+  color: #ccc;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chat-code-copy:hover {
+  background: rgba(139, 92, 246, 0.3);
+  color: #fff;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* Links in markdown */
+.chat-md-link {
+  color: #818cf8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.chat-md-link:hover {
+  color: #a78bfa;
+}

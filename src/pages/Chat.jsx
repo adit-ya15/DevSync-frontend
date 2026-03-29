@@ -6,6 +6,10 @@ import toast from "react-hot-toast";
 import chatAPI from "../utils/chatAPI";
 import { createSocketConnection } from "../utils/socket";
 import defaultAvatar from '../assests/images/default-user-image.png';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const formatTime = (dateStr) => {
   if (!dateStr) return "";
@@ -490,7 +494,49 @@ const Chat = () => {
                         ) : (
                           <>
                             <div className={`chat-bubble ${isMine ? 'me' : 'them'}`}>
-                              <p className="chat-bubble-text">{m.text}</p>
+                              <div className="chat-bubble-text chat-markdown">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  components={{
+                                    code({ node, inline, className, children, ...props }) {
+                                      const match = /language-(\w+)/.exec(className || '');
+                                      const codeString = String(children).replace(/\n$/, '');
+                                      if (!inline && match) {
+                                        return (
+                                          <div className="chat-code-block-wrap">
+                                            <div className="chat-code-header">
+                                              <span className="chat-code-lang">{match[1]}</span>
+                                              <button className="chat-code-copy" onClick={() => { navigator.clipboard.writeText(codeString); toast.success('Copied!'); }}>Copy</button>
+                                            </div>
+                                            <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div" customStyle={{ margin: 0, borderRadius: '0 0 12px 12px', fontSize: '0.85rem' }} {...props}>
+                                              {codeString}
+                                            </SyntaxHighlighter>
+                                          </div>
+                                        );
+                                      }
+                                      if (!inline) {
+                                        return (
+                                          <div className="chat-code-block-wrap">
+                                            <div className="chat-code-header">
+                                              <span className="chat-code-lang">code</span>
+                                              <button className="chat-code-copy" onClick={() => { navigator.clipboard.writeText(codeString); toast.success('Copied!'); }}>Copy</button>
+                                            </div>
+                                            <SyntaxHighlighter style={oneDark} PreTag="div" customStyle={{ margin: 0, borderRadius: '0 0 12px 12px', fontSize: '0.85rem' }} {...props}>
+                                              {codeString}
+                                            </SyntaxHighlighter>
+                                          </div>
+                                        );
+                                      }
+                                      return <code className="chat-inline-code" {...props}>{children}</code>;
+                                    },
+                                    a({ href, children }) {
+                                      return <a href={href} target="_blank" rel="noopener noreferrer" className="chat-md-link">{children}</a>;
+                                    }
+                                  }}
+                                >
+                                  {m.text}
+                                </ReactMarkdown>
+                              </div>
                               {m.edited && <span className="chat-edited-tag">(edited)</span>}
                             </div>
                             <div className="chat-msg-meta">
