@@ -5,6 +5,7 @@ import connectionReducer from "./connectionSlice";
 import requestReducer from "./requestSlice";
 import reelsReducer from "./reelsSlice";
 import themeReducer from "./themeSlice";
+import projectReducer from "./projectSlice";
 
 const appStore = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const appStore = configureStore({
         connections: connectionReducer,
         requests: requestReducer,
         reels: reelsReducer,
-        theme: themeReducer
+        theme: themeReducer,
+        projects: projectReducer,
     }
 })
 
