@@ -41,6 +41,7 @@ const Sidebar = () => {
     const navLinks = [
         { to: '/', label: 'Feed', icon: feedIcon },
         { to: '/connections', label: 'Matches', icon: connectionsIcon },
+        { to: '/projects', label: 'Projects', icon: projectsIcon },
         { to: '/requests', label: 'Requests', icon: requestsIcon },
         { to: '/chat', label: 'Chat', icon: chatIcon },
         { to: '/feed', label: 'Reels', icon: reelsIcon },
@@ -126,6 +127,10 @@ const feedIcon = (
 
 const connectionsIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21 12.36 12.36 0 0 1 2 19.128v-.003c0-1.113.285-2.16.786-3.07M15 19.128V16.06M2.786 16.055A5.61 5.61 0 0 1 5.03 13.5a5.61 5.61 0 0 1 4.941 0 5.61 5.61 0 0 1 2.244 2.555M15 7.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>
+);
+
+const projectsIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75 16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>
 );
 
 const requestsIcon = (
