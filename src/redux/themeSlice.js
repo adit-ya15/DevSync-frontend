@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const getInitialTheme = () => {
-    // Forcing light mode explicitly due to user preference.
-    localStorage.removeItem("app-theme");
+    const savedTheme = localStorage.getItem("app-theme");
+    if (savedTheme) {
+        return savedTheme;
+    }
     return "light";
 };
 
@@ -11,10 +13,17 @@ const themeSlice = createSlice({
     initialState: getInitialTheme(),
     reducers: {
         setTheme: (state, action) => {
-            return "light";
+            const newTheme = action.payload;
+            localStorage.setItem("app-theme", newTheme);
+            return newTheme;
+        },
+        toggleTheme: (state) => {
+            const newTheme = state === "light" ? "dark" : "light";
+            localStorage.setItem("app-theme", newTheme);
+            return newTheme;
         }
     }
 });
 
-export const { setTheme } = themeSlice.actions;
+export const { setTheme, toggleTheme } = themeSlice.actions;
 export default themeSlice.reducer;

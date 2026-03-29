@@ -215,7 +215,7 @@ const VideoFeed = () => {
                                 />
                                 <div className="panel-caption-text">
                                     <span 
-                                        className="font-bold cursor-pointer hover:underline text-gray-900 mr-2" 
+                                        className="font-bold cursor-pointer hover:underline mr-2" 
                                         onClick={(e) => handleViewProfile(video.userId, e)}
                                     >
                                         {video.userId?.firstName}
@@ -244,7 +244,7 @@ const VideoFeed = () => {
                                                 />
                                                 <div className="panel-comment-text">
                                                     <span 
-                                                        className="font-bold cursor-pointer hover:underline text-gray-900 mr-2"
+                                                        className="font-bold cursor-pointer hover:underline mr-2"
                                                         onClick={(e) => handleViewProfile(c.userId, e)}
                                                     >
                                                         {c.userId?.firstName}

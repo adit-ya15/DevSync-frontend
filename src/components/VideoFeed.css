@@ -30,18 +30,18 @@
     flex-direction: row;
     
     /* Massive Premium Glass Card Styling */
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--dashboard-glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 3px solid var(--dashboard-glass-border);
+    border: 1px solid var(--dashboard-glass-border-translucent);
     border-radius: 40px;
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08), inset 0 2px 5px rgba(255,255,255,0.5);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
 }
 
 .video-item-split:hover {
-    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255,255,255,0.5);
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.35);
 }
 
 /* ── Left Column: Video Container ── */
@@ -54,7 +54,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-right: 2px solid rgba(0, 0, 0, 0.05); /* Divider */
+    border-right: 1px solid var(--dashboard-glass-border-translucent); /* Divider */
 }
 
 .video-player-container video {
@@ -90,7 +90,7 @@
     height: 44px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid white;
+    border: 2px solid var(--dashboard-text-faint);
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
@@ -147,13 +147,13 @@
 .panel-caption-text, .panel-comment-text {
     font-size: 0.95rem;
     line-height: 1.45;
-    color: #374151;
+    color: var(--dashboard-text-main);
     font-weight: 500;
 }
 
 .panel-divider {
     border: none;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid var(--dashboard-glass-border-translucent);
     margin: 16px 0;
 }
 
@@ -194,8 +194,8 @@
 /* Panel Footer (Fixed Bottom) */
 .interaction-footer {
     padding: 16px 20px;
-    border-top: 2px solid rgba(0,0,0,0.04);
-    background: rgba(255,255,255,0.9);
+    border-top: 1px solid var(--dashboard-glass-border-translucent);
+    background: var(--dashboard-surface);
 }
 
 .panel-actions-row {
@@ -260,11 +260,11 @@
     font-family: 'Outfit', sans-serif;
     font-size: 1.8rem;
     font-weight: 800;
-    color: #1a1a1a;
-    background: rgba(255, 255, 255, 0.6);
+    color: var(--dashboard-text-main);
+    background: var(--dashboard-glass-bg);
     padding: 30px 50px;
     border-radius: 24px;
-    border: 3px solid var(--dashboard-glass-border);
+    border: 1px solid var(--dashboard-glass-border-translucent);
     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
     backdrop-filter: blur(20px);
 }

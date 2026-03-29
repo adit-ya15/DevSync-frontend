@@ -310,10 +310,10 @@ const Feed = () => {
                 
                 {/* Clean Typography Header */}
                 <div className="w-full max-w-lg mb-8 text-center relative z-10 flex flex-col items-center mt-12 sm:mt-16">
-                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <h1 className="text-3xl md:text-5xl font-extrabold feed-text-main tracking-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         Discover Matches
                     </h1>
-                    <p className="text-sm md:text-base text-gray-500 font-medium max-w-sm md:max-w-md px-6 leading-relaxed">
+                    <p className="text-sm md:text-base feed-text-faint font-medium max-w-sm md:max-w-md px-6 leading-relaxed">
                         Swipe right on developers that match your stack. Build your network and start collaborating today!
                     </p>
                 </div>
@@ -372,25 +372,25 @@ const Feed = () => {
         <div className="w-full max-w-[1500px] mx-auto flex flex-col xl:flex-row gap-6 lg:gap-8 px-4 py-4">
             
             {/* 1. LEFT SIDEBAR: Connections */}
-            <aside className="hidden xl:flex flex-col w-[320px] shrink-0 h-[calc(100vh-140px)] sticky top-28 bg-white/60 backdrop-blur-xl border border-white/80 rounded-3xl shadow-[0_15px_50px_rgba(0,0,0,0.06)] overflow-hidden transition-all">
-                <div className="p-6 border-b border-white/60 bg-white/40 shadow-sm z-10">
-                    <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Network</h2>
-                    <p className="text-sm text-gray-500 font-semibold mt-1">{connections?.length || 0} active connections</p>
+            <aside className="hidden xl:flex flex-col w-[320px] shrink-0 h-[calc(100vh-140px)] sticky top-28 backdrop-blur-xl rounded-3xl overflow-hidden transition-all feed-sidebar">
+                <div className="p-6 feed-sidebar-header shadow-sm z-10">
+                    <h2 className="text-2xl font-extrabold feed-text-main tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Network</h2>
+                    <p className="text-sm feed-text-faint font-semibold mt-1">{connections?.length || 0} active connections</p>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                     {(!connections || connections.length === 0) ? (
                         <div className="text-center p-6 text-gray-500 h-full flex flex-col justify-center items-center">
                             <span className="text-4xl mb-4 opacity-80">🤝</span>
-                            <p className="text-base font-bold text-gray-700">No connections yet</p>
-                            <p className="text-sm mt-2 opacity-80 font-medium">Start swiping right to match!</p>
+                            <p className="text-base font-bold feed-text-main">No connections yet</p>
+                            <p className="text-sm mt-2 opacity-80 font-medium feed-text-faint">Start swiping right to match!</p>
                         </div>
                     ) : (
                         connections.map(user => (
-                            <div key={user._id} className="group flex items-center gap-3 p-3 rounded-2xl bg-white/50 hover:bg-white transition-all cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] border border-white/50 hover:border-white/80" onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
+                            <div key={user._id} className="group flex items-center gap-3 p-3 rounded-2xl transition-all cursor-pointer feed-sidebar-item" onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
                                 <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" onError={(e) => { e.target.src = defaultAvatar; }} />
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[15px] font-bold text-gray-900 truncate">{user.firstName} {user.lastName}</p>
+                                    <p className="text-[15px] font-bold feed-text-main truncate">{user.firstName} {user.lastName}</p>
                                     <p className="text-xs font-semibold text-purple-500 truncate">{user.skills?.[0] || 'Developer'}</p>
                                 </div>
                                 <Link to={`/chat/${user._id}`} className="p-2.5 rounded-full bg-blue-50/80 text-blue-600 hover:bg-blue-100 group-hover:scale-105 transition-all shadow-sm" onClick={(e) => e.stopPropagation()} title="Open Chat">
@@ -408,33 +408,33 @@ const Feed = () => {
             </main>
 
             {/* 3. RIGHT SIDEBAR: Incoming Requests */}
-            <aside className="hidden xl:flex flex-col w-[320px] shrink-0 h-[calc(100vh-140px)] sticky top-28 bg-white/60 backdrop-blur-xl border border-white/80 rounded-3xl shadow-[0_15px_50px_rgba(0,0,0,0.06)] overflow-hidden transition-all">
-                <div className="p-6 border-b border-white/60 bg-white/40 shadow-sm z-10">
-                    <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <aside className="hidden xl:flex flex-col w-[320px] shrink-0 h-[calc(100vh-140px)] sticky top-28 backdrop-blur-xl rounded-3xl overflow-hidden transition-all feed-sidebar">
+                <div className="p-6 feed-sidebar-header shadow-sm z-10">
+                    <h2 className="text-2xl font-extrabold feed-text-main tracking-tight flex items-center gap-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         Requests
                         {requests?.length > 0 && (
                             <span className="bg-purple-100 text-purple-700 text-xs py-1 px-2.5 rounded-full">{requests.length}</span>
                         )}
                     </h2>
-                    <p className="text-sm text-gray-500 font-semibold mt-1">Pending approvals</p>
+                    <p className="text-sm feed-text-faint font-semibold mt-1">Pending approvals</p>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                     {(!requests || requests.length === 0) ? (
                         <div className="text-center p-6 text-gray-500 h-full flex flex-col justify-center items-center">
                             <span className="text-4xl mb-4 opacity-80">📬</span>
-                            <p className="text-base font-bold text-gray-700">No pending requests</p>
-                            <p className="text-sm mt-2 opacity-80 font-medium leading-tight">When someone swipes right on you, they'll appear here.</p>
+                            <p className="text-base font-bold feed-text-main">No pending requests</p>
+                            <p className="text-sm mt-2 opacity-80 font-medium leading-tight feed-text-faint">When someone swipes right on you, they'll appear here.</p>
                         </div>
                     ) : (
                         requests.map(req => {
                             const user = req.fromUserId || req;
                             const isRemoving = removingReqId === req._id;
                             return (
-                                <div key={req._id} className={`group flex items-center gap-3 p-3 rounded-2xl bg-white/50 hover:bg-white transition-all cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] border border-white/50 hover:border-white/80 ${isRemoving ? 'opacity-0 scale-95' : 'opacity-100'}`} style={{ transitionDuration: '300ms' }} onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
+                                <div key={req._id} className={`group flex items-center gap-3 p-3 rounded-2xl transition-all cursor-pointer feed-sidebar-item ${isRemoving ? 'opacity-0 scale-95' : 'opacity-100'}`} style={{ transitionDuration: '300ms' }} onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
                                     <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" onError={(e) => { e.target.src = defaultAvatar; }} />
                                     <div className="flex-1 min-w-0 pr-1">
-                                        <p className="text-[14px] font-bold text-gray-900 truncate">{user.firstName} {user.lastName}</p>
+                                        <p className="text-[14px] font-bold feed-text-main truncate">{user.firstName} {user.lastName}</p>
                                         <p className="text-xs font-semibold text-gray-500 truncate">{user.skills?.[0] || 'Developer'}</p>
                                     </div>
                                     <div className="flex gap-1">

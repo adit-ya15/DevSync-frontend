@@ -10,6 +10,7 @@ import { removeRequests } from '../redux/requestSlice';
 import { removeReels } from '../redux/reelsSlice';
 import logo from '../assests/images/logo.png';
 import userIcon from '../assests/images/default-user-image.png';
+import ThemeToggle from './ThemeToggle';
 import './Navbar.css';
 import toast from 'react-hot-toast';
 
@@ -105,6 +106,7 @@ const Navbar = () => {
                     <div className="nav-actions flex items-center gap-3">
                         {user && (
                             <>
+                                <ThemeToggle className="mr-2" />
                                 {/* Avatar dropdown */}
                                 <div className="relative" ref={dropdownRef}>
                                     <button
