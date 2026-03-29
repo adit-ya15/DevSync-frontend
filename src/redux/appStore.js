@@ -6,6 +6,7 @@ import requestReducer from "./requestSlice";
 import reelsReducer from "./reelsSlice";
 import themeReducer from "./themeSlice";
 import projectReducer from "./projectSlice";
+import notificationReducer from "./notificationSlice";
 
 const appStore = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const appStore = configureStore({
         reels: reelsReducer,
         theme: themeReducer,
         projects: projectReducer,
+        notifications: notificationReducer,
     }
 })
 

@@ -28,6 +28,7 @@ import ThemeProvider from "./components/ThemeProvider"
 import Projects from "./pages/Projects"
 import CreateProject from "./pages/CreateProject"
 import ProjectDetail from "./pages/ProjectDetail"
+import Notifications from "./pages/Notifications"
 
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/new" element={<CreateProject />} />
               <Route path="/projects/:projectId" element={<ProjectDetail />} />
+              <Route path="/notifications" element={<Notifications />} />
             </Route>
             </Routes>
           </BrowserRouter>

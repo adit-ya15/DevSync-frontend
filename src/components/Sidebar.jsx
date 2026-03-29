@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 
 const Sidebar = () => {
     const user = useSelector(store => store.user);
+    const unreadCount = useSelector(store => store.notifications?.unreadCount || 0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -46,6 +47,7 @@ const Sidebar = () => {
         { to: '/chat', label: 'Chat', icon: chatIcon },
         { to: '/feed', label: 'Reels', icon: reelsIcon },
         { to: '/upload', label: 'Upload', icon: uploadIcon },
+        { to: '/notifications', label: 'Alerts', icon: notificationsIcon, badge: unreadCount },
         { to: '/premium', label: 'Premium', icon: premiumIcon },
     ];
 
@@ -81,14 +83,17 @@ const Sidebar = () => {
 
             {/* Navigation Links */}
             <div className="sidebar-nav-links">
-                {navLinks.map(({ to, label, icon }) => (
+                {navLinks.map(({ to, label, icon, badge }) => (
                     <Link
                         key={to}
                         to={to}
                         className={`sidebar-link-item ${isActive(to) ? 'active' : ''}`}
                         title={label}
                     >
-                        <span className="sidebar-icon-wrap">{icon}</span>
+                        <span className="sidebar-icon-wrap">
+                            {icon}
+                            {badge > 0 && <span className="sidebar-badge">{badge > 9 ? '9+' : badge}</span>}
+                        </span>
                         <span className="sidebar-label-text">{label}</span>
                     </Link>
                 ))}
@@ -155,6 +160,10 @@ const chatIcon = (
 
 const logoutIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
+);
+
+const notificationsIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
 );
 
 export default Sidebar;
