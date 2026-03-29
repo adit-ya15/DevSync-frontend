@@ -4,7 +4,15 @@ import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addUser } from '../redux/userSlice';
 import './Profile.css';
-import toast from 'react-hot-toast';\n\nconst intentLabels = {\n    cofounder: '🚀 Looking for Co-Founder',\n    freelance: '💼 Open to Freelance/Hire',\n    opensource: '🤝 Open Source Collaborator',\n    mentor: '📚 Seeking Mentor/Mentee',\n    networking: '🧑‍💻 Just Networking',\n};
+import toast from 'react-hot-toast';
+
+const intentLabels = {
+    cofounder: '🚀 Looking for Co-Founder',
+    freelance: '💼 Open to Freelance/Hire',
+    opensource: '🤝 Open Source Collaborator',
+    mentor: '📚 Seeking Mentor/Mentee',
+    networking: '🧑‍💻 Just Networking',
+};
 
 const Profile = () => {
     const user = useSelector(store => store.user);
