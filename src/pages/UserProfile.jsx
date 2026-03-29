@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import UserCard from '../components/UserCard';
 import axios from 'axios';
 import './UserProfile.css';
+import { extractGithubUsername, fetchGithubActivity, summarizeGithubEvent } from '../utils/githubAPI';
 
 const UserProfile = () => {
     const location = useLocation();
@@ -11,10 +12,13 @@ const UserProfile = () => {
 
     const [repos, setRepos] = useState([]);
     const [loadingRepos, setLoadingRepos] = useState(false);
+    const [githubEvents, setGithubEvents] = useState([]);
+    const [loadingEvents, setLoadingEvents] = useState(false);
+    const [graphFailed, setGraphFailed] = useState(false);
 
     useEffect(() => {
         const fetchRepos = async () => {
-            const username = user?.githubUsername || (user?.githubUrl ? user.githubUrl.split('/').pop() : null);
+            const username = extractGithubUsername(user);
             if (!username) return;
             
             setLoadingRepos(true);
@@ -28,6 +32,29 @@ const UserProfile = () => {
             }
         };
         fetchRepos();
+    }, [user]);
+
+    useEffect(() => {
+        const username = extractGithubUsername(user);
+        if (!username) {
+            setGithubEvents([]);
+            return;
+        }
+
+        const controller = new AbortController();
+        setLoadingEvents(true);
+        fetchGithubActivity(username, { perPage: 6, signal: controller.signal })
+            .then((events) => setGithubEvents(Array.isArray(events) ? events : []))
+            .catch((err) => {
+                if (controller.signal.aborted) return;
+                console.error('Failed to fetch github activity', err);
+                setGithubEvents([]);
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) setLoadingEvents(false);
+            });
+
+        return () => controller.abort();
     }, [user]);
 
     if (!user) {
@@ -61,11 +88,33 @@ const UserProfile = () => {
                         </h3>
 
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px', background: 'var(--dashboard-surface-alt)', border: '1px solid var(--dashboard-border)', borderRadius: '20px', padding: '20px', boxShadow: '0 8px 20px rgba(0,0,0,0.04)' }}>
-                            <img 
-                                src={`https://github-readme-activity-graph.vercel.app/graph?username=${(user?.githubUsername || (user?.githubUrl ? user.githubUrl.split('/').filter(Boolean).pop() : ''))}&bg_color=transparent&color=8b5cf6&line=8b5cf6&point=3b82f6&hide_border=true`} 
-                                alt="GitHub Activity Graph" 
-                                style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
-                            />
+                            {!graphFailed && extractGithubUsername(user) && (
+                                <img 
+                                    src={`https://github-readme-activity-graph.vercel.app/graph?username=${extractGithubUsername(user)}&bg_color=transparent&color=8b5cf6&line=8b5cf6&point=3b82f6&hide_border=true`} 
+                                    alt="GitHub Activity Graph" 
+                                    style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
+                                    onError={() => setGraphFailed(true)}
+                                />
+                            )}
+
+                            {(graphFailed || !extractGithubUsername(user)) && (
+                                <div style={{ width: '100%' }}>
+                                    <h4 style={{ margin: 0, color: 'var(--dashboard-text-main)', fontWeight: 800, fontFamily: "'Outfit', sans-serif" }}>Recent GitHub Activity</h4>
+                                    {loadingEvents ? (
+                                        <p style={{ marginTop: '10px', marginBottom: 0, color: 'var(--dashboard-text-faint)', fontWeight: 600 }}>Loading activity…</p>
+                                    ) : githubEvents.length > 0 ? (
+                                        <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                            {githubEvents.slice(0, 5).map((ev) => (
+                                                <div key={ev.id} style={{ color: 'var(--dashboard-text-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                                    {summarizeGithubEvent(ev)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p style={{ marginTop: '10px', marginBottom: 0, color: 'var(--dashboard-text-faint)', fontWeight: 600 }}>No recent public events found.</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         
                         {loadingRepos ? (

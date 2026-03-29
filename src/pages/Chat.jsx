@@ -12,6 +12,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Peer from 'peerjs';
 import VideoCallModal from '../components/VideoCallModal';
+import { extractGithubUsername, fetchGithubActivity, fetchGithubRepos, summarizeGithubEvent } from "../utils/githubAPI";
 
 const formatTime = (dateStr) => {
   if (!dateStr) return "";
@@ -48,6 +49,12 @@ const Chat = () => {
   const [lastSeenMessageId, setLastSeenMessageId] = useState(null);
   const [showMembersPanel, setShowMembersPanel] = useState(false);
   const [sidebarTab, setSidebarTab] = useState("direct"); // "direct" or "projects"
+
+  // GitHub (for direct chats)
+  const [githubEvents, setGithubEvents] = useState([]);
+  const [githubRepos, setGithubRepos] = useState([]);
+  const [githubLoading, setGithubLoading] = useState(false);
+  const [githubError, setGithubError] = useState(null);
 
   // Video Call State
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
@@ -261,11 +268,50 @@ const Chat = () => {
     () => isGroupChat ? null : activeChat?.participants?.find((p) => p._id !== currentUserId),
     [activeChat, currentUserId, isGroupChat]
   );
+
+  const peerGithubUsername = useMemo(() => extractGithubUsername(peer), [peer]);
   const groupMembers = useMemo(
     () => isGroupChat ? (activeChat?.participants || []) : [],
     [activeChat, isGroupChat]
   );
   const groupName = activeChat?.name || activeChat?.projectName || 'Group Chat';
+
+  // Fetch GitHub activity for the peer (direct messages only)
+  useEffect(() => {
+    if (!peerGithubUsername || isGroupChat) {
+      setGithubEvents([]);
+      setGithubRepos([]);
+      setGithubLoading(false);
+      setGithubError(null);
+      return;
+    }
+
+    const controller = new AbortController();
+    setGithubLoading(true);
+    setGithubError(null);
+
+    Promise.all([
+      fetchGithubActivity(peerGithubUsername, { perPage: 5, signal: controller.signal }),
+      fetchGithubRepos(peerGithubUsername, { perPage: 3, signal: controller.signal }),
+    ])
+      .then(([events, repos]) => {
+        setGithubEvents(Array.isArray(events) ? events : []);
+        setGithubRepos(Array.isArray(repos) ? repos : []);
+      })
+      .catch((err) => {
+        // Ignore cancellation
+        if (controller.signal.aborted) return;
+        console.error("Failed to load GitHub data", err);
+        setGithubError("GitHub activity unavailable");
+        setGithubEvents([]);
+        setGithubRepos([]);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setGithubLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [isGroupChat, peerGithubUsername]);
 
   const lastOutgoingMessageId = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i -= 1) {
@@ -414,7 +460,7 @@ const Chat = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       setLocalStream(stream);
       return stream;
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to access camera and microphone");
       return null;
     }
@@ -635,6 +681,49 @@ const Chat = () => {
                           "Online"
                         )}
                       </span>
+
+                      {peerGithubUsername && (
+                        <div className="chat-github-mini">
+                          <a
+                            className="chat-github-link"
+                            href={`https://github.com/${peerGithubUsername}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            @{peerGithubUsername}
+                          </a>
+                          {githubLoading ? (
+                            <span className="chat-github-muted">Loading GitHub…</span>
+                          ) : githubError ? (
+                            <span className="chat-github-muted">{githubError}</span>
+                          ) : githubEvents.length > 0 ? (
+                            <div className="chat-github-events">
+                              {githubEvents.slice(0, 2).map((ev) => (
+                                <div key={ev.id} className="chat-github-event" title={summarizeGithubEvent(ev)}>
+                                  {summarizeGithubEvent(ev)}
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+
+                          {!githubLoading && !githubError && githubRepos.length > 0 && (
+                            <div className="chat-github-repos">
+                              {githubRepos.slice(0, 2).map((repo) => (
+                                <a
+                                  key={repo.id}
+                                  className="chat-github-repo"
+                                  href={repo.html_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={repo.full_name}
+                                >
+                                  {repo.name}
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '12px' }}>
@@ -711,7 +800,7 @@ const Chat = () => {
                                     <ReactMarkdown
                                       remarkPlugins={[remarkGfm]}
                                       components={{
-                                        code({ node, className, children, ...props }) {
+                                        code({ node: _node, className, children, ...props }) {
                                           const match = /language-(\w+)/.exec(className || '');
                                           const codeString = String(children).replace(/\n$/, '');
                                           const isBlock = match || codeString.includes('\n');

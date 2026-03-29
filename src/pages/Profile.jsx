@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 import { addUser } from '../redux/userSlice';
 import './Profile.css';
 import toast from 'react-hot-toast';
+import { extractGithubUsername, fetchGithubActivity, summarizeGithubEvent } from '../utils/githubAPI';
 
 const intentLabels = {
     cofounder: '🚀 Looking for Co-Founder',
@@ -17,6 +19,7 @@ const intentLabels = {
 const Profile = () => {
     const user = useSelector(store => store.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -35,6 +38,8 @@ const Profile = () => {
     const [likedVideos, setLikedVideos] = useState([]);
     const [myProjects, setMyProjects] = useState([]);
     const [githubRepos, setGithubRepos] = useState([]);
+    const [githubEvents, setGithubEvents] = useState([]);
+    const [githubGraphFailed, setGithubGraphFailed] = useState(false);
     const [loadingData, setLoadingData] = useState(false);
 
     // Modal
@@ -82,7 +87,7 @@ const Profile = () => {
     useEffect(() => {
         if (!user || isEditing) return;
         const fetchGithub = async () => {
-            const username = user.githubUrl ? user.githubUrl.split('/').filter(Boolean).pop() : null;
+            const username = extractGithubUsername(user);
             if (!username) return;
             try {
                 const res = await axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=3`);
@@ -92,6 +97,26 @@ const Profile = () => {
             }
         };
         fetchGithub();
+    }, [user, isEditing]);
+
+    useEffect(() => {
+        if (!user || isEditing) return;
+        const username = extractGithubUsername(user);
+        if (!username) {
+            setGithubEvents([]);
+            return;
+        }
+
+        const controller = new AbortController();
+        fetchGithubActivity(username, { perPage: 6, signal: controller.signal })
+            .then((events) => setGithubEvents(Array.isArray(events) ? events : []))
+            .catch((err) => {
+                if (controller.signal.aborted) return;
+                console.error('Failed to fetch github activity', err);
+                setGithubEvents([]);
+            });
+
+        return () => controller.abort();
     }, [user, isEditing]);
 
     const handleChange = (e) => {
@@ -255,7 +280,7 @@ const Profile = () => {
                             </svg>
                             Projects
                         </button>
-                        {user.githubUrl && (
+                        {(user.githubUrl || user.githubUsername) && (
                             <button 
                                 className={`profile-tab ${activeTab === 'github' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('github')}
@@ -309,10 +334,32 @@ const Profile = () => {
                         ) : activeTab === 'github' ? (
                             <div className="profile-github-section">
                                 <div className="profile-github-heatmap">
-                                    <img 
-                                        src={`https://github-readme-activity-graph.vercel.app/graph?username=${user.githubUrl.split('/').filter(Boolean).pop()}&bg_color=transparent&color=8b5cf6&line=8b5cf6&point=3b82f6&hide_border=true`} 
-                                        alt="GitHub Activity Graph" 
-                                    />
+                                    {!githubGraphFailed && extractGithubUsername(user) && (
+                                        <img 
+                                            src={`https://github-readme-activity-graph.vercel.app/graph?username=${extractGithubUsername(user)}&bg_color=transparent&color=8b5cf6&line=8b5cf6&point=3b82f6&hide_border=true`} 
+                                            alt="GitHub Activity Graph" 
+                                            onError={() => setGithubGraphFailed(true)}
+                                        />
+                                    )}
+
+                                    {(githubGraphFailed || !extractGithubUsername(user)) && (
+                                        <div style={{ width: '100%', padding: '18px 16px', borderRadius: '16px', border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-alt)' }}>
+                                            <h3 style={{ margin: 0, color: 'var(--dashboard-text-main)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '1.05rem' }}>Recent GitHub Activity</h3>
+                                            {githubEvents.length > 0 ? (
+                                                <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                                    {githubEvents.slice(0, 5).map((ev) => (
+                                                        <div key={ev.id} style={{ color: 'var(--dashboard-text-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                                            {summarizeGithubEvent(ev)}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p style={{ marginTop: '10px', marginBottom: 0, color: 'var(--dashboard-text-faint)', fontWeight: 600 }}>
+                                                    No recent public events found.
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <h3 style={{ alignSelf: 'flex-start', margin: '10px 0 0', color: 'var(--dashboard-text-main)', fontFamily: "'Outfit', sans-serif" }}>Recent Repositories</h3>
                                 {githubRepos.length > 0 ? (

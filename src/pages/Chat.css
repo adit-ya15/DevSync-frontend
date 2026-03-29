@@ -379,6 +379,76 @@
   animation-delay: 0s;
 }
 
+/* ── GitHub mini block (Direct chat header) ── */
+.chat-github-mini {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-github-link {
+  align-self: flex-start;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--dashboard-text-main);
+  text-decoration: none;
+}
+
+.chat-github-link:hover {
+  text-decoration: underline;
+}
+
+.chat-github-muted {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dashboard-text-faint);
+}
+
+.chat-github-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chat-github-event {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--dashboard-text-secondary);
+  max-width: 520px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-github-repos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chat-github-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--dashboard-border);
+  background: var(--dashboard-glass-border-translucent);
+  color: var(--dashboard-text-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-github-repo:hover {
+  background: var(--dashboard-glass-border);
+}
+
 @keyframes typingBounce {
 
   0%,
