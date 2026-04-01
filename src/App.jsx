@@ -34,6 +34,7 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const BuildLogs = lazy(() => import("./pages/BuildLogs"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
             }>
               <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/auth/google/callback" element={<AuthCallback provider="Google" />} />
+              <Route path="/auth/github/callback" element={<AuthCallback provider="GitHub" />} />
               <Route path="/about" element={<About />} />
               <Route path="/community" element={<Community />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
