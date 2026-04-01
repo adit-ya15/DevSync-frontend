@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { BASE_URL } from '../constants/commonData';
 
-const API_BASE_URL = BASE_URL || 'http://localhost:9999/api';
+const API_BASE_URL = BASE_URL || '/api';
 
 export const authAPI = {
     // Sign up endpoint

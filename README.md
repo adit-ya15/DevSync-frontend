@@ -1,5 +1,15 @@
 # React + Vite
 
+## Development (API + CORS)
+
+- This frontend makes API calls under the same-origin prefix `/api`.
+- In development, Vite proxies `/api/*` to `http://localhost:9999` (see `vite.config.js`). This avoids browser CORS issues (including Google login), because requests stay same-origin from the browser’s perspective.
+
+### Environment variables
+
+- `VITE_GOOGLE_CLIENT_ID`: Google OAuth client id.
+- `VITE_API_BASE_URL` (optional): Overrides the API base URL. Leave unset for local development (recommended). If you set this to a different domain (e.g. `https://api.example.com`), the backend must allow CORS (and credentials, if using cookies) for your frontend origin.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
