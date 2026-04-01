@@ -5,4 +5,11 @@ const trimTrailingSlash = (value) => {
 
 // Prefer explicit configuration, otherwise use same-origin `/api`.
 // In development, Vite proxies `/api` to the backend to avoid CORS issues.
-export const BASE_URL = trimTrailingSlash(import.meta.env.VITE_API_BASE_URL) || "/api";
+const configuredBaseUrl = trimTrailingSlash(import.meta.env.VITE_API_BASE_URL);
+
+const isDev = Boolean(import.meta.env.DEV);
+const looksLikeLocalBackend =
+	configuredBaseUrl &&
+	/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredBaseUrl);
+
+export const BASE_URL = (isDev && looksLikeLocalBackend) ? "/api" : (configuredBaseUrl || "/api");

@@ -81,7 +81,7 @@ const Onboarding = () => {
     setLoading(true);
     try {
       const payload = formatUpdatePayload();
-      const res = await axios.put(BASE_URL + '/profile/edit', payload, { withCredentials: true });
+      const res = await axios.patch(BASE_URL + '/profile/edit', payload, { withCredentials: true });
       dispatch(addUser(res.data.data)); // Update redux user with complete profile
       toast.success('Profile completed! 🎉');
       navigate('/'); // Go to Hub/Feed
