@@ -28,6 +28,22 @@ if (!googleClientId) {
   console.warn('[DevSync] Missing VITE_GOOGLE_CLIENT_ID; Google login will be disabled until you add it to a local .env file.');
 }
 
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+      }).catch(() => {});
+    }
+
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => caches.delete(key));
+      }).catch(() => {});
+    }
+  });
+}
+
 class RootErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
