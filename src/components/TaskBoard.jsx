@@ -53,7 +53,7 @@ const TaskBoard = ({ projectId, members }) => {
       setShowForm(false);
       setForm({ title: '', description: '', status: 'todo', priority: 'medium', assignee: '' });
       toast.success('Task created');
-    } catch (error) {
+    } catch {
       toast.error('Failed to create task');
     }
   };
@@ -65,7 +65,7 @@ const TaskBoard = ({ projectId, members }) => {
 
     try {
       await taskAPI.updateTask(projectId, taskId, { status: newStatus });
-    } catch (error) {
+    } catch {
       setTasks(previousTasks);
       toast.error('Failed to update task status');
     }
@@ -76,7 +76,7 @@ const TaskBoard = ({ projectId, members }) => {
     try {
       await taskAPI.deleteTask(projectId, taskId);
       setTasks(tasks.filter(t => t._id !== taskId));
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete task');
     }
   };

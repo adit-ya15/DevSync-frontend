@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import React, { Suspense, lazy } from 'react';
 import { Provider } from "react-redux"
 import { Toaster } from 'react-hot-toast'
@@ -85,6 +85,7 @@ function App() {
                 <Route path="/reels" element={<VideoFeed />} />
                 <Route path="/onboarding" element={<Onboarding />} />
               </Route>
+              <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
             </Suspense>
           </BrowserRouter>

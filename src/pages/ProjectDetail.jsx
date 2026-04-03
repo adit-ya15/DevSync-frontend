@@ -42,18 +42,6 @@ const ProjectDetail = () => {
     return () => dispatch(setActiveProject(null));
   }, [projectId, dispatch, navigate]);
 
-  const handleAcceptRequest = async (requestId) => {
-    try {
-      await projectAPI.handleApplication(projectId, requestId, 'accept');
-      toast.success('Member accepted!');
-      
-      const updatedProject = await projectAPI.getProject(projectId);
-      dispatch(setActiveProject(updatedProject));
-    } catch (err) {
-      toast.error('Failed to accept request');
-    }
-  };
-
   const handleMarkComplete = async () => {
     if (!window.confirm("Are you sure you want to mark this project as completely finished? It will stop new join requests.")) return;
     try {
@@ -61,7 +49,7 @@ const ProjectDetail = () => {
       toast.success("Project marked as complete!");
       const updatedProject = await projectAPI.getProject(projectId);
       dispatch(setActiveProject(updatedProject));
-    } catch (err) {
+    } catch {
       toast.error("Failed to update project status");
     }
   };
@@ -72,7 +60,7 @@ const ProjectDetail = () => {
       await projectAPI.deleteProject(projectId);
       toast.success("Project deleted successfully");
       navigate('/projects');
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete project");
     }
   };

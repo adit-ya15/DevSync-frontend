@@ -7,7 +7,7 @@ const reelsSlice = createSlice({
         setReels: (state, action) => {
             return action.payload;
         },
-        removeReels: (state) => {
+        removeReels: () => {
             return null;
         },
         updateReelLikeStatus: (state, action) => {

@@ -460,7 +460,7 @@ const Chat = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       setLocalStream(stream);
       return stream;
-    } catch (_err) {
+    } catch {
       toast.error("Failed to access camera and microphone");
       return null;
     }
@@ -800,7 +800,7 @@ const Chat = () => {
                                     <ReactMarkdown
                                       remarkPlugins={[remarkGfm]}
                                       components={{
-                                        code({ node: _node, className, children, ...props }) {
+                                        code({ className, children, ...props }) {
                                           const match = /language-(\w+)/.exec(className || '');
                                           const codeString = String(children).replace(/\n$/, '');
                                           const isBlock = match || codeString.includes('\n');

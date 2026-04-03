@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { BASE_URL } from '../constants/commonData';
 import { setReels, updateReelLikeStatus } from '../redux/reelsSlice';
 import defaultAvatar from '../assests/images/default-user-image.png';

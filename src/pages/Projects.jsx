@@ -4,15 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { projectAPI } from '../utils/projectAPI';
 import { setProjects, setLoadingProjects } from '../redux/projectSlice';
-import defaultAvatar from '../assests/images/default-user-image.png';
 import './Projects.css';
 
 const Projects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { list: projects, loading } = useSelector((store) => store.projects);
-  const user = useSelector((store) => store.user);
-
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTech, setFilterTech] = useState('');
 

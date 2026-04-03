@@ -11,21 +11,27 @@ const Premium = () => {
     const navigate = useNavigate();
     const [isUserPremium, setIsUserPremium] = useState(false);
 
-    const verifyPremiumUser = async () => {
-        try {
-            const res = await axios.get(`${BASE_URL}/premium/verify`, {
-                withCredentials: true,
-            });
-            if (res.data.isPremium) {
-                setIsUserPremium(true);
-            }
-        } catch (err) {
-            console.error("Premium verification failed", err);
-        }
-    };
-
     useEffect(() => {
-        verifyPremiumUser();
+        let isMounted = true;
+
+        const loadPremiumStatus = async () => {
+            try {
+                const res = await axios.get(`${BASE_URL}/premium/verify`, {
+                    withCredentials: true,
+                });
+                if (isMounted && res.data.isPremium) {
+                    setIsUserPremium(true);
+                }
+            } catch (err) {
+                console.error("Premium verification failed", err);
+            }
+        };
+
+        void loadPremiumStatus();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const verifyPayment = async (response) => {
