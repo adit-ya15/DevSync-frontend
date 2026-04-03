@@ -1,12 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import logo from '../assests/images/logo.png';
 import './Login.css';
 
 const Community = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = useSelector(store => store.user);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const mobileMenuRef = useRef(null);
+    const hamburgerBtnRef = useRef(null);
 
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const handleMouseMove = useCallback((e) => {
@@ -15,9 +19,33 @@ const Community = () => {
         setMousePos({ x, y });
     }, []);
 
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) {
+            return;
+        }
+
+        const handleClickOutside = (event) => {
+            if (
+                mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(event.target) &&
+                hamburgerBtnRef.current &&
+                !hamburgerBtnRef.current.contains(event.target)
+            ) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isMobileMenuOpen]);
+
     return (
         <div 
-            className="landing-page"
+            className="landing-page public-landing"
             onMouseMove={handleMouseMove}
             style={{ '--mx': `${mousePos.x}px`, '--my': `${mousePos.y}px` }}
         >
@@ -30,24 +58,62 @@ const Community = () => {
                     <img src={logo} alt="DevSync logo" />
                     <span>DevSync</span>
                 </div>
+
+                <button
+                    type="button"
+                    ref={hamburgerBtnRef}
+                    className="landing-hamburger-btn"
+                    aria-label="Toggle navigation"
+                    onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                >
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                </button>
                 
                 <div className="landing-nav-pill">
                     <button className="pill-item" style={{ color: '#4b5563' }} onClick={() => navigate('/login')}>Find a Match</button>
                     <button className="pill-item active">Community</button>
                     <button className="pill-item" style={{ color: '#4b5563' }} onClick={() => navigate('/about')}>About</button>
-                    <button className="pill-item" style={{ color: '#4b5563' }} onClick={() => navigate(user ? '/' : '/login')}>{user ? 'Dashboard' : 'Sign In'}</button>
+                    <button
+                        className="pill-item"
+                        style={{ color: '#4b5563' }}
+                        onClick={() => navigate(user ? '/' : '/login', user ? undefined : { state: { openModal: true } })}
+                    >
+                        {user ? 'Dashboard' : 'Sign In'}
+                    </button>
                 </div>
+
+                {isMobileMenuOpen && (
+                    <button
+                        type="button"
+                        aria-label="Close mobile navigation"
+                        className="landing-mobile-backdrop"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                )}
+
+                {isMobileMenuOpen && (
+                    <div ref={mobileMenuRef} className="landing-mobile-menu">
+                        <button className="mobile-menu-item" type="button" onClick={() => { setIsMobileMenuOpen(false); navigate('/login'); }}>Find a Match</button>
+                        <button className="mobile-menu-item active" type="button" onClick={() => setIsMobileMenuOpen(false)}>Community</button>
+                        <button className="mobile-menu-item" type="button" onClick={() => { setIsMobileMenuOpen(false); navigate('/about'); }}>About</button>
+                        <button className="mobile-menu-item" type="button" onClick={() => { setIsMobileMenuOpen(false); navigate(user ? '/' : '/login', user ? undefined : { state: { openModal: true } }); }}>
+                            {user ? 'Dashboard' : 'Sign In'}
+                        </button>
+                    </div>
+                )}
 
                 <div className="landing-nav-spacer"></div>
             </nav>
 
-            <main className="landing-hero" style={{ padding: '0 2rem' }}>
-                <div className="hero-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 className="hero-title" style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>The Developer Community</h1>
-                    <p style={{ fontSize: '1.25rem', color: '#4b5563', lineHeight: '1.6', fontWeight: '500' }}>
+            <main className="landing-hero landing-info-hero">
+                <div className="hero-content landing-info-content">
+                    <h1 className="hero-title landing-info-title">The Developer Community</h1>
+                    <p className="landing-info-text">
                         Join thousands of developers around the world. Connect, share your code, participate in forums, and grow your open-source projects together with a supportive network.
                     </p>
-                    <button className="hero-cta" style={{ marginTop: '2.5rem' }} onClick={() => navigate(user ? '/feed' : '/login', { state: { openModal: true } })}>
+                    <button className="hero-cta landing-info-cta" onClick={() => navigate(user ? '/feed' : '/login', { state: { openModal: true } })}>
                         {user ? 'Go to Feed' : 'Join the Community'}
                     </button>
                 </div>

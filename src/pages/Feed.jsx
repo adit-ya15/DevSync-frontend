@@ -48,7 +48,7 @@ const Feed = () => {
             dispatch(addFeed(res.data?.feed || res.data?.data || []));
         } catch (error) {
             console.error('Feed fetch error:', error);
-            toast.error('Failed to load feed');
+            // toast.error('Failed to load feed');
         } finally {
             setLoading(false);
         }

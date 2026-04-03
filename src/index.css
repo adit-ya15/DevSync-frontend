@@ -204,6 +204,22 @@ html, html[data-theme="dark"] {
 /* ── Base ── */
 * { box-sizing: border-box; scroll-behavior: smooth; }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html,
+body {
+  background-color: var(--bg-base);
+}
+
+#root {
+  min-height: 100vh;
+}
+
 body {
   background-color: var(--bg-base);
   color: var(--text-primary);

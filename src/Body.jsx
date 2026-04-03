@@ -60,8 +60,7 @@ const Body = () => {
                 '--mx': `${mousePos.x}px`, 
                 '--my': `${mousePos.y}px`,
                 position: 'relative',
-                height: '100vh',
-                overflowY: 'auto',
+                minHeight: '100vh',
                 overflowX: 'hidden'
             }}
         >
@@ -71,7 +70,7 @@ const Body = () => {
 
             {!isOnboarding && <Sidebar />}
             <div className={`relative z-10 flex flex-col min-h-screen w-full transition-all duration-300 ${user && !isOnboarding ? 'md:pl-[80px]' : ''}`}>
-                <main className="flex-grow w-full pb-20 md:pb-0 pt-4 px-4">
+                <main className="flex-grow w-full pt-4 px-4">
                     <Outlet />
                 </main>
                 <Footer />

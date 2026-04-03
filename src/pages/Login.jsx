@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './Login.css';
 import logo from '../assests/images/logo.png';
 import axios from 'axios';
@@ -22,6 +22,9 @@ const Login = () => {
     
     // Auth Modal visibility
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const mobileMenuRef = useRef(null);
+    const hamburgerBtnRef = useRef(null);
 
     // Emoji Happiness Hover state
     const [isHoveringCTA, setIsHoveringCTA] = useState(false);
@@ -170,6 +173,31 @@ const Login = () => {
 
     const openModal = () => setShowAuthModal(true);
     const closeModal = () => setShowAuthModal(false);
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+    useEffect(() => {
+        closeMobileMenu();
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) {
+            return;
+        }
+
+        const handleClickOutside = (event) => {
+            if (
+                mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(event.target) &&
+                hamburgerBtnRef.current &&
+                !hamburgerBtnRef.current.contains(event.target)
+            ) {
+                closeMobileMenu();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isMobileMenuOpen]);
 
     // Mouse parallax effect
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -181,7 +209,7 @@ const Login = () => {
 
     return (
         <div 
-            className="landing-page"
+            className="landing-page public-landing"
             onMouseMove={handleMouseMove}
             style={{ '--mx': `${mousePos.x}px`, '--my': `${mousePos.y}px` }}
         >
@@ -195,6 +223,18 @@ const Login = () => {
                     <img src={logo} alt="DevSync logo" />
                     <span>DevSync</span>
                 </div>
+
+                <button
+                    type="button"
+                    ref={hamburgerBtnRef}
+                    className="landing-hamburger-btn"
+                    aria-label="Toggle navigation"
+                    onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                >
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                </button>
                 
                 <div className="landing-nav-pill">
                     <button className="pill-item active">Find a Match</button>
@@ -203,6 +243,24 @@ const Login = () => {
                     <button className="pill-item" style={{ color: '#4b5563' }} onClick={openModal}>Sign In</button>
                 </div>
 
+                {isMobileMenuOpen && (
+                    <button
+                        type="button"
+                        aria-label="Close mobile navigation"
+                        className="landing-mobile-backdrop"
+                        onClick={closeMobileMenu}
+                    />
+                )}
+
+                {isMobileMenuOpen && (
+                    <div ref={mobileMenuRef} className="landing-mobile-menu">
+                        <button className="mobile-menu-item active" type="button" onClick={closeMobileMenu}>Find a Match</button>
+                        <button className="mobile-menu-item" type="button" onClick={() => { closeMobileMenu(); navigate('/community'); }}>Community</button>
+                        <button className="mobile-menu-item" type="button" onClick={() => { closeMobileMenu(); navigate('/about'); }}>About</button>
+                        <button className="mobile-menu-item" type="button" onClick={() => { closeMobileMenu(); openModal(); }}>Sign In</button>
+                    </div>
+                )}
+
                 {/* Empty div for flex spacing alignment */}
                 <div className="landing-nav-spacer"></div>
             </nav>
@@ -210,6 +268,9 @@ const Login = () => {
             <main className="landing-hero">
                 <div className="hero-content">
                     <h1 className="hero-title">Where developers find<br/>their perfect match.</h1>
+                    <p className="hero-subtitle">
+                        Connect with builders who match your stack, vibe, and project goals.
+                    </p>
                     <button 
                         className="hero-cta" 
                         onClick={openModal}
@@ -218,6 +279,15 @@ const Login = () => {
                     >
                         Start Matching Now
                     </button>
+                    <div className="hero-live-badge" aria-label="Live platform status">
+                        <span className="hero-live-dot" />
+                        <span>Live matching is active</span>
+                    </div>
+                    <div className="hero-highlights" aria-label="Platform highlights">
+                        <span className="hero-chip">AI Skill Match</span>
+                        <span className="hero-chip">Realtime Chat</span>
+                        <span className="hero-chip">Project Teams</span>
+                    </div>
                 </div>
 
                 {/* Floating 3D Elements */}
