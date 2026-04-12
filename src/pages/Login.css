@@ -453,7 +453,7 @@
 .auth-modal {
     background: var(--modal-bg);
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     border-radius: 24px;
     padding: 2.5rem;
     box-shadow: var(--modal-shadow);
@@ -508,8 +508,10 @@
 }
 
 .auth-field-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
+    align-items: start;
 }
 
 .auth-field {
@@ -517,6 +519,7 @@
     flex-direction: column;
     gap: 0.3rem;
     flex: 1;
+    min-width: 0;
 }
 
 .auth-field label {
@@ -535,6 +538,34 @@
     transition: all 0.2s;
     outline: none;
     font-family: inherit;
+}
+
+.password-input-wrap {
+    position: relative;
+}
+
+.password-input-wrap input {
+    width: 100%;
+    padding-right: 4.4rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--brand-color);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.2rem 0.35rem;
+    border-radius: 6px;
+}
+
+.password-toggle-btn:hover {
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .auth-field input:focus {

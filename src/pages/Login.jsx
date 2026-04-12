@@ -15,6 +15,7 @@ const Login = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -188,7 +189,7 @@ const Login = () => {
         try {
             await axios.post(BASE_URL + "/signup", { email: email.trim(), password, firstName, lastName }, { withCredentials: true });
             toast.success('Account created! Please verify your email.');
-            navigate("/signup-success");
+            navigate("/signup-success", { state: { email: email.trim() } });
         } catch (error) {
             const msg = error?.response?.data?.message || error?.response?.data || "Something went wrong.";
             const errorMsg = typeof msg === "string" ? msg : "Something went wrong.";
@@ -417,14 +418,24 @@ const Login = () => {
 
                             <div className="auth-field">
                                 <label htmlFor="password">Password</label>
-                                <input 
-                                    type="password" 
-                                    id="password"
-                                    value={password} 
-                                    onChange={handleFieldChange(setPassword, 'password')} 
-                                    onKeyDown={handleKeyDown} 
-                                    className={errors.password ? 'input-error' : ''} 
-                                />
+                                <div className="password-input-wrap">
+                                    <input 
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        value={password} 
+                                        onChange={handleFieldChange(setPassword, 'password')} 
+                                        onKeyDown={handleKeyDown} 
+                                        className={errors.password ? 'input-error' : ''} 
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-toggle-btn"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        aria-label={showPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showPassword ? "Hide" : "Show"}
+                                    </button>
+                                </div>
                                 {errors.password && <span className="field-error">{errors.password}</span>}
                             </div>
 

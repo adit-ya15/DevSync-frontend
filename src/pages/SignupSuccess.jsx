@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BASE_URL } from '../constants/commonData';
@@ -8,7 +9,8 @@ import './Login.css';
 
 const SignupSuccess = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const location = useLocation();
+    const [email, setEmail] = useState(location.state?.email || "");
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
