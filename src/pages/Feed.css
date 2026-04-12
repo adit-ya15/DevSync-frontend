@@ -10,9 +10,36 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 20px 60px;
+  padding: 14px 20px 40px;
   position: relative;
   min-height: 70vh;
+}
+
+.feed-overline {
+  font-size: 0.74rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #0f766e;
+  margin-bottom: 0.6rem;
+}
+
+.feed-hero-stats {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feed-hero-chip {
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--dashboard-text-main);
+  border: 1px solid var(--dashboard-glass-border-translucent);
+  background: color-mix(in srgb, var(--dashboard-surface) 92%, white 8%);
 }
 
 /* ── Card Deck ── */
@@ -206,18 +233,20 @@
   .feed-action-btn { width: 66px; height: 66px; }
   .feed-action-btn svg { width: 30px; height: 30px; }
   .feed-stamp { font-size: 2rem; transform: rotate(0) !important; top: 10px; }
+  .feed-hero-stats { gap: 0.45rem; }
+  .feed-hero-chip { font-size: 0.68rem; padding: 0.35rem 0.6rem; }
 }
 
 /* Sidebar Overrides for Dark Mode */
 .feed-sidebar-improved {
   background: var(--dashboard-glass-bg) !important;
   border: 1px solid var(--dashboard-glass-border-translucent) !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
   transition: all 0.3s ease;
 }
 
 .feed-sidebar-improved:hover {
-  box-shadow: 0 25px 70px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.12) !important;
 }
 
 .feed-sidebar-header-improved {
@@ -229,15 +258,15 @@
 .feed-sidebar-item-improved {
   background: var(--dashboard-surface-alt) !important;
   border: 1px solid var(--dashboard-glass-border-translucent) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
   transition: all 0.2s ease;
 }
 
 .feed-sidebar-item-improved:hover {
   background: var(--dashboard-glass-bg) !important;
   border-color: var(--dashboard-border) !important;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12) !important;
-  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.1) !important;
+  transform: translateY(-1px);
 }
 
 .feed-text-main {

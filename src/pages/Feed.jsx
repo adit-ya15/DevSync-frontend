@@ -40,7 +40,7 @@ const Feed = () => {
     const lastTime = useRef(0);
     const rafId = useRef(null);
 
-    const fetchFeed = async () => {
+    const fetchFeed = useCallback(async () => {
         if (feed) return;
         setLoading(true);
         try {
@@ -52,9 +52,9 @@ const Feed = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [dispatch, feed]);
 
-    const fetchConnections = async () => {
+    const fetchConnections = useCallback(async () => {
         if (connections) return;
         try {
             const res = await axios.get(BASE_URL + '/user/connections', { withCredentials: true });
@@ -62,9 +62,9 @@ const Feed = () => {
         } catch (error) {
             console.error('Connections fetch error:', error);
         }
-    };
+    }, [connections, dispatch]);
 
-    const fetchRequests = async () => {
+    const fetchRequests = useCallback(async () => {
         if (requests) return;
         try {
             const res = await axios.get(BASE_URL + '/user/request/received', { withCredentials: true });
@@ -72,23 +72,23 @@ const Feed = () => {
         } catch (error) {
             console.error('Requests fetch error:', error);
         }
-    };
+    }, [dispatch, requests]);
 
-    const fetchRecommendations = async () => {
+    const fetchRecommendations = useCallback(async () => {
         try {
             const res = await axios.get(BASE_URL + '/matches/recommendations', { withCredentials: true });
             setRecommendations(res.data);
         } catch (error) {
             console.error('Recommendations fetch error:', error);
         }
-    };
+    }, []);
 
     useEffect(() => { 
         fetchFeed(); 
         fetchConnections();
         fetchRequests();
         fetchRecommendations();
-    }, []);
+    }, [fetchConnections, fetchFeed, fetchRecommendations, fetchRequests]);
 
     const advanceFeed = useCallback(() => {
         const newFeed = feed.slice(1);
@@ -319,10 +319,19 @@ const Feed = () => {
         return (
             <div className="feed-page w-full flex flex-col items-center">
                 
-                {/* Clean Typography Header */}
-                <div className="w-full max-w-lg mb-10 text-center relative z-10 flex flex-col items-center mt-8">
-                    <h1 className="text-4xl md:text-5xl font-bold feed-text-main tracking-tight mb-4" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>Discover Matches</h1>
-                    <p className="text-sm md:text-base feed-text-faint font-medium max-w-sm md:max-w-md px-4 leading-relaxed">Find amazing developers who match your tech stack and collaborate on exciting projects</p>
+                <div className="w-full max-w-2xl mb-8 text-center relative z-10 flex flex-col items-center mt-4">
+                    <p className="feed-overline">Developer Discovery</p>
+                    <h1 className="text-4xl md:text-5xl font-bold feed-text-main tracking-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>
+                        Build Better, Together
+                    </h1>
+                    <p className="text-sm md:text-base feed-text-faint font-medium max-w-xl px-4 leading-relaxed">
+                        Swipe through developers with matching skills, respond to requests, and find your next teammate.
+                    </p>
+                    <div className="feed-hero-stats">
+                        <span className="feed-hero-chip">{connections?.length || 0} connections</span>
+                        <span className="feed-hero-chip">{requests?.length || 0} pending requests</span>
+                        <span className="feed-hero-chip">{recommendations?.matchedDevelopers?.length || 0} top matches</span>
+                    </div>
                 </div>
 
                 <div className="feed-deck m-auto">
@@ -376,10 +385,10 @@ const Feed = () => {
     };
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto flex flex-col xl:flex-row gap-8 px-4 py-6">
+        <div className="w-full max-w-355 mx-auto flex flex-col xl:flex-row gap-6 px-3 md:px-4 py-4 md:py-6">
             
             {/* 1. LEFT SIDEBAR: Connections */}
-            <aside className="hidden xl:flex flex-col w-72 shrink-0 h-[calc(100vh-80px)] sticky top-8 rounded-3xl overflow-hidden transition-all feed-sidebar-improved">
+            <aside className="hidden 2xl:flex flex-col w-72 shrink-0 h-[calc(100vh-88px)] sticky top-8 rounded-3xl overflow-hidden transition-all feed-sidebar-improved">
                 <div className="p-7 feed-sidebar-header-improved shadow-lg z-10">
                     <h2 className="text-2xl font-bold feed-text-main tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Network</h2>
                     <div className="flex items-center gap-2 mt-2">
@@ -398,12 +407,12 @@ const Feed = () => {
                     ) : (
                         connections.map(user => (
                             <div key={user._id} className="group flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 cursor-pointer feed-sidebar-item-improved hover:shadow-lg" onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
-                                <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
+                                <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-[14px] font-bold feed-text-main truncate">{user.firstName} {user.lastName}</p>
                                     <p className="text-[11px] font-medium text-purple-500 truncate mt-1">{user.skills?.[0] || 'Developer'}</p>
                                 </div>
-                                <Link to={`/chat/${user._id}`} className="p-2 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 hover:from-blue-200 hover:to-blue-100 group-hover:scale-110 transition-all shadow-sm flex-shrink-0" onClick={(e) => e.stopPropagation()} title="Message">
+                                <Link to={`/chat/${user._id}`} className="p-2 rounded-full bg-linear-to-br from-blue-100 to-blue-50 text-blue-600 hover:from-blue-200 hover:to-blue-100 group-hover:scale-110 transition-all shadow-sm shrink-0" onClick={(e) => e.stopPropagation()} title="Message">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" /></svg>
                                 </Link>
                             </div>
@@ -418,7 +427,7 @@ const Feed = () => {
             </main>
 
             {/* 3. RIGHT SIDEBAR: Incoming Requests & Recommendations */}
-            <aside className="hidden xl:flex flex-col w-72 shrink-0 h-[calc(100vh-80px)] sticky top-8 rounded-3xl overflow-hidden transition-all feed-sidebar-improved">
+            <aside className="hidden xl:flex flex-col w-75 shrink-0 h-[calc(100vh-88px)] sticky top-8 rounded-3xl overflow-hidden transition-all feed-sidebar-improved">
                 
                 {/* Top Half: Requests */}
                 <div className="flex flex-col h-1/2 border-b border-white/10">
@@ -426,7 +435,7 @@ const Feed = () => {
                         <div className="flex items-center justify-between">
                             <h2 className="text-2xl font-bold feed-text-main tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>Requests</h2>
                             {requests?.length > 0 && (
-                                <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold py-1 px-3 rounded-full">{requests.length}</span>
+                                <span className="bg-linear-to-r from-purple-500 to-pink-500 text-white text-xs font-bold py-1 px-3 rounded-full">{requests.length}</span>
                             )}
                         </div>
                     </div>
@@ -444,12 +453,12 @@ const Feed = () => {
                                 const isRemoving = removingReqId === req._id;
                                 return (
                                     <div key={req._id} className={`group flex items-center gap-3 p-4 rounded-2xl transition-all cursor-pointer feed-sidebar-item-improved hover:shadow-lg ${isRemoving ? 'opacity-0 scale-95' : 'opacity-100'}`} style={{ transitionDuration: '300ms' }} onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
-                                        <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
+                                        <img src={user.photoUrl || defaultAvatar} alt={user.firstName} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
                                         <div className="flex-1 min-w-0 pr-2">
                                             <p className="text-[13px] font-bold feed-text-main truncate">{user.firstName} {user.lastName}</p>
                                             <p className="text-[10px] font-medium text-purple-600 truncate mt-0.5">{user.skills?.[0] || 'Developer'}</p>
                                         </div>
-                                        <div className="flex gap-2 flex-shrink-0">
+                                        <div className="flex gap-2 shrink-0">
                                             <button className="p-2 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 transition-all shadow-sm" onClick={(e) => handleReviewRequest('rejected', req._id, e)} title="Reject">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                             </button>
@@ -468,7 +477,7 @@ const Feed = () => {
                 <div className="flex flex-col h-1/2">
                     <div className="p-7 feed-sidebar-header-improved shadow-lg z-10 flex justify-between items-center">
                         <h2 className="text-2xl font-bold feed-text-main tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>Top Matches</h2>
-                        <span className="bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 text-[10px] font-bold py-1 px-2.5 rounded-full uppercase tracking-wider">AI</span>
+                        <span className="bg-linear-to-r from-blue-100 to-cyan-100 text-blue-700 text-[10px] font-bold py-1 px-2.5 rounded-full uppercase tracking-wider">AI</span>
                     </div>
                     
                     <div className="flex-1 overflow-y-auto p-5 space-y-3 custom-scrollbar">
@@ -481,8 +490,8 @@ const Feed = () => {
                         ) : (
                             <>
                                 {recommendations?.matchedDevelopers?.slice(0, 3).map(dev => (
-                                    <div key={`dev-${dev._id}`} className="group flex items-center gap-3 p-4 rounded-2xl transition-all cursor-pointer feed-sidebar-item-improved hover:shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50" onClick={() => navigate(`/user/${dev._id}`, { state: { user: dev } })}>
-                                        <img src={dev.photoUrl || defaultAvatar} alt={dev.firstName} className="w-11 h-11 rounded-full object-cover border-2 border-blue-200 shadow-sm flex-shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
+                                    <div key={`dev-${dev._id}`} className="group flex items-center gap-3 p-4 rounded-2xl transition-all cursor-pointer feed-sidebar-item-improved hover:shadow-lg bg-linear-to-br from-blue-50 to-cyan-50" onClick={() => navigate(`/user/${dev._id}`, { state: { user: dev } })}>
+                                        <img src={dev.photoUrl || defaultAvatar} alt={dev.firstName} className="w-11 h-11 rounded-full object-cover border-2 border-blue-200 shadow-sm shrink-0" onError={(e) => { e.target.src = defaultAvatar; }} />
                                         <div className="flex-1 min-w-0">
                                             <p className="text-[13px] font-bold feed-text-main truncate">{dev.firstName}</p>
                                             <p className="text-[10px] font-bold text-blue-600 truncate flex items-center gap-1 mt-0.5">
@@ -493,8 +502,8 @@ const Feed = () => {
                                     </div>
                                 ))}
                                 {recommendations?.matchedProjects?.slice(0, 2).map(proj => (
-                                    <div key={`proj-${proj._id}`} className="group flex items-center gap-3 p-4 rounded-2xl transition-all cursor-pointer feed-sidebar-item-improved hover:shadow-lg bg-gradient-to-br from-purple-50 to-pink-50" onClick={() => navigate(`/projects/${proj._id}`)}>
-                                        <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-sm flex-shrink-0 border-2 border-purple-200">
+                                    <div key={`proj-${proj._id}`} className="group flex items-center gap-3 p-4 rounded-2xl transition-all cursor-pointer feed-sidebar-item-improved hover:shadow-lg bg-linear-to-br from-purple-50 to-pink-50" onClick={() => navigate(`/projects/${proj._id}`)}>
+                                        <div className="w-11 h-11 rounded-xl bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-sm shrink-0 border-2 border-purple-200">
                                             {proj.title.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
