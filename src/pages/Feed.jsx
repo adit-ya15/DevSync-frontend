@@ -318,14 +318,13 @@ const Feed = () => {
 
         return (
             <div className="feed-page w-full flex flex-col items-center">
-                
-                <div className="w-full max-w-2xl mb-8 text-center relative z-10 flex flex-col items-center mt-4">
+                <div className="w-full max-w-2xl mb-6 text-center relative z-10 flex flex-col items-center mt-2">
                     <p className="feed-overline">Developer Discovery</p>
                     <h1 className="text-4xl md:text-5xl font-bold feed-text-main tracking-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>
-                        Build Better, Together
+                        Swipe. Match. Build.
                     </h1>
                     <p className="text-sm md:text-base feed-text-faint font-medium max-w-xl px-4 leading-relaxed">
-                        Swipe through developers with matching skills, respond to requests, and find your next teammate.
+                        Discover developers who fit your stack and start real collaborations.
                     </p>
                     <div className="feed-hero-stats">
                         <span className="feed-hero-chip">{connections?.length || 0} connections</span>
@@ -334,50 +333,60 @@ const Feed = () => {
                     </div>
                 </div>
 
-                <div className="feed-deck m-auto">
-                    {/* Next card */}
-                    {nextUser && (
-                        <div className="feed-card-behind">
-                            <UserCard user={nextUser} />
+                <div
+                    className="tinder-stage"
+                    style={{
+                        backgroundImage: `linear-gradient(160deg, rgba(8, 18, 32, 0.5), rgba(8, 18, 32, 0.2)), url('${currentUser?.photoUrl || defaultAvatar}')`
+                    }}
+                >
+                    <div className="feed-deck m-auto">
+                        {nextUser && (
+                            <div className="feed-card-behind">
+                                <UserCard user={nextUser} />
+                            </div>
+                        )}
+
+                        <div
+                            className="feed-card-wrap"
+                            key={currentUser._id}
+                            ref={cardRef}
+                            onMouseDown={handleStart}
+                            onMouseMove={handleMove}
+                            onMouseUp={handleEnd}
+                            onMouseLeave={() => { if (isDragging.current) handleEnd(); }}
+                            onTouchStart={handleStart}
+                            onTouchEnd={handleEnd}
+                        >
+                            <div className="feed-stamp feed-stamp-like" ref={likeStampRef}>LIKE</div>
+                            <div className="feed-stamp feed-stamp-nope" ref={nopeStampRef}>NOPE</div>
+
+                            <UserCard
+                                user={currentUser}
+                                actions={
+                                    <div className="feed-actions">
+                                        <button
+                                            className="feed-action-btn feed-btn-pass"
+                                            onClick={(e) => { e.stopPropagation(); flyOff('left'); }}
+                                            title="Pass"
+                                        >
+                                            {passIcon}
+                                        </button>
+                                        <button
+                                            className="feed-action-btn feed-btn-like"
+                                            onClick={(e) => { e.stopPropagation(); flyOff('right'); }}
+                                            title="Interested"
+                                        >
+                                            {likeIcon}
+                                        </button>
+                                    </div>
+                                }
+                            />
                         </div>
-                    )}
+                    </div>
 
-                    {/* Current card */}
-                    <div
-                        className="feed-card-wrap"
-                        key={currentUser._id}
-                        ref={cardRef}
-                        onMouseDown={handleStart}
-                        onMouseMove={handleMove}
-                        onMouseUp={handleEnd}
-                        onMouseLeave={() => { if (isDragging.current) handleEnd(); }}
-                        onTouchStart={handleStart}
-                        onTouchEnd={handleEnd}
-                    >
-                        <div className="feed-stamp feed-stamp-like" ref={likeStampRef}>LIKE</div>
-                        <div className="feed-stamp feed-stamp-nope" ref={nopeStampRef}>NOPE</div>
-
-                        <UserCard
-                            user={currentUser}
-                            actions={
-                                <div className="feed-actions">
-                                    <button
-                                        className="feed-action-btn feed-btn-pass"
-                                        onClick={(e) => { e.stopPropagation(); flyOff('left'); }}
-                                        title="Pass"
-                                    >
-                                        {passIcon}
-                                    </button>
-                                    <button
-                                        className="feed-action-btn feed-btn-like"
-                                        onClick={(e) => { e.stopPropagation(); flyOff('right'); }}
-                                        title="Interested"
-                                    >
-                                        {likeIcon}
-                                    </button>
-                                </div>
-                            }
-                        />
+                    <div className="tinder-stage-hints">
+                        <span>Swipe left to pass</span>
+                        <span>Swipe right to connect</span>
                     </div>
                 </div>
             </div>
@@ -385,109 +394,106 @@ const Feed = () => {
     };
 
     return (
-        <div className="feed-shell">
-            <main className="feed-main-column">
+        <div className="tinder-home">
+            <main className="tinder-main">
                 {renderFeedState()}
 
-                <section className="feed-strip">
-                    <div className="feed-strip-head">
+                <section className="tinder-matches">
+                    <div className="tinder-matches-head">
                         <h3>Top Matches</h3>
                         <span>AI</span>
                     </div>
-
                     {(!recommendations?.matchedDevelopers?.length && !recommendations?.matchedProjects?.length) ? (
-                        <div className="feed-strip-empty">Add more skills to your profile to unlock better matches.</div>
+                        <p className="tinder-empty-text">No matches yet. Add more skills for better suggestions.</p>
                     ) : (
-                        <div className="feed-strip-grid">
-                            {recommendations?.matchedDevelopers?.slice(0, 4).map(dev => (
+                        <div className="tinder-match-row custom-scrollbar">
+                            {recommendations?.matchedDevelopers?.slice(0, 6).map(dev => (
                                 <button
                                     key={`dev-${dev._id}`}
                                     type="button"
-                                    className="feed-chip-card"
+                                    className="tinder-pill"
                                     onClick={() => navigate(`/user/${dev._id}`, { state: { user: dev } })}
                                 >
                                     <img src={dev.photoUrl || defaultAvatar} alt={dev.firstName} onError={(e) => { e.target.src = defaultAvatar; }} />
                                     <div>
-                                        <p>{dev.firstName} {dev.lastName}</p>
-                                        <small>{dev.matchScore || 100}% skill match</small>
+                                        <p>{dev.firstName}</p>
+                                        <small>{dev.matchScore || 100}%</small>
                                     </div>
                                 </button>
                             ))}
-                            {recommendations?.matchedProjects?.slice(0, 2).map(proj => (
+                            {recommendations?.matchedProjects?.slice(0, 3).map(proj => (
                                 <button
                                     key={`proj-${proj._id}`}
                                     type="button"
-                                    className="feed-chip-card feed-chip-card-project"
+                                    className="tinder-pill tinder-pill-project"
                                     onClick={() => navigate(`/projects/${proj._id}`)}
                                 >
-                                    <div className="feed-project-badge">{proj.title.charAt(0).toUpperCase()}</div>
+                                    <div className="tinder-pill-badge">{proj.title.charAt(0).toUpperCase()}</div>
                                     <div>
                                         <p>{proj.title}</p>
-                                        <small>Project match</small>
+                                        <small>Project</small>
                                     </div>
                                 </button>
                             ))}
                         </div>
                     )}
                 </section>
-            </main>
 
-            <aside className="feed-side-column">
-                <section className="feed-side-panel">
-                    <div className="feed-side-panel-head">
-                        <h3>Your Network</h3>
-                        <span>{connections?.length || 0}</span>
-                    </div>
-
-                    <div className="feed-side-panel-body custom-scrollbar">
-                        {(!connections || connections.length === 0) ? (
-                            <p className="feed-side-empty">No connections yet. Swipe right to connect.</p>
-                        ) : (
-                            connections.map(user => (
-                                <div key={user._id} className="feed-mini-user" onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
-                                    <img src={user.photoUrl || defaultAvatar} alt={user.firstName} onError={(e) => { e.target.src = defaultAvatar; }} />
-                                    <div>
-                                        <p>{user.firstName} {user.lastName}</p>
-                                        <small>{user.skills?.[0] || 'Developer'}</small>
-                                    </div>
-                                    <Link to={`/chat/${user._id}`} onClick={(e) => e.stopPropagation()} title="Open chat">Chat</Link>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </section>
-
-                <section className="feed-side-panel">
-                    <div className="feed-side-panel-head">
-                        <h3>Requests</h3>
-                        <span>{requests?.length || 0}</span>
-                    </div>
-
-                    <div className="feed-side-panel-body custom-scrollbar">
-                        {(!requests || requests.length === 0) ? (
-                            <p className="feed-side-empty">No pending requests right now.</p>
-                        ) : (
-                            requests.map(req => {
-                                const user = req.fromUserId || req;
-                                const isRemoving = removingReqId === req._id;
-                                return (
-                                    <div key={req._id} className={`feed-mini-user ${isRemoving ? 'opacity-0 scale-95' : 'opacity-100'}`} style={{ transitionDuration: '300ms' }} onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
+                <section className="tinder-lists">
+                    <div className="tinder-list-card">
+                        <div className="tinder-list-head">
+                            <h3>Your Network</h3>
+                            <span>{connections?.length || 0}</span>
+                        </div>
+                        <div className="tinder-list-body custom-scrollbar">
+                            {(!connections || connections.length === 0) ? (
+                                <p className="tinder-empty-text">No connections yet. Swipe right to connect.</p>
+                            ) : (
+                                connections.slice(0, 6).map(user => (
+                                    <div key={user._id} className="tinder-list-item" onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
                                         <img src={user.photoUrl || defaultAvatar} alt={user.firstName} onError={(e) => { e.target.src = defaultAvatar; }} />
                                         <div>
                                             <p>{user.firstName} {user.lastName}</p>
                                             <small>{user.skills?.[0] || 'Developer'}</small>
                                         </div>
-                                        <div className="feed-mini-actions" onClick={(e) => e.stopPropagation()}>
-                                            <button type="button" onClick={(e) => handleReviewRequest('rejected', req._id, e)}>×</button>
-                                            <button type="button" onClick={(e) => handleReviewRequest('accepted', req._id, e)}>✓</button>
-                                        </div>
+                                        <Link to={`/chat/${user._id}`} onClick={(e) => e.stopPropagation()}>Chat</Link>
                                     </div>
-                                );
-                            })
-                        )}
+                                ))
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="tinder-list-card">
+                        <div className="tinder-list-head">
+                            <h3>Requests</h3>
+                            <span>{requests?.length || 0}</span>
+                        </div>
+                        <div className="tinder-list-body custom-scrollbar">
+                            {(!requests || requests.length === 0) ? (
+                                <p className="tinder-empty-text">No pending requests.</p>
+                            ) : (
+                                requests.slice(0, 6).map(req => {
+                                    const user = req.fromUserId || req;
+                                    const isRemoving = removingReqId === req._id;
+                                    return (
+                                        <div key={req._id} className={`tinder-list-item ${isRemoving ? 'opacity-0 scale-95' : 'opacity-100'}`} style={{ transitionDuration: '300ms' }} onClick={() => navigate(`/user/${user._id}`, { state: { user } })}>
+                                            <img src={user.photoUrl || defaultAvatar} alt={user.firstName} onError={(e) => { e.target.src = defaultAvatar; }} />
+                                            <div>
+                                                <p>{user.firstName} {user.lastName}</p>
+                                                <small>{user.skills?.[0] || 'Developer'}</small>
+                                            </div>
+                                            <div className="tinder-list-actions" onClick={(e) => e.stopPropagation()}>
+                                                <button type="button" onClick={(e) => handleReviewRequest('rejected', req._id, e)}>×</button>
+                                                <button type="button" onClick={(e) => handleReviewRequest('accepted', req._id, e)}>✓</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
                 </section>
-            </aside>
+            </main>
         </div>
     );
 }
