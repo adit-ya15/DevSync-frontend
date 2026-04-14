@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -20,8 +20,6 @@ const Sidebar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-
-    const [isHovered, setIsHovered] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -69,11 +67,7 @@ const Sidebar = () => {
     }
 
     return (
-        <aside 
-            className={`app-sidebar ${isHovered ? 'expanded' : 'collapsed'}`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        <aside className="app-sidebar collapsed">
             {/* Logo Area */}
             <div className="sidebar-brand">
                 <Link to="/" className="sidebar-logo-link">

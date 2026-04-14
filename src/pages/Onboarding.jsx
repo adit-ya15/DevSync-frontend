@@ -106,6 +106,8 @@ const Onboarding = () => {
     return payload;
   };
 
+  const getFormDataKeys = (formData) => Array.from(formData.keys());
+
   const isInvalidFieldError = (error) => {
     const msg = String(error?.response?.data?.message || '').toLowerCase();
     return msg.includes('invalid field');
@@ -128,9 +130,11 @@ const Onboarding = () => {
       let res;
       try {
         // Attempt 1: backend expects githubUrl
+        const payloadUrl = buildProfileFormData(updateData, 'url');
+        console.log('Onboarding payload attempt 1 keys:', getFormDataKeys(payloadUrl));
         res = await axios.patch(
           BASE_URL + '/profile/edit',
-          buildProfileFormData(updateData, 'url'),
+          payloadUrl,
           requestConfig
         );
       } catch (error) {
@@ -138,18 +142,22 @@ const Onboarding = () => {
 
         try {
           // Attempt 2: backend expects githubUsername
+          const payloadUsername = buildProfileFormData(updateData, 'username');
+          console.log('Onboarding payload attempt 2 keys:', getFormDataKeys(payloadUsername));
           res = await axios.patch(
             BASE_URL + '/profile/edit',
-            buildProfileFormData(updateData, 'username'),
+            payloadUsername,
             requestConfig
           );
         } catch (secondError) {
           if (!isInvalidFieldError(secondError)) throw secondError;
 
           // Attempt 3: proceed without github field to unblock onboarding
+          const payloadNoGithub = buildProfileFormData(updateData, 'none');
+          console.log('Onboarding payload attempt 3 keys:', getFormDataKeys(payloadNoGithub));
           res = await axios.patch(
             BASE_URL + '/profile/edit',
-            buildProfileFormData(updateData, 'none'),
+            payloadNoGithub,
             requestConfig
           );
         }
