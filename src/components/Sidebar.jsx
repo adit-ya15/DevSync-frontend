@@ -67,7 +67,7 @@ const Sidebar = () => {
     }
 
     return (
-        <aside className="app-sidebar collapsed">
+        <aside className="app-sidebar expanded">
             {/* Logo Area */}
             <div className="sidebar-brand">
                 <Link to="/" className="sidebar-logo-link">
