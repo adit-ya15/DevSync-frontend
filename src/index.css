@@ -1,11 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @plugin "daisyui" {
   themes: dark --default;
 }
 
 /* ===== Minimal Design System – Google / Antigravity Style ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 :root {
   /* Core Colors - Dark Mode Default */
   --bg-base: #18191a;

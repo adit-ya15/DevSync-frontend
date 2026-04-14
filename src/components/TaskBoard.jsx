@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { taskAPI } from '../utils/taskAPI';
 import defaultAvatar from '../assests/images/default-user-image.png';
@@ -19,11 +19,7 @@ const TaskBoard = ({ projectId, members }) => {
     assignee: ''
   });
 
-  useEffect(() => {
-    fetchTasks();
-  }, [projectId]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const data = await taskAPI.getTasks(projectId);
@@ -34,7 +30,11 @@ const TaskBoard = ({ projectId, members }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

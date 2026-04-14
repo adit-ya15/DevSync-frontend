@@ -31,7 +31,7 @@ const Body = () => {
         setMousePos({ x, y });
     }, []);
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         if (user) {
             return;
         }
@@ -44,11 +44,11 @@ const Body = () => {
             }
             console.log(error);
         }
-    }
+    }, [dispatch, navigate, user])
 
     useEffect(() => {
         fetchUser();
-    }, [])
+    }, [fetchUser])
 
     const isOnboarding = location.pathname === '/onboarding';
 
@@ -69,8 +69,8 @@ const Body = () => {
             <div className="landing-bg-circle circle-yellow" />
 
             {!isOnboarding && <Sidebar />}
-            <div className={`relative z-10 flex flex-col min-h-screen w-full transition-all duration-300 ${user && !isOnboarding ? 'md:pl-[80px]' : ''}`}>
-                <main className="flex-grow w-full pt-4 px-4">
+            <div className={`relative z-10 flex flex-col min-h-screen w-full transition-all duration-300 ${user && !isOnboarding ? 'md:pl-20' : ''}`}>
+                <main className={`grow w-full pt-4 px-4 ${user && !isOnboarding ? 'pb-24 md:pb-6' : ''}`}>
                     <Outlet />
                 </main>
                 <Footer />

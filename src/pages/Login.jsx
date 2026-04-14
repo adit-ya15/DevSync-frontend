@@ -53,7 +53,7 @@ const Login = () => {
                 navigate("/");
             })
             .catch(() => { });
-    }, [user, navigate, dispatch, location]);
+    }, [user, navigate, dispatch, location, showAuthModal]);
 
     const validate = () => {
         const newErrors = {};

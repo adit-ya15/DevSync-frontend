@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -15,7 +15,7 @@ const Requests = () => {
     const [loading, setLoading] = useState(false);
     const [removingId, setRemovingId] = useState(null);
 
-    const fetchRequests = async () => {
+    const fetchRequests = useCallback(async () => {
         if (requests) return;
         setLoading(true);
         try {
@@ -27,11 +27,11 @@ const Requests = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [dispatch, requests]);
 
     useEffect(() => {
         fetchRequests();
-    }, []);
+    }, [fetchRequests]);
 
     const handleReview = async (status, requestId, e) => {
         e.stopPropagation(); // don't trigger row click

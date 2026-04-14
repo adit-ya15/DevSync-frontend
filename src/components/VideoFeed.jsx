@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -21,11 +21,7 @@ const VideoFeed = () => {
     
     const videoRefs = useRef([]);
 
-    useEffect(() => {
-        fetchVideos();
-    }, []);
-
-    const fetchVideos = async () => {
+    const fetchVideos = useCallback(async () => {
         if (videos) {
             setLoading(false);
             return;
@@ -39,7 +35,11 @@ const VideoFeed = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [dispatch, videos]);
+
+    useEffect(() => {
+        fetchVideos();
+    }, [fetchVideos]);
 
     const handleLike = async (videoId) => {
         try {

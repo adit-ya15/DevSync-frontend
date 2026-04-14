@@ -1,12 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import logo from '../assests/images/logo.png';
 import './Login.css';
 
 const Community = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const user = useSelector(store => store.user);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuRef = useRef(null);
@@ -18,10 +17,6 @@ const Community = () => {
         const y = (e.clientY / window.innerHeight - 0.5) * 40;
         setMousePos({ x, y });
     }, []);
-
-    useEffect(() => {
-        setIsMobileMenuOpen(false);
-    }, [location.pathname]);
 
     useEffect(() => {
         if (!isMobileMenuOpen) {

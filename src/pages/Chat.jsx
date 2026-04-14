@@ -67,6 +67,7 @@ const Chat = () => {
 
   const peerRef = useRef(null);
   const currentCallRef = useRef(null);
+  const localStreamRef = useRef(null);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -79,6 +80,10 @@ const Chat = () => {
   const conversationsRef = useRef(null);
   const typingStopTimeoutRef = useRef(null);
   const didResetSidebarScrollRef = useRef(false);
+
+  useEffect(() => {
+    localStreamRef.current = localStream;
+  }, [localStream]);
 
   useEffect(() => { activeChatIdRef.current = activeChatId; }, [activeChatId]);
 
@@ -98,6 +103,23 @@ const Chat = () => {
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
   }, [text]);
+
+  const endCallUI = useCallback(() => {
+    setIsVideoCallOpen(false);
+    setIsIncoming(false);
+    setIsOutgoing(false);
+    setCallStatus(null);
+    setCallerName("");
+
+    const activeLocalStream = localStreamRef.current;
+    if (activeLocalStream) {
+      activeLocalStream.getTracks().forEach((track) => track.stop());
+    }
+    localStreamRef.current = null;
+    setLocalStream(null);
+    setRemoteStream(null);
+    currentCallRef.current = null;
+  }, []);
 
   // Socket connection
   useEffect(() => {
@@ -177,7 +199,7 @@ const Chat = () => {
       socket.disconnect();
       peer.destroy();
     };
-  }, [currentUserId]);
+  }, [currentUserId, endCallUI]);
 
   useEffect(() => {
     if (!activeChatId || !socketRef.current) return;
@@ -498,21 +520,6 @@ const Chat = () => {
     
     setCallStatus('connected');
     currentCallRef.current.answer(stream);
-  };
-
-  const endCallUI = () => {
-    setIsVideoCallOpen(false);
-    setIsIncoming(false);
-    setIsOutgoing(false);
-    setCallStatus(null);
-    setCallerName("");
-    
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
-      setLocalStream(null);
-    }
-    setRemoteStream(null);
-    currentCallRef.current = null;
   };
 
   const declineOrEndCall = () => {
@@ -906,14 +913,14 @@ const Chat = () => {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full w-full bg-white/30 dark:bg-black/10 backdrop-blur-xl border-l border-white/40 dark:border-gray-800 text-center p-12">
-              <div className="w-32 h-32 bg-gradient-to-tr from-purple-200 to-blue-200 dark:from-purple-900/40 dark:to-blue-900/40 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner animate-float transform rotate-3">
+              <div className="w-32 h-32 bg-linear-to-tr from-purple-200 to-blue-200 dark:from-purple-900/40 dark:to-blue-900/40 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner animate-float transform rotate-3">
                 <span className="text-6xl" style={{ filter: 'drop-shadow(0 8px 8px rgba(0,0,0,0.1))' }}>💬</span>
               </div>
               <h3 className="text-3xl font-extrabold feed-text-main mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Conversations</h3>
               <p className="text-gray-500 font-medium max-w-sm mb-8 text-[15px] leading-relaxed">Select a chat from the sidebar to start messaging, or browse the Hub to find new teams and projects.</p>
               <button 
                 onClick={() => navigate('/projects')}
-                className="px-8 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 shadow-lg shadow-purple-500/20 hover:scale-105 transition-all flex items-center gap-3"
+                className="px-8 py-3.5 rounded-xl font-bold text-white bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 shadow-lg shadow-purple-500/20 hover:scale-105 transition-all flex items-center gap-3"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75 16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>
                 Explore Projects

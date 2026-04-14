@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -13,7 +13,7 @@ const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTech, setFilterTech] = useState('');
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     dispatch(setLoadingProjects(true));
     try {
       // In a real app, we would pass query params to the API
@@ -25,11 +25,11 @@ const Projects = () => {
     } finally {
       dispatch(setLoadingProjects(false));
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   const filteredProjects = projects.filter(p => {
     const matchesSearch = p.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 

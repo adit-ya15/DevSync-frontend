@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -59,7 +59,7 @@ const Profile = () => {
         }
     }, [user]);
 
-    const fetchProfileData = async () => {
+    const fetchProfileData = useCallback(async () => {
         setLoadingData(true);
         try {
             const [myRes, likedRes, projRes] = await Promise.all([
@@ -76,13 +76,13 @@ const Profile = () => {
         } finally {
             setLoadingData(false);
         }
-    };
+    }, [user?._id]);
 
     useEffect(() => {
         if (user && !isEditing) {
             fetchProfileData();
         }
-    }, [user, isEditing]);
+    }, [user, isEditing, fetchProfileData]);
 
     useEffect(() => {
         if (!user || isEditing) return;

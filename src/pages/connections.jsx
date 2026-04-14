@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +13,7 @@ const Connections = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const fetchConnections = async () => {
+    const fetchConnections = useCallback(async () => {
         if (connections) return;
         setLoading(true);
         try {
@@ -24,11 +24,11 @@ const Connections = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [connections, dispatch]);
 
     useEffect(() => {
         fetchConnections();
-    }, []);
+    }, [fetchConnections]);
 
     const handleViewProfile = (user) => {
         navigate(`/user/${user._id}`, { state: { user } });
