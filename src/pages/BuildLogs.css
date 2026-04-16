@@ -2,6 +2,95 @@
     animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.buildlogs-container,
+.buildlogs-container .feed-text-main,
+.buildlogs-container .feed-text-faint {
+    color: var(--dashboard-text-main);
+}
+
+.buildlogs-container .feed-text-faint {
+    color: var(--dashboard-text-faint);
+}
+
+.buildlogs-container .buildlog-create-card,
+.buildlogs-container .buildlog-card,
+.buildlogs-container .buildlog-feed > div {
+    background: var(--dashboard-glass-bg) !important;
+    border-color: var(--dashboard-glass-border-translucent) !important;
+    color: var(--dashboard-text-main);
+}
+
+.buildlogs-container .buildlog-input,
+.buildlogs-container .buildlog-textarea {
+    background: color-mix(in srgb, var(--dashboard-surface) 84%, transparent 16%) !important;
+    color: var(--dashboard-text-main) !important;
+    border: 1px solid var(--dashboard-glass-border-translucent) !important;
+}
+
+.buildlogs-container .buildlog-input::placeholder,
+.buildlogs-container .buildlog-textarea::placeholder {
+    color: var(--dashboard-text-faint);
+    opacity: 0.7;
+}
+
+.buildlogs-container .buildlog-content code {
+    background: color-mix(in srgb, var(--dashboard-surface-alt) 86%, transparent 14%);
+    color: #7c3aed;
+}
+
+[data-theme="light"] .buildlogs-container .buildlog-create-card,
+[data-theme="light"] .buildlogs-container .buildlog-card,
+[data-theme="light"] .buildlogs-container .buildlog-feed > div {
+    background: rgba(255, 255, 255, 0.88) !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 18px 45px -20px rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .buildlogs-container .buildlog-input,
+[data-theme="light"] .buildlogs-container .buildlog-textarea {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .buildlogs-container .buildlog-content pre {
+    background: #f8fafc;
+}
+
+[data-theme="light"] .buildlogs-container .buildlog-content code {
+    background: #f3f4f6;
+    color: #7c3aed;
+}
+
+[data-theme="light"] .buildlogs-container .border-gray-100,
+[data-theme="light"] .buildlogs-container .dark\:border-gray-800 {
+    border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .buildlogs-container .text-gray-500,
+[data-theme="light"] .buildlogs-container .text-gray-400 {
+    color: var(--dashboard-text-faint) !important;
+}
+
+[data-theme="light"] .buildlogs-container .bg-white\/40,
+[data-theme="light"] .buildlogs-container .bg-white\/60,
+[data-theme="light"] .buildlogs-container .bg-white\/80 {
+    background: rgba(255, 255, 255, 0.86) !important;
+}
+
+[data-theme="light"] .buildlogs-container .dark\:bg-\[\#1E1E24\]\/60,
+[data-theme="light"] .buildlogs-container .dark\:bg-\[\#1E1E24\]\/40,
+[data-theme="light"] .buildlogs-container .dark\:bg-\[\#1A1A1F\]\/80,
+[data-theme="light"] .buildlogs-container .dark\:bg-black\/20 {
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="light"] .buildlogs-container .dark\:text-pink-400,
+[data-theme="light"] .buildlogs-container .dark\:text-blue-300,
+[data-theme="light"] .buildlogs-container .dark\:text-gray-400,
+[data-theme="light"] .buildlogs-container .dark\:text-gray-800 {
+    color: inherit !important;
+}
+
 .buildlog-create-card {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }

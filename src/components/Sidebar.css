@@ -18,6 +18,12 @@
     overflow-y: auto;
 }
 
+[data-theme="light"] .app-sidebar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 248, 252, 0.92) 100%);
+    border-right: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 10px 0 32px rgba(15, 23, 42, 0.08);
+}
+
 .app-sidebar::-webkit-scrollbar {
     width: 0;
 }
@@ -113,9 +119,17 @@
     position: relative;
 }
 
+[data-theme="light"] .sidebar-link-item {
+    color: rgba(55, 65, 81, 0.82);
+}
+
 .sidebar-link-item:hover {
     color: var(--dashboard-text-main);
     background: color-mix(in srgb, var(--dashboard-surface-alt) 82%, #dbeafe 18%);
+}
+
+[data-theme="light"] .sidebar-link-item:hover {
+    background: color-mix(in srgb, var(--dashboard-surface) 82%, #dbeafe 18%);
 }
 
 .app-sidebar:hover .sidebar-link-item {
@@ -134,6 +148,12 @@
     background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
     color: #ffffff;
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="light"] .sidebar-link-item.active {
+    background: linear-gradient(90deg, rgba(29, 78, 216, 0.96) 0%, rgba(37, 99, 235, 0.96) 100%);
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
 }
 
 .app-sidebar:hover .sidebar-link-item.active::before {
@@ -241,6 +261,12 @@
     transition: all 0.2s ease;
 }
 
+[data-theme="light"] .sidebar-theme-wrap {
+    color: var(--dashboard-text-main);
+    background: color-mix(in srgb, var(--dashboard-surface) 82%, #ffffff 18%);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
 .app-sidebar:hover .sidebar-theme-wrap {
     justify-content: flex-start;
     padding: 0.6rem 0.7rem;
@@ -273,6 +299,10 @@
     color: var(--dashboard-text-main);
     transition: all 0.2s ease;
     white-space: nowrap;
+}
+
+[data-theme="light"] .sidebar-profile-link {
+    color: var(--dashboard-text-main);
 }
 
 .app-sidebar:hover .sidebar-profile-link {
@@ -343,6 +373,10 @@
     text-align: left;
     white-space: nowrap;
     transition: all 0.2s ease;
+}
+
+[data-theme="light"] .sidebar-logout-btn {
+    color: #dc2626;
 }
 
 .app-sidebar:hover .sidebar-logout-btn {
