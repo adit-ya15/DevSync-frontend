@@ -124,6 +124,11 @@
     flex-direction: column;
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.1) transparent;
+    /* Smooth momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
 }
 .interaction-body::-webkit-scrollbar { width: 5px; }
 .interaction-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }

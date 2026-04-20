@@ -201,7 +201,10 @@ html, html[data-theme="dark"] {
 }
 
 /* ── Base ── */
-* { box-sizing: border-box; scroll-behavior: smooth; }
+* { 
+  box-sizing: border-box; 
+  scroll-behavior: smooth;
+}
 
 html,
 body,
@@ -210,13 +213,37 @@ body,
   min-height: 100%;
 }
 
+html {
+  /* Smooth scroll + momentum for better mobile experience */
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   background-color: var(--bg-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Prevent rubber-band scrolling */
+  overscroll-behavior: auto;
 }
 
 #root {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Optimize scrollable containers */
+.overflow-y-auto,
+[class*="scrollable"],
+.chat-messages,
+.chat-conversations,
+.feed-container,
+.projects-grid {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 body {
@@ -291,4 +318,62 @@ body {
 
 .animate-fade-in-up { 
   animation: fadeInUp 0.8s var(--ease-smooth) forwards; 
+}
+
+/* ── Scroll & Performance Optimizations ── */
+/* Reduce motion for better accessibility & performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Enhanced scrollbar styling for better UX */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+
+/* Prevent layout shift during scroll */
+html {
+  scroll-padding-top: 80px;
+}
+
+/* Smooth transitions for route changes */
+main {
+  animation: fadeInUp 0.3s var(--ease-smooth) forwards;
+}
+
+/* GPU acceleration for smooth scrolling */
+.overflow-y-auto,
+[class*="scrollable"],
+.chat-messages,
+.chat-conversations {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }

@@ -80,7 +80,30 @@ const computeLanguageMix = (repos, limit = 3) => {
 
 const isInvalidFieldError = (error) => {
     const msg = String(error?.response?.data?.message || '').toLowerCase();
-    return msg.includes('invalid field') || msg.includes('not allowed');
+    return msg.includes('invalid field') || msg.includes('not allowed') || msg.includes('unexpected field');
+};
+
+const getUserPhotoUrl = (user) => {
+    if (!user || typeof user !== 'object') return '';
+    return user.photoUrl || user.profileImageUrl || user.avatarUrl || user.photo || '';
+};
+
+const getUserCoverPhotoUrl = (user) => {
+    if (!user || typeof user !== 'object') return '';
+    return user.coverPhotoUrl || user.coverPhoto || user.coverImageUrl || user.coverImage || user.bannerUrl || user.bannerImageUrl || '';
+};
+
+const normalizeUserPayload = (payload) => {
+    if (!payload || typeof payload !== 'object') return payload;
+
+    const photoUrl = getUserPhotoUrl(payload);
+    const coverPhotoUrl = getUserCoverPhotoUrl(payload);
+
+    return {
+        ...payload,
+        ...(photoUrl ? { photoUrl } : {}),
+        ...(coverPhotoUrl ? { coverPhotoUrl } : {}),
+    };
 };
 
 const Profile = () => {
@@ -98,6 +121,8 @@ const Profile = () => {
 
     const [profileImageFile, setProfileImageFile] = useState(null);
     const [photoPreview, setPhotoPreview] = useState('');
+    const [coverPhotoFile, setCoverPhotoFile] = useState(null);
+    const [coverPhotoPreview, setCoverPhotoPreview] = useState('');
 
     // Tabs Data
     const [activeTab, setActiveTab] = useState('my_videos'); // 'my_videos' | 'liked_videos' | 'projects' | 'github' | 'activity'
@@ -125,7 +150,8 @@ const Profile = () => {
                 intent: user.intent || '',
                 githubUrl: githubUsername,
             });
-            setPhotoPreview(user.photoUrl || '');
+            setPhotoPreview(getUserPhotoUrl(user));
+            setCoverPhotoPreview(getUserCoverPhotoUrl(user));
         }
     }, [user]);
 
@@ -207,6 +233,14 @@ const Profile = () => {
         }
     };
 
+    const handleCoverPhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setCoverPhotoFile(file);
+            setCoverPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+
     const handleAddSkill = () => {
         const skill = newSkill.trim();
         if (skill && !form.skills.includes(skill)) {
@@ -226,10 +260,12 @@ const Profile = () => {
     const handleCancel = () => {
         setIsEditing(false);
         setProfileImageFile(null);
+        setCoverPhotoFile(null);
         if (user) {
             const githubUsername = extractGithubUsername(user) || '';
             setForm({ firstName: user.firstName || '', lastName: user.lastName || '', age: user.age || '', gender: user.gender || '', about: user.about || '', skills: user.skills || [], intent: user.intent || '', githubUrl: githubUsername });
-            setPhotoPreview(user.photoUrl || '');
+            setPhotoPreview(getUserPhotoUrl(user));
+            setCoverPhotoPreview(getUserCoverPhotoUrl(user));
         }
     };
 
@@ -238,7 +274,7 @@ const Profile = () => {
         try {
             const githubUsername = extractGithubUsername(form.githubUrl);
 
-            const buildPayload = (includeGithubField = true) => {
+            const buildPayload = ({ includeGithubField = true, coverFieldName = null } = {}) => {
                 const formData = new FormData();
                 formData.append('firstName', form.firstName);
                 formData.append('lastName', form.lastName);
@@ -248,20 +284,64 @@ const Profile = () => {
                 if (form.skills.length > 0) formData.append('skills', JSON.stringify(form.skills));
                 if (includeGithubField && githubUsername) formData.append('githubUsername', githubUsername);
                 if (profileImageFile) formData.append('profileImage', profileImageFile);
+                if (coverPhotoFile && coverFieldName) formData.append(coverFieldName, coverPhotoFile);
                 return formData;
             };
 
-            try {
-                await axios.patch(BASE_URL + '/profile/edit', buildPayload(true), { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } });
-            } catch (error) {
-                if (!(githubUsername && isInvalidFieldError(error))) throw error;
-                // Backend may reject github fields. Save remaining profile fields and keep GitHub locally.
-                await axios.patch(BASE_URL + '/profile/edit', buildPayload(false), { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } });
+            const coverFieldCandidates = ['coverPhoto', 'coverImage', 'coverPhotoFile', 'bannerImage'];
+            const includeGithubCandidates = [true, false];
+
+            const saveAttemptConfigs = [];
+
+            if (coverPhotoFile) {
+                for (const includeGithubField of includeGithubCandidates) {
+                    for (const coverFieldName of coverFieldCandidates) {
+                        saveAttemptConfigs.push({ includeGithubField, coverFieldName });
+                    }
+                }
+            } else {
+                saveAttemptConfigs.push({ includeGithubField: true, coverFieldName: null });
+                saveAttemptConfigs.push({ includeGithubField: false, coverFieldName: null });
+            }
+
+            let lastInvalidFieldError = null;
+            let didSave = false;
+
+            for (const attemptConfig of saveAttemptConfigs) {
+                try {
+                    await axios.patch(
+                        BASE_URL + '/profile/edit',
+                        buildPayload(attemptConfig),
+                        { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
+                    );
+                    lastInvalidFieldError = null;
+                    didSave = true;
+                    break;
+                } catch (error) {
+                    if (!isInvalidFieldError(error)) throw error;
+                    lastInvalidFieldError = error;
+                }
+            }
+
+            if (!didSave && lastInvalidFieldError) {
+                throw lastInvalidFieldError;
             }
 
             const profileRes = await axios.get(BASE_URL + '/profile/view', { withCredentials: true });
 
-            const refreshedUser = profileRes?.data?.data || profileRes?.data;
+            const refreshedUserRaw = profileRes?.data?.data?.user || profileRes?.data?.user || profileRes?.data?.data || profileRes?.data;
+            const refreshedUser = normalizeUserPayload(refreshedUserRaw);
+            const refreshedPhotoUrl = getUserPhotoUrl(refreshedUser);
+            const refreshedCoverUrl = getUserCoverPhotoUrl(refreshedUser);
+
+            if (coverPhotoFile && !refreshedCoverUrl) {
+                throw new Error('Cover image upload failed. Please verify backend field name for cover image upload.');
+            }
+
+            if (profileImageFile && !refreshedPhotoUrl) {
+                throw new Error('Profile image upload failed. Please verify backend field name for profile image upload.');
+            }
+
             if (githubUsername) {
                 persistGithubUsername(githubUsername, refreshedUser?._id || refreshedUser?.id || user?._id);
             }
@@ -306,6 +386,8 @@ const Profile = () => {
     const currentVideos = activeTab === 'my_videos' ? myVideos : likedVideos;
     const githubUsername = extractGithubUsername(user);
     const githubProfileUrl = githubUsername ? `https://github.com/${githubUsername}` : '';
+    const userPhotoUrl = getUserPhotoUrl(user);
+    const userCoverPhotoUrl = getUserCoverPhotoUrl(user);
 
     /* ── View Mode ── */
     if (!isEditing) {
@@ -313,7 +395,17 @@ const Profile = () => {
             <div className="profile-page">
                 <div className="profile-card-view">
                     {/* Hero Cover */}
-                    <div className="profile-hero">
+                    <div
+                        className="profile-hero"
+                        style={(userCoverPhotoUrl || coverPhotoPreview)
+                            ? {
+                                backgroundImage: `url(${coverPhotoPreview || userCoverPhotoUrl})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                            }
+                            : undefined
+                        }
+                    >
                         <div className="profile-header-actions">
                             <button className="profile-edit-btn" onClick={() => setIsEditing(true)}>
                                 {editIcon}
@@ -326,7 +418,7 @@ const Profile = () => {
                     <div className="profile-info-section">
                         <div className="profile-avatar-wrap">
                             <img
-                                src={user.photoUrl || `https://ui-avatars.com/api/?background=e5e7eb&color=374151&bold=true&size=200&name=${user.firstName}`}
+                                src={userPhotoUrl || `https://ui-avatars.com/api/?background=e5e7eb&color=374151&bold=true&size=200&name=${user.firstName}`}
                                 alt={user.firstName}
                                 className="profile-avatar-img"
                                 onError={(e) => { e.target.src = `https://ui-avatars.com/api/?background=e5e7eb&color=374151&bold=true&size=200&name=${user.firstName}`; }}
@@ -627,6 +719,26 @@ const Profile = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
                                 )}
                                 <span>Click to change photo</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div className="profile-field">
+                        <label className="profile-field-label">Cover Photo</label>
+                        <label className="profile-photo-upload">
+                            <input type="file" accept="image/*" onChange={handleCoverPhotoChange} style={{ display: 'none' }} />
+                            <div className="profile-photo-dropzone" style={{ minHeight: '180px', borderRadius: '14px' }}>
+                                {coverPhotoPreview ? (
+                                    <img
+                                        src={coverPhotoPreview}
+                                        alt=""
+                                        className="profile-photo-thumb"
+                                        style={{ width: '100%', height: '160px', borderRadius: '12px', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
+                                )}
+                                <span>Click to change cover photo</span>
                             </div>
                         </label>
                     </div>

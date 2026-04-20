@@ -13,7 +13,6 @@
 }
 
 .chat-page {
-  min-height: 100dvh;
   padding: 24px 16px 20px;
   display: flex;
   justify-content: center;
@@ -159,6 +158,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* Smooth momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
 }
 
 .chat-conversations::-webkit-scrollbar,
@@ -474,6 +478,11 @@
   align-items: flex-start;
   gap: 6px;
   min-height: 0;
+  /* Smooth momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
 }
 
 .chat-day-divider {
@@ -1221,6 +1230,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* Smooth momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
 }
 
 .chat-member-item {

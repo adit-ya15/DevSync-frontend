@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
     return (
         <footer 
-            className="w-full py-8 mt-auto flex flex-col items-center justify-center gap-4 relative z-10 transition-colors"
+            className="w-full py-2 mt-auto flex flex-col items-center justify-center gap-2 relative z-10 transition-colors"
             style={{ 
                 background: 'var(--dashboard-glass-bg)', 
                 borderTop: '1px solid var(--dashboard-glass-border-translucent)', 

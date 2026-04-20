@@ -743,6 +743,11 @@
         min-height: 100svh;
         overflow-y: auto;
         overflow-x: hidden;
+        /* Smooth momentum scrolling */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scroll-behavior: smooth;
+        will-change: scroll-position;
     }
 
     .landing-navbar-container {
@@ -902,6 +907,11 @@
         align-items: flex-start;
         padding: 1rem;
         overflow-y: auto;
+        /* Smooth momentum scrolling */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scroll-behavior: smooth;
+        will-change: scroll-position;
     }
 
     .auth-modal {

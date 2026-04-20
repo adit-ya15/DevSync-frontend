@@ -53,29 +53,30 @@ const Body = () => {
     const isOnboarding = location.pathname === '/onboarding';
 
     return (
-        <div 
-            className="landing-page flex flex-col min-h-screen relative"
-            onMouseMove={handleMouseMove}
-            style={{ 
-                '--mx': `${mousePos.x}px`, 
-                '--my': `${mousePos.y}px`,
-                position: 'relative',
-                minHeight: '100vh',
-                overflowX: 'hidden'
-            }}
-        >
-            <div className="landing-bg-circle circle-blue" />
-            <div className="landing-bg-circle circle-pink" />
-            <div className="landing-bg-circle circle-yellow" />
-
+        <>
             {!isOnboarding && <Sidebar />}
-            <div className={`relative z-10 flex flex-col min-h-screen w-full transition-all duration-300 ${user && !isOnboarding ? 'md:pl-20' : ''}`}>
-                <main className={`grow w-full pt-4 px-4 ${user && !isOnboarding ? 'pb-24 md:pb-6' : ''}`}>
-                    <Outlet />
-                </main>
-                <Footer />
+            <div 
+                className="landing-page flex flex-col min-h-screen relative"
+                onMouseMove={handleMouseMove}
+                style={{ 
+                    '--mx': `${mousePos.x}px`, 
+                    '--my': `${mousePos.y}px`
+                }}
+            >
+                <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+                    <div className="landing-bg-circle circle-blue" />
+                    <div className="landing-bg-circle circle-pink" />
+                    <div className="landing-bg-circle circle-yellow" />
+                </div>
+
+                <div className={`relative z-10 flex flex-col grow w-full transition-all duration-300 ${user && !isOnboarding ? 'md:pl-20' : ''}`}>
+                    <main className={`grow w-full pt-4 px-4 ${user && !isOnboarding ? 'pb-0 md:pb-0' : ''}`}>
+                        <Outlet />
+                    </main>
+                    <Footer />
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
