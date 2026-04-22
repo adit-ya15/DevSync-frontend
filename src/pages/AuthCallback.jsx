@@ -26,10 +26,17 @@ const AuthCallback = ({ provider = "Authentication" }) => {
                     }
 
                     if (githubCode) {
-                        await axios.get(
-                            `${BASE_URL}/auth/github/callback${location.search}`,
-                            { withCredentials: true }
-                        );
+                        try {
+                            await axios.get(
+                                `${BASE_URL}/auth/github/callback${location.search}`,
+                                { withCredentials: true }
+                            );
+                        } catch (err) {
+                            // In React Strict Mode, the effect might run twice.
+                            // The first request will consume the code, so the second request will fail.
+                            // We ignore this error and proceed to check if the profile can be fetched.
+                            console.warn("GitHub callback code exchange failed. This may be due to React Strict Mode double invocation:", err);
+                        }
                     }
                 }
 
