@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import { addUser } from "../redux/userSlice";
 import { BASE_URL } from "../constants/commonData";
 
+const processedCodes = new Set();
+
 const AuthCallback = ({ provider = "Authentication" }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,15 +28,17 @@ const AuthCallback = ({ provider = "Authentication" }) => {
                     }
 
                     if (githubCode) {
+                        if (processedCodes.has(githubCode)) {
+                            return;
+                        }
+                        processedCodes.add(githubCode);
+
                         try {
                             await axios.get(
                                 `${BASE_URL}/auth/github/callback${location.search}`,
                                 { withCredentials: true }
                             );
                         } catch (err) {
-                            // In React Strict Mode, the effect might run twice.
-                            // The first request will consume the code, so the second request will fail.
-                            // We ignore this error and proceed to check if the profile can be fetched.
                             console.warn("GitHub callback code exchange failed. This may be due to React Strict Mode double invocation:", err);
                         }
                     }
@@ -51,10 +55,18 @@ const AuthCallback = ({ provider = "Authentication" }) => {
                 dispatch(addUser(profileRes.data));
                 toast.success(`${provider} login successful.`);
 
+                const authChannel = new BroadcastChannel("devsync-auth");
+                authChannel.postMessage({ type: "LOGIN_SUCCESS" });
+                authChannel.close();
+
                 if (window.opener && !window.opener.closed) {
                     window.opener.location.replace("/");
                     window.close();
                     return;
+                }
+                
+                if (window.name === "devsync-github-auth") {
+                    window.close();
                 }
 
                 navigate("/", { replace: true });

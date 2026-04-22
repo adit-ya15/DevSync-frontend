@@ -38,6 +38,13 @@ const Body = () => {
         try {
             const res = await axios.get(BASE_URL + "/profile/view", { withCredentials: true })
             dispatch(addUser(res.data));
+            
+            if (window.name === "devsync-github-auth") {
+                const authChannel = new BroadcastChannel("devsync-auth");
+                authChannel.postMessage({ type: "LOGIN_SUCCESS" });
+                authChannel.close();
+                window.close();
+            }
         } catch (error) {
             if (error?.response?.status === 401) {
                 navigate("/login")

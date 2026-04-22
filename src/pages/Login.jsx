@@ -52,12 +52,27 @@ const Login = () => {
             window.history.replaceState({}, document.title);
         }
 
-        axios.get(BASE_URL + "/profile/view", { withCredentials: true })
-            .then((res) => {
-                dispatch(addUser(res.data));
-                navigate("/");
-            })
-            .catch(() => { });
+        const fetchInitialUser = () => {
+            axios.get(BASE_URL + "/profile/view", { withCredentials: true })
+                .then((res) => {
+                    dispatch(addUser(res.data));
+                    navigate("/");
+                })
+                .catch(() => { });
+        };
+        
+        fetchInitialUser();
+
+        const authChannel = new BroadcastChannel("devsync-auth");
+        authChannel.onmessage = (event) => {
+            if (event.data?.type === "LOGIN_SUCCESS") {
+                fetchInitialUser();
+            }
+        };
+
+        return () => {
+            authChannel.close();
+        };
     }, [user, navigate, dispatch, location, showAuthModal]);
 
     const validate = () => {
